@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Integer, SmallInteger, Boolean, ForeignKey, relationship
+from sqlalchemy import String, Integer, SmallInteger, Boolean, ForeignKey
 
-from ..db.base import Base
+from ...db.base import Base
 
 
 class Admin(Base):
@@ -16,4 +16,3 @@ class Admin(Base):
     )
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    status: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")

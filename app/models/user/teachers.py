@@ -1,9 +1,9 @@
 from decimal import Decimal
 
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Integer, SmallInteger, Boolean, ForeignKey, Numeric
+from sqlalchemy import String, Integer, SmallInteger, ForeignKey, Numeric
 
-from ..db.base import Base
+from ...db.base import Base
 
 
 class Teacher(Base):
@@ -18,5 +18,4 @@ class Teacher(Base):
     )
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    salary: Mapped[Decimal] = mapped_column(Numeric(11, 2), nullable=False)
-    status: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    salary: Mapped[Decimal] = mapped_column(Numeric(11, 2), nullable=False, default=0)
