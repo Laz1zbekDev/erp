@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     jwt_access_token_expire_minutes: int
     jwt_refresh_token_expire_days: int
 
+    # SuperAdmin configuration
+    superadmin_password: str
+    superadmin_first_name: str
+    superadmin_last_name: str
+
     class Config:
         env_file = ".env"
 

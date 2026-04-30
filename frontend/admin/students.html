@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O'quvchilar — O'quv Markaz</title>
+  <link rel="stylesheet" href="../css/admin/admin.css">
+  <link rel="stylesheet" href="../css/admin/students.css">
+  <script src="../js/auth.js"></script>
+  <script src="../js/api.js"></script>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR (index.html bilan bir xil) ===== -->
+  <aside class="sidebar">
+
+    <div class="logo-area">
+      <div class="logo-circle">OC</div>
+      <div class="logo-name">O'quv Markaz</div>
+      <div class="logo-sub">Admin Panel</div>
+    </div>
+
+    <nav class="nav-section">
+
+      <div class="nav-label">Asosiy</div>
+      <a class="nav-item" href="dashboard.html">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9"/>
+          <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
+          <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
+          <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
+        </svg>
+        Dashboard
+      </a>
+
+      <div class="nav-label">O'quv jarayoni</div>
+      <a class="nav-item active" href="students.html">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="6" cy="5" r="3" fill="currentColor" opacity="0.85"/>
+          <path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="12" cy="5" r="2" fill="currentColor" opacity="0.5"/>
+          <path d="M12 10c1.5 0 3 1 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        O'quvchilar
+      </a>
+
+      <a class="nav-item" href="groups.html">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3" opacity="0.85"/>
+          <path d="M5 4V3a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M5 9h6M8 7v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        Guruhlar
+      </a>
+
+      <a class="nav-item" href="teachers.html">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="4.5" r="3" fill="currentColor" opacity="0.85"/>
+          <path d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        O'qituvchilar
+      </a>
+
+      <div class="nav-label">Moliya</div>
+      <a class="nav-item" href="payments.html">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="3" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M1 6h14" stroke="currentColor" stroke-width="1.3"/>
+          <rect x="3" y="9" width="4" height="1.5" rx="0.5" fill="currentColor" opacity="0.6"/>
+        </svg>
+        To'lovlar
+      </a>
+
+      <a class="nav-item" href="student-transactions.html">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M2 5h12M2 5l3-3M2 5l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 11H2M14 11l-3-3M14 11l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+        O'quvchi transaksiya
+      </a>
+
+      <a class="nav-item" href="teacher-transactions.html">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M14 5H2M14 5l-3-3M14 5l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 11h12M2 11l3-3M2 11l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+        </svg>
+        O'qituvchi transaksiya
+      </a>
+
+      <div class="nav-label">Tahlil</div>
+      <a class="nav-item" href="reports.html">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M4 11l2.5-3 2.5 2L12 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Hisobot
+      </a>
+
+    </nav>
+
+    <div class="logout-area">
+      <button class="logout-btn" onclick="Auth.logout()">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M11 11l3-3-3-3M14 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Chiqish
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="main-content">
+
+    <div class="topbar">
+      <span class="page-title">O'quvchilar</span>
+      <div class="topbar-right">
+        <span class="admin-label" id="admin-name">Admin</span>
+        <div class="avatar" id="admin-avatar">AD</div>
+      </div>
+    </div>
+
+    <div id="content-area">
+
+      <!-- SEARCH + ADD BUTTON -->
+      <div class="students-toolbar">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M10 10l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="Ism, familiya yoki telefon raqam bo'yicha qidirish..."
+            autocomplete="off"
+          />
+          <button class="search-btn" id="search-btn">Qidirish</button>
+        </div>
+        <button class="add-btn" id="add-student-btn">
+          <svg viewBox="0 0 16 16" fill="none" width="15" height="15">
+            <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Yangi o'quvchi
+        </button>
+      </div>
+
+      <!-- QIDIRUV NATIJALARI (dastlab yashirin) -->
+      <div id="search-section" class="section hidden">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-dot search-dot"></span>
+            Qidiruv natijalari
+          </h2>
+          <span class="section-count" id="search-count">0 ta</span>
+        </div>
+        <div id="search-results"></div>
+      </div>
+
+      <!-- TO'LOV MUDDATI O'TGAN STUDENTLAR -->
+      <div id="expired-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-dot expired-dot"></span>
+            To'lov muddati o'tganlar
+          </h2>
+          <span class="section-count" id="expired-count">—</span>
+        </div>
+
+        <!-- Sahifalar bo'yicha bo'limlar shu yerga dinamik qo'shiladi -->
+        <div id="expired-pages-container">
+          <div class="loading">
+            <div class="spinner"></div>
+            Yuklanmoqda...
+          </div>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+    </div><!-- /#content-area -->
+  </div><!-- /.main-content -->
+</div><!-- /.layout -->
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   STUDENTS.JS — O'quvchilar sahifasi logikasi
+
+   Bu sahifada 2 xil holatda ma'lumot ko'rsatiladi:
+   1. Sahifa ochilganda → to'lov muddati o'tgan studentlar
+   2. Qidiruv → qidiruv natijalari
+
+   PAGINATION (sahifalash) haqida:
+   - Backend barcha expired studentlarni qaytaradi
+   - Biz ularni JS da 20 talik bo'laklarga ajratamiz
+   - currentPage orqali qaysi bo'lim ko'rsatilishini boshqaramiz
+═══════════════════════════════════════════════════════ */
+
+const API_BASE_STUDENTS = "http://127.0.0.1:8000/api/v1";
+
+// ─── STATE (dastur holati) ───────────────────────────
+// Bu o'zgaruvchilar sahifa davomida ma'lumotlarni saqlaydi
+let allExpiredStudents = [];   // Barcha expired studentlar (backend dan kelgan)
+let currentPage = 1;           // Hozir ko'rsatilayotgan sahifa raqami
+const PAGE_SIZE = 20;          // Har bir sahifada nechta student
+
+/* ─────────────────────────────────────────────────────
+   apiFetch — BARCHA API SO'ROVLAR SHUNING ORQALI KETADI
+
+   Bu funksiya oddiy fetch dan farqi:
+   - Avtomatik token qo'shadi (Authorization header)
+   - Token eskirgan bo'lsa (401) → refresh qiladi
+   - Refresh ham ishlamasa → login sahifasiga yuboradi
+
+   Bu pattern "interceptor" deyiladi — har bir so'rovni
+   ushlab, tekshirib, keyin yuboradi. Python da bu
+   decorator ga o'xshaydi.
+───────────────────────────────────────────────────── */
+async function apiFetch(url, options = {}) {
+  // 1. Tokenni localStorage dan olish
+  const token = Auth.getToken();
+
+  // 2. Headers ni tayyorlash (token + content-type)
+  const headers = {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json",
+    ...(options.headers || {})   // Agar qo'shimcha header kerak bo'lsa
+  };
+
+  // 3. So'rov yuborish
+  let res = await fetch(url, { ...options, headers, credentials: "include" });
+
+  // 4. 401 = token eskirgan → refresh qilib, qayta urinib ko'ramiz
+  if (res.status === 401) {
+    const refreshed = await Auth.refreshToken();
+
+    if (!refreshed) {
+      // Refresh ham ishlamadi → logout
+      Auth.logout();
+      return null;
+    }
+
+    // Yangi token bilan qayta so'rov
+    headers["Authorization"] = `Bearer ${Auth.getToken()}`;
+    res = await fetch(url, { ...options, headers, credentials: "include" });
+  }
+
+  return res;
+}
+
+/* ─────────────────────────────────────────────────────
+   renderTable — Studentlar ro'yxatini jadval sifatida chizadi
+
+   students — ko'rsatiladigan studentlar massivi
+   Qaytadi: jadval HTML string
+
+   Nima uchun string qaytaradi?
+   innerHTML ga birdan beriladi → DOM ni bir marta yangilaydi
+   (har bir student uchun alohida DOM operatsiyasi emas)
+───────────────────────────────────────────────────── */
+function renderTable(students) {
+  if (!students || students.length === 0) {
+    return `<div class="empty-state">
+      <svg viewBox="0 0 48 48" fill="none" width="40" height="40">
+        <circle cx="24" cy="20" r="10" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+        <path d="M8 40c0-8.84 7.16-16 16-16s16 7.16 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+      </svg>
+      <p>O'quvchilar topilmadi</p>
+    </div>`;
+  }
+
+  // Jadval satrlari (tbody ichidagi <tr> lar)
+  const rows = students.map(item => {
+    // expired_days rang belgilash:
+    // 0-7 kun → sariq ogohlantirish
+    // 8+ kun  → qizil xavfli
+    const days = item.expired_days;
+    const badgeClass = days <= 7 ? "badge-warning" : "badge-danger";
+    const daysText = days === 0 ? "Bugun" : `${days} kun`;
+
+    return `<tr>
+      <td>
+        <a href="#" class="student-link"
+           data-id="${item.student.student_id}"
+           onclick="goToStudent(event, ${item.student.student_id})">
+          ${item.student.first_name} ${item.student.last_name}
+        </a>
+      </td>
+      <td>
+        <a href="#" class="group-link"
+           data-id="${item.group_id}"
+           onclick="goToGroup(event, ${item.group_id})">
+          ${item.group_name}
+        </a>
+      </td>
+      <td>
+        <div class="contact-cell">
+          <span>${item.student_contact}</span>
+          <span class="parent-contact">${item.student_parent_contact}</span>
+        </div>
+      </td>
+      <td>
+        <span class="badge ${badgeClass}">${daysText}</span>
+      </td>
+    </tr>`;
+  }).join("");
+
+  return `
+    <div class="table-wrapper">
+      <table class="students-table">
+        <thead>
+          <tr>
+            <th>To'liq ism</th>
+            <th>Guruh</th>
+            <th>Kontakt</th>
+            <th>Kechikkan kunlar</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ─────────────────────────────────────────────────────
+   renderPagination — Sahifalash tugmalarini chizadi
+
+   Misol: [← Avvalgi] [1] [2] [3] [Keyingi →]
+
+   totalPages — umumiy nechta sahifa bor
+   currentPage — hozir qaysi sahifadamiz
+───────────────────────────────────────────────────── */
+function renderPagination(totalPages) {
+  if (totalPages <= 1) {
+    document.getElementById("pagination").innerHTML = "";
+    return;
+  }
+
+  let html = "";
+
+  // "Avvalgi" tugmasi
+  html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}"
+    onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+    ← Avvalgi
+  </button>`;
+
+  // Raqamli tugmalar
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}"
+      onclick="goToPage(${i})">${i}</button>`;
+  }
+
+  // "Keyingi" tugmasi
+  html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}"
+    onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+    Keyingi →
+  </button>`;
+
+  document.getElementById("pagination").innerHTML = html;
+}
+
+/* ─────────────────────────────────────────────────────
+   goToPage — Sahifani almashtiradi
+
+   Qanday ishlaydi:
+   allExpiredStudents massivini "kesib" olamiz
+   slice(start, end) — masalan 20dan 40gacha
+
+   Python da: students[20:40]
+   JS da:     students.slice(20, 40)
+───────────────────────────────────────────────────── */
+function goToPage(page) {
+  const totalPages = Math.ceil(allExpiredStudents.length / PAGE_SIZE);
+  if (page < 1 || page > totalPages) return;
+
+  currentPage = page;
+
+  // Hozirgi sahifaga mos studentlarni olish
+  const start = (currentPage - 1) * PAGE_SIZE;   // 1-sahifa: 0, 2-sahifa: 20 ...
+  const end   = start + PAGE_SIZE;                // 1-sahifa: 20, 2-sahifa: 40 ...
+  const pageStudents = allExpiredStudents.slice(start, end);
+
+  // Jadvalni yangilash
+  document.getElementById("expired-pages-container").innerHTML = renderTable(pageStudents);
+
+  // Pagination yangilash
+  renderPagination(totalPages);
+
+  // Sahifa tepasiga scroll
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ─────────────────────────────────────────────────────
+   loadExpiredStudents — TO'LOV MUDDATI O'TGAN STUDENTLAR
+
+   Sahifa ochilganda bir marta chaqiriladi.
+   Backend dan barcha expired studentlarni olib,
+   allExpiredStudents ga saqlaydi va 1-sahifani ko'rsatadi.
+───────────────────────────────────────────────────── */
+async function loadExpiredStudents() {
+  const container = document.getElementById("expired-pages-container");
+
+  try {
+    const res = await apiFetch(`${API_BASE_STUDENTS}/student/expired`);
+
+    if (!res) return; // apiFetch logout qildi
+
+    if (!res.ok) {
+      container.innerHTML = `<div class="error-box">
+        Ma'lumot yuklanmadi (${res.status}). Qayta urinib ko'ring.
+      </div>`;
+      return;
+    }
+
+    const data = await res.json();
+
+    // Ma'lumotlarni global state ga saqlaymiz
+    allExpiredStudents = data;
+
+    // Count ko'rsatish
+    document.getElementById("expired-count").textContent = `${data.length} ta`;
+
+    if (data.length === 0) {
+      container.innerHTML = renderTable([]);
+      return;
+    }
+
+    // 1-sahifani ko'rsatish
+    goToPage(1);
+
+  } catch (err) {
+    console.error("loadExpiredStudents xatolik:", err);
+    container.innerHTML = `<div class="error-box">
+      Internet aloqasi uzildi yoki server ishlamayapti.
+    </div>`;
+  }
+}
+
+/* ─────────────────────────────────────────────────────
+   searchStudents — QIDIRUV
+
+   Enter yoki tugma bosilganda chaqiriladi.
+   Qidiruv bo'sh bo'lsa — search sectionni yashiradi.
+───────────────────────────────────────────────────── */
+async function searchStudents() {
+  const query = document.getElementById("search-input").value.trim();
+  const searchSection  = document.getElementById("search-section");
+  const searchResults  = document.getElementById("search-results");
+  const searchCount    = document.getElementById("search-count");
+
+  // Bo'sh qidiruv → natijalar bo'limini yashiramiz
+  if (!query) {
+    searchSection.classList.add("hidden");
+    return;
+  }
+
+  // Qidiruv bo'limini ko'rsatamiz va loading holati
+  searchSection.classList.remove("hidden");
+  searchResults.innerHTML = `<div class="loading"><div class="spinner"></div>Qidirilmoqda...</div>`;
+  searchCount.textContent = "...";
+
+  try {
+    // ⚠️ ENDPOINT NI O'ZINGIZ TO'LDIRING
+    const res = await apiFetch(`${API_BASE_STUDENTS}/YOUR_SEARCH_ENDPOINT?q=${encodeURIComponent(query)}`);
+
+    if (!res) return;
+
+    if (!res.ok) {
+      searchResults.innerHTML = `<div class="error-box">Qidiruv amalga oshmadi (${res.status}).</div>`;
+      return;
+    }
+
+    const data = await res.json();
+    searchCount.textContent = `${data.length} ta`;
+    searchResults.innerHTML = renderTable(data);
+
+  } catch (err) {
+    console.error("searchStudents xatolik:", err);
+    searchResults.innerHTML = `<div class="error-box">Qidiruv amalga oshmadi.</div>`;
+  }
+}
+
+/* ─────────────────────────────────────────────────────
+   goToStudent / goToGroup — LINK BOSILGANDA
+
+   Hozir faqat placeholder — keyinchalik to'ldirasiz.
+   event.preventDefault() — <a> ning standart
+   sahifani yuklash harakatini to'xtatadi.
+───────────────────────────────────────────────────── */
+function goToStudent(event, studentId) {
+  event.preventDefault();
+  // TODO: student_info.html ga o'tish
+  // window.location.href = `student_info.html?id=${studentId}`;
+  console.log("Student ID:", studentId);
+}
+
+function goToGroup(event, groupId) {
+  event.preventDefault();
+  // TODO: group_info.html ga o'tish
+  // window.location.href = `group_info.html?id=${groupId}`;
+  console.log("Group ID:", groupId);
+}
+
+/* ─────────────────────────────────────────────────────
+   EVENT LISTENERS — TUGMALAR VA KEYBOARD
+
+   Sahifa tayyor bo'lganda (DOMContentLoaded) barcha
+   event handlerlarni ulaydi.
+───────────────────────────────────────────────────── */
+document.addEventListener("DOMContentLoaded", async () => {
+
+  // 1. Login tekshiruvi — token yo'q bo'lsa chiqib ketadi
+  if (!Auth.isLoggedIn()) {
+    window.location.href = "/login.html";
+    return;
+  }
+
+  // 2. Qidiruv tugmasi bosilganda
+  document.getElementById("search-btn").addEventListener("click", searchStudents);
+
+  // 3. Input da Enter bosilganda
+  document.getElementById("search-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") searchStudents();
+  });
+
+  // 4. Input bo'shatilganda — natijalarni yashiramiz
+  document.getElementById("search-input").addEventListener("input", (e) => {
+    if (e.target.value.trim() === "") {
+      document.getElementById("search-section").classList.add("hidden");
+    }
+  });
+
+  // 5. "Yangi o'quvchi" tugmasi — hozir placeholder
+  document.getElementById("add-student-btn").addEventListener("click", () => {
+    // TODO: window.location.href = "student_create.html";
+    alert("Bu bo'lim tez orada qo'shiladi!");
+  });
+
+  // 6. Expired studentlarni yuklash
+  await loadExpiredStudents();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,323 @@
+/* ═══════════════════════════════════════════
+   students.css — O'quvchilar sahifasi stillari
+   admin.css dan keyin ulanadi
+═══════════════════════════════════════════ */
+
+/* ─── TOOLBAR (search + add button qatori) ─── */
+.students-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* Search wrapper — input + icon + button birgalikda */
+.search-wrapper {
+  flex: 1;                  /* Qolgan barcha kenglikni egallaydi */
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 0 4px 0 12px;
+  gap: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+/* Focus holatida (input ichiga bosilganda) */
+.search-wrapper:focus-within {
+  border-color: #4f6ef7;
+  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
+}
+
+.search-icon {
+  width: 15px;
+  height: 15px;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13.5px;
+  color: #1a1f2e;
+  padding: 11px 0;
+  background: transparent;
+  font-family: inherit;
+}
+
+.search-input::placeholder {
+  color: #bbb;
+}
+
+.search-btn {
+  background: #4f6ef7;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.search-btn:hover {
+  background: #3d5ce0;
+}
+
+/* Yangi o'quvchi tugmasi */
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #1a1f2e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.add-btn:hover {
+  background: #2a3147;
+}
+
+/* ─── SECTION HEADER ─── */
+/*
+  Har bir bo'lim (qidiruv, expired) uchun sarlavha satri.
+  Chap tomonda: • Sarlavha
+  O'ng tomonda:  23 ta
+*/
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1f2e;
+}
+
+/* Rangli nuqtalar (● sariq/qizil) */
+.section-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.expired-dot  { background: #f59e0b; }  /* Sariq — muddati o'tgan */
+.search-dot   { background: #4f6ef7; }  /* Ko'k — qidiruv */
+
+.section-count {
+  font-size: 12px;
+  color: #999;
+  background: #f4f5f7;
+  border-radius: 20px;
+  padding: 2px 10px;
+}
+
+/* ─── SECTIONS ─── */
+#expired-section {
+  margin-bottom: 32px;
+}
+
+#search-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1.5px solid #e8e0ff;  /* Qidiruv bo'limi — ko'kimtir chegarali */
+}
+
+/* Yashirin holat — JS "hidden" classni qo'shadi/oladi */
+.hidden {
+  display: none !important;
+}
+
+/* ─── TABLE ─── */
+.table-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  overflow: hidden;  /* Burchak radiusi to'g'ri ko'rinishi uchun */
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;  /* Qo'sh chegara yo'q */
+  font-size: 13.5px;
+}
+
+/* Sarlavha satri */
+.students-table thead tr {
+  background: #f8f9fb;
+  border-bottom: 1px solid #eee;
+}
+
+.students-table th {
+  padding: 11px 16px;
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* Ma'lumot satrlari */
+.students-table td {
+  padding: 13px 16px;
+  color: #1a1f2e;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+}
+
+/* Oxirgi satrda pastki chegara yo'q */
+.students-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Hover — sichqon ustiga kelganda */
+.students-table tbody tr:hover {
+  background: #fafbff;
+}
+
+/* ─── LINKS (student nomi, guruh nomi) ─── */
+.student-link,
+.group-link {
+  color: #4f6ef7;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.student-link:hover { color: #3d5ce0; text-decoration: underline; }
+.group-link:hover   { color: #3d5ce0; text-decoration: underline; }
+
+/* ─── CONTACT CELL ─── */
+/*
+  Birinchi qator: student raqami
+  Ikkinchi qator: ota-ona raqami (kichikroq, kulrang)
+*/
+.contact-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.parent-contact {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ─── BADGE (expired_days ko'rsatish) ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Sariq — 0-7 kun */
+.badge-warning {
+  background: #fff8e6;
+  color: #b45309;
+}
+
+/* Qizil — 8+ kun */
+.badge-danger {
+  background: #fff0f0;
+  color: #c0392b;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: #bbb;
+  gap: 12px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.empty-state p {
+  font-size: 13.5px;
+}
+
+/* ─── LOADING STATE ─── */
+/* admin.css dagi .loading dan meros oladi,
+   bu yerda faqat farqli bo'lsa override qilamiz */
+
+/* ─── ERROR BOX ─── */
+/* admin.css dan meros oladi */
+
+/* ─── PAGINATION ─── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a1f2e;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.page-btn:hover:not(.disabled):not(.active) {
+  border-color: #4f6ef7;
+  color: #4f6ef7;
+}
+
+/* Hozirgi sahifa */
+.page-btn.active {
+  background: #4f6ef7;
+  border-color: #4f6ef7;
+  color: #fff;
+  font-weight: 600;
+  cursor: default;
+}
+
+/* Birinchi/oxirgi sahifada "avvalgi/keyingi" o'chirilgan */
+.page-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

@@ -1,0 +1,50 @@
+/* Login sahifasiga xos stillari */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem 2rem;
+}
+.brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+}
+.logo-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -1px;
+}
+.brand-name { font-size: 17px; font-weight: 600; text-align: center; }
+.brand-sub  { font-size: 13px; color: #888; text-align: center; }
+
+@media (max-width: 480px) {
+body { 
+    align-items: center;  
+    justify-content: center;
+    min-height: 100vh;
+    background: #fff; 
+}
+
+.login-card {
+    border: none;
+    border-radius: 0;
+    max-width: 100%;
+    min-height: auto;   
+    padding: 2rem 1.5rem;
+}
+}

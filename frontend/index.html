@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kirish — O'quv Markazi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f5f5f3;
+      --card:      #ffffff;
+      --border:    #e2e2e0;
+      --text:      #1a1a18;
+      --muted:     #8a8a86;
+      --accent:    #1a1a18;
+      --accent-h:  #333330;
+      --error:     #c0392b;
+      --error-bg:  #fdf2f2;
+      --success:   #27ae60;
+      --radius:    14px;
+      --shadow:    0 2px 40px rgba(0,0,0,0.07);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Subtle background texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(0,0,0,0.018) 1px, transparent 1px),
+        radial-gradient(circle at 80% 80%, rgba(0,0,0,0.018) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 420px;
+      padding: 48px 44px 44px;
+      animation: fadeUp .45s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 38px;
+    }
+
+    .logo-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+
+    /* If no logo image: fallback monogram */
+    .logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .logo-monogram {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      letter-spacing: -1px;
+      color: var(--text);
+    }
+
+    .org-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      letter-spacing: -0.4px;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .org-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+      text-align: center;
+      font-weight: 400;
+    }
+
+    /* ── Form ── */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      height: 46px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0 44px 0 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(26,26,24,0.07);
+    }
+
+    input.error-input {
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+
+    input.error-input:focus {
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+    }
+
+    /* Eye toggle */
+    .eye-btn {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .eye-btn:hover { color: var(--text); }
+    .eye-btn svg { width: 18px; height: 18px; }
+
+    /* ── Error message ── */
+    .field-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 5px;
+      min-height: 16px;
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* ── Global alert ── */
+    .alert {
+      display: none;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px 14px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      margin-bottom: 20px;
+      animation: fadeIn .25s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .alert.show { display: flex; }
+    .alert.alert-error  { background: var(--error-bg); color: var(--error); border: 1px solid #f5c6c2; }
+    .alert.alert-success{ background: #f0faf5; color: #1e8449; border: 1px solid #b7e4cc; }
+
+    .alert svg { flex-shrink: 0; width: 16px; height: 16px; margin-top: 1px; }
+
+    /* ── Submit button ── */
+    .btn {
+      width: 100%;
+      height: 48px;
+      margin-top: 8px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: .2px;
+      transition: background .2s, transform .1s, box-shadow .2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--accent-h);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+
+    .btn:active:not(:disabled) { transform: scale(.985); }
+
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    /* Spinner inside button */
+    .btn .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      position: absolute;
+      left: 50%; top: 50%;
+      margin: -9px 0 0 -9px;
+    }
+    .btn.loading .btn-text { opacity: 0; }
+    .btn.loading .spinner  { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer ── */
+    .card-footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 520px) {
+      body {
+        padding: 0;
+        align-items: stretch;
+        background: var(--card);
+      }
+      body::before { display: none; }
+
+      .card {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        max-width: 100%;
+        min-height: 100vh;
+        padding: 56px 28px 40px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header { margin-bottom: 44px; }
+
+      .btn { height: 52px; font-size: 16px; margin-top: 14px; }
+
+      .card-footer { margin-top: auto; padding-top: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-wrap" id="logoWrap">
+      <!-- Replace src with your logo path, e.g. src="logo.png" -->
+      <img id="logoImg" src="" alt="Logo"
+           onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';"
+           style="display:none;">
+      <span class="logo-monogram" id="logoFallback">O'M</span>
+    </div>
+    <div>
+      <div class="org-name">O'quv Markazi</div>
+      <div class="org-sub">Boshqaruv tizimi</div>
+    </div>
+  </div>
+
+  <!-- Global alert -->
+  <div class="alert" id="globalAlert">
+    <svg viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd"
+        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+        clip-rule="evenodd"/>
+    </svg>
+    <span id="globalAlertText"></span>
+  </div>
+
+  <!-- Form -->
+  <form id="loginForm" novalidate autocomplete="off">
+
+    <div class="form-group">
+      <label for="username">Foydalanuvchi nomi</label>
+      <div class="input-wrap">
+        <input type="text" id="username" name="username"
+               placeholder="username" autocomplete="username"/>
+      </div>
+      <div class="field-error" id="usernameError">Foydalanuvchi nomini kiriting</div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Parol</label>
+      <div class="input-wrap">
+        <input type="password" id="password" name="password"
+               placeholder="••••••••" autocomplete="current-password"/>
+        <button type="button" class="eye-btn" id="eyeBtn" aria-label="Parolni ko'rsatish">
+          <!-- Eye open -->
+          <svg id="eyeOpen" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <!-- Eye closed (hidden by default) -->
+          <svg id="eyeClosed" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               style="display:none;">
+            <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
+            <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+      </div>
+      <div class="field-error" id="passwordError">Parolni kiriting</div>
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn">
+      <span class="btn-text">Kirish</span>
+      <span class="spinner"></span>
+    </button>
+
+  </form>
+
+  <div class="card-footer">
+    &copy; 2025 O'quv Markazi. Barcha huquqlar himoyalangan.
+  </div>
+
+</div>
+
+<script>
+  // ─── Config ────────────────────────────────────────────────────────────────
+  // ─── Config ────────────────────────────────────────────────────────────────
+const API_BASE = 'http://127.0.0.1:8000/api/v1/auth';
+
+const ROLE_ROUTES = {
+  superadmin: '/superadmin/dashboard',
+  admin: '/admin/dashboard.html',
+  teacher: '/teacher/dashboard',
+};
+
+const ROLE_ME_URLS = {
+  superadmin: `${API_BASE}/superadmin_me`,
+  admin: `${API_BASE}/admin_me`,
+  teacher: `${API_BASE}/teacher_me`,
+};
+
+// ─── Helpers ────────────────────────────────────────────────────────────────
+
+// ❌ getCookie va setCookie refresh_token uchun kerak emas
+// (HttpOnly cookie JS dan ko'rinmaydi)
+
+function redirect(role) {
+  const path = ROLE_ROUTES[role];
+  if (path) window.location.href = path;
+  else showAlert("Noma'lum rol: " + role, 'error');
+}
+
+// ─── UI helpers ─────────────────────────────────────────────────────────────
+const globalAlert = document.getElementById('globalAlert');
+const globalAlertTxt = document.getElementById('globalAlertText');
+
+function showAlert(msg, type = 'error') {
+  globalAlert.className = `alert show alert-${type}`;
+  globalAlertTxt.textContent = msg;
+}
+
+function hideAlert() {
+  globalAlert.className = 'alert';
+}
+
+function fieldError(id, msg) {
+  const el = document.getElementById(id + 'Error');
+  const inp = document.getElementById(id);
+  if (msg) {
+    el.textContent = msg;
+    el.classList.add('show');
+    inp.classList.add('error-input');
+  } else {
+    el.classList.remove('show');
+    inp.classList.remove('error-input');
+  }
+}
+
+function setLoading(on) {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = on;
+  btn.classList.toggle('loading', on);
+}
+
+// ─── Eye toggle ─────────────────────────────────────────────────────────────
+document.getElementById('eyeBtn').addEventListener('click', () => {
+  const inp = document.getElementById('password');
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  document.getElementById('eyeOpen').style.display = isHidden ? 'none' : '';
+  document.getElementById('eyeClosed').style.display = isHidden ? '' : 'none';
+});
+
+['username', 'password'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    fieldError(id, '');
+    hideAlert();
+  });
+});
+
+// ─── Token verification ──────────────────────────────────────────────────────
+async function verifyToken(accessToken, role) {
+  const url = ROLE_ME_URLS[role];
+  if (!url) return false;
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function tryRefresh() {
+  try {
+    const res = await fetch(`${API_BASE}/refresh`, {
+      method: 'POST',
+      // ✅ credentials: 'include' — bu brauzerga
+      // "HttpOnly cookieni ham yubor" deydi
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      // ✅ Body yuborish shart emas!
+      // Browser refresh_token cookieni o'zi qo'shadi
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    return data; // { access_token, role }
+  } catch {
+    return null;
+  }
+}
+
+// ─── Auto-login check ────────────────────────────────────────────────────────
+async function checkExistingSession() {
+  const accessToken = localStorage.getItem('access_token');
+  const role = localStorage.getItem('role');
+
+  if (accessToken && role) {
+    const valid = await verifyToken(accessToken, role);
+    if (valid) {
+      redirect(role);
+      return;
+    }
+  }
+
+  // Access token yo'q yoki eskirgan — refresh urinib ko'ramiz
+  // ✅ refresh_token HttpOnly cookie avtomatik yuboriladi
+  const refreshed = await tryRefresh();
+
+  if (refreshed && refreshed.access_token && refreshed.role) {
+    localStorage.setItem('access_token', refreshed.access_token);
+    localStorage.setItem('role', refreshed.role);
+    // ✅ refresh_token ni saqlamaymiz — server o'zi cookie orqali yangilaydi
+    redirect(refreshed.role);
+    return;
+  }
+
+  // Ikkalasi ham ishlamadi — tozalaymiz
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('role');
+  // ✅ deleteCookie('refresh_token') ham kerak emas
+  // Logout endpointi orqali server o'zi o'chiradi
+}
+
+// ─── Login form submit ───────────────────────────────────────────────────────
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  hideAlert();
+
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+
+  let valid = true;
+  if (!username) {
+    fieldError('username', 'Foydalanuvchi nomini kiriting');
+    valid = false;
+  }
+  if (!password) {
+    fieldError('password', 'Parolni kiriting');
+    valid = false;
+  }
+  if (!valid) return;
+
+  setLoading(true);
+
+  try {
+    const body = new URLSearchParams();
+    body.append('username', username);
+    body.append('password', password);
+
+    const res = await fetch(`${API_BASE}/login`, {
+      method: 'POST',
+      // ✅ login da ham kerak — server Set-Cookie header yuboradi,
+      // browser uni qabul qilishi uchun credentials: 'include' bo'lishi shart
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString(),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showAlert(data.detail || "Login yoki parol noto'g'ri", 'error');
+      setLoading(false);
+      return;
+    }
+
+    const { access_token, role } = data;
+
+    if (!access_token || !role) {
+      showAlert("Server noto'g'ri javob qaytardi", 'error');
+      setLoading(false);
+      return;
+    }
+
+    // ✅ Faqat access_token va role saqlaymiz
+    // refresh_token server tomonidan HttpOnly cookie ga yozildi — biz tegmaymiz
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('role', role);
+
+    showAlert("Muvaffaqiyatli kirildi! Yo'naltirilmoqda...", 'success');
+    setTimeout(() => redirect(role), 600);
+  } catch {
+    showAlert("Server bilan bog'lanib bo'lmadi. Qayta urinib ko'ring.", 'error');
+    setLoading(false);
+  }
+  });
+
+  // ─── On page load ────────────────────────────────────────────────────────────
+  const logoSrc = '';
+  if (logoSrc) {
+    const img = document.getElementById('logoImg');
+    img.src = logoSrc;
+    img.style.display = 'block';
+    document.getElementById('logoFallback').style.display = 'none';
+  }
+
+  checkExistingSession();
+</script>
+</body>
+</html>
