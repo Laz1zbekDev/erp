@@ -1,552 +1,1772 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uz">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>O'quvchilar — O'quv Markaz</title>
-  <link rel="stylesheet" href="../css/admin/admin.css">
-  <link rel="stylesheet" href="../css/admin/students.css">
-  <script src="../js/auth.js"></script>
-  <script src="../js/api.js"></script>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>O'quvchilar — O'quv Markaz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0f1117;
+        --surface: #171b26;
+        --surface2: #1e2333;
+        --surface3: #242840;
+        --border: #ffffff0f;
+        --border2: #ffffff18;
+        --border3: #ffffff25;
+        --accent: #6c8ef5;
+        --accent2: #a78bfa;
+        --accent-glow: #6c8ef530;
+        --text: #e8eaf0;
+        --text-muted: #6b7280;
+        --text-dim: #9ca3af;
+        --success: #34d399;
+        --warning: #fbbf24;
+        --danger: #f87171;
+        --sidebar-w: 240px;
+        --topbar-h: 60px;
+        --radius: 10px;
+        --radius-sm: 6px;
+        --radius-xs: 4px;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Outfit", sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 14px;
+      }
+      .layout {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-<div class="layout">
+      /* SIDEBAR */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        overflow-y: auto;
+        scrollbar-width: none;
+        position: relative;
+        z-index: 10;
+      }
+      .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+      .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+      }
+      .logo-area {
+        padding: 22px 20px 18px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logo-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 10px;
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+      .logo-name {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .logo-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+        letter-spacing: 0.3px;
+      }
+      .nav-section {
+        flex: 1;
+        padding: 10px 12px;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--text-muted);
+        padding: 14px 8px 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 13.5px;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        position: relative;
+      }
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--accent-glow);
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 25%;
+        bottom: 25%;
+        width: 3px;
+        border-radius: 2px;
+        background: var(--accent);
+      }
+      .nav-icon {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      .logout-area {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 13.5px;
+        font-family: var(--sans);
+        transition:
+          background 0.15s,
+          color 0.15s;
+      }
+      .logout-btn:hover {
+        background: #f8717118;
+        color: var(--danger);
+      }
 
-  <!-- ===== SIDEBAR (index.html bilan bir xil) ===== -->
-  <aside class="sidebar">
+      /* MAIN */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .topbar {
+        height: var(--topbar-h);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        flex-shrink: 0;
+      }
+      .page-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .admin-label {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      #content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border2) transparent;
+      }
 
-    <div class="logo-area">
-      <div class="logo-circle">OC</div>
-      <div class="logo-name">O'quv Markaz</div>
-      <div class="logo-sub">Admin Panel</div>
+      /* SEARCH & FILTERS SECTION */
+      .toolbar {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .toolbar-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+
+      /* YouTube style search bar */
+      .search-box {
+        display: flex;
+        align-items: center;
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: 20px;
+        overflow: hidden;
+        width: 100%;
+        max-width: 500px;
+        transition: border-color 0.2s;
+      }
+      .search-box:focus-within {
+        border-color: var(--accent);
+      }
+      .search-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--text);
+        padding: 10px 16px;
+        font-family: var(--sans);
+        font-size: 14px;
+        outline: none;
+      }
+      .search-btn {
+        background: var(--surface2);
+        border: none;
+        border-left: 1px solid var(--border2);
+        color: var(--text-dim);
+        padding: 0 20px;
+        height: 100%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .search-btn:hover {
+        background: var(--surface3);
+        color: var(--text);
+      }
+
+      .create-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 20px;
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: background 0.15s;
+        text-decoration: none;
+      }
+      button.create-btn {
+        font-family: var(--sans);
+        font-size: 14px;
+      }
+      .create-btn:hover {
+        background: #5a7de8;
+      }
+
+      /* Filters Row */
+      .filters-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      /* Custom Dropdown */
+      .custom-dropdown {
+        position: relative;
+        width: 200px;
+      }
+      .dropdown-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 14px;
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        font-size: 13.5px;
+        cursor: pointer;
+        transition: 0.2s;
+        user-select: none;
+      }
+      .dropdown-trigger:hover,
+      .custom-dropdown.active .dropdown-trigger {
+        border-color: var(--accent);
+        color: var(--text);
+      }
+      .dropdown-trigger.has-value {
+        color: var(--text);
+        background: var(--surface2);
+        border-color: var(--border3);
+      }
+      .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        z-index: 50;
+        display: none;
+        flex-direction: column;
+      }
+      .custom-dropdown.active .dropdown-menu {
+        display: flex;
+      }
+      .dropdown-search {
+        padding: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      .dropdown-search input {
+        width: 100%;
+        padding: 8px 12px;
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-xs);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 13px;
+        outline: none;
+      }
+      .dropdown-search input:focus {
+        border-color: var(--accent);
+      }
+      .dropdown-list {
+        max-height: 200px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+      }
+      .dropdown-item {
+        padding: 10px 14px;
+        font-size: 13px;
+        color: var(--text);
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .dropdown-item:hover,
+      .dropdown-item.selected {
+        background: var(--accent-glow);
+        color: var(--accent);
+      }
+      .dropdown-empty {
+        padding: 12px 14px;
+        font-size: 13px;
+        color: var(--text-muted);
+        text-align: center;
+      }
+
+      .clear-filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 14px;
+        border-radius: var(--radius-sm);
+        background: #f8717112;
+        border: 1px solid #f8717130;
+        color: var(--danger);
+        font-size: 13.5px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .clear-filter-btn:hover {
+        background: #f8717122;
+        border-color: var(--danger);
+      }
+
+      .apply-filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        font-size: 13.5px;
+        font-weight: 500;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .apply-filter-btn:hover {
+        background: #5a7de8;
+      }
+
+      /* TABLE */
+      .table-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      thead th {
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 0.12s;
+      }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+      tbody tr:hover {
+        background: var(--surface2);
+      }
+      td {
+        padding: 14px 16px;
+        vertical-align: middle;
+      }
+      .student-link {
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        transition: color 0.15s;
+      }
+      .student-link:hover {
+        color: var(--accent);
+      }
+      .group-chip {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        background: var(--surface3);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 12px;
+        text-decoration: none;
+        margin: 2px 4px 2px 0;
+        transition: 0.15s;
+      }
+      .group-chip:hover {
+        border-color: var(--accent);
+        color: var(--text);
+      }
+      .date-cell {
+        font-family: var(--mono);
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+      .empty-row td {
+        text-align: center;
+        padding: 48px;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* PAGINATION */
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        padding: 14px 16px;
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+      }
+      .page-info {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-right: auto;
+      }
+      .page-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 13px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+        white-space: nowrap;
+      }
+      .page-btn:hover:not(:disabled) {
+        background: var(--accent-glow);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .page-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .page-nums {
+        display: flex;
+        gap: 4px;
+      }
+      .page-num {
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        font-size: 13px;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .page-num.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .page-num:hover:not(.active) {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* TOAST */
+      #toast-container {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+      .toast {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        font-size: 13px;
+        color: var(--text);
+        max-width: 340px;
+        animation: toastIn 0.2s ease;
+        pointer-events: all;
+        box-shadow: 0 8px 32px #0008;
+      }
+      .toast.error {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .toast.success {
+        border-color: var(--success);
+        color: var(--success);
+      }
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* GLOBAL LOADER */
+      .global-loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 17, 23, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .global-loader-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .global-spinner {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid var(--border2);
+        border-top-color: var(--accent);
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* MODAL & FORM (Create Student) */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: #000a;
+        z-index: 90000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        width: 650px;
+        max-width: 90vw;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        transform: scale(0.96);
+        transition: transform 0.2s;
+      }
+      .modal-overlay.active .modal {
+        transform: scale(1);
+      }
+      .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .modal-title { font-size: 16px; font-weight: 600; }
+      .modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 18px; line-height: 1; padding: 2px 6px; border-radius: var(--radius-xs); transition: 0.15s; }
+      .modal-close:hover { color: var(--text); background: var(--surface2); }
+      .modal-body { overflow-y: auto; flex: 1; padding: 20px; scrollbar-width: thin; }
+
+      .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+      .form-group { display: flex; flex-direction: column; gap: 8px; }
+      .form-group.full-width { grid-column: 1 / -1; }
+      .form-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
+      .form-label .req { color: var(--danger); }
+      .form-input { width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: var(--sans); font-size: 14px; outline: none; transition: border-color 0.2s; }
+      .form-input:focus { border-color: var(--accent); }
+      .submit-btn { grid-column: 1 / -1; margin-top: 10px; padding: 12px; border-radius: var(--radius-sm); background: var(--accent); border: none; color: #fff; font-size: 14.5px; font-weight: 600; font-family: var(--sans); cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+      .submit-btn:hover { background: #5a7de8; }
+    </style>
+  </head>
+  <body>
+    <div class="global-loader-overlay" id="global-loader">
+      <div class="global-spinner"></div>
     </div>
 
-    <nav class="nav-section">
+    <div id="toast-container"></div>
 
-      <div class="nav-label">Asosiy</div>
-      <a class="nav-item" href="dashboard.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9"/>
-          <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
-          <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
-          <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
-        </svg>
-        Dashboard
-      </a>
-
-      <div class="nav-label">O'quv jarayoni</div>
-      <a class="nav-item active" href="students.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <circle cx="6" cy="5" r="3" fill="currentColor" opacity="0.85"/>
-          <path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <circle cx="12" cy="5" r="2" fill="currentColor" opacity="0.5"/>
-          <path d="M12 10c1.5 0 3 1 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-        </svg>
-        O'quvchilar
-      </a>
-
-      <a class="nav-item" href="groups.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3" opacity="0.85"/>
-          <path d="M5 4V3a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-          <path d="M5 9h6M8 7v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        </svg>
-        Guruhlar
-      </a>
-
-      <a class="nav-item" href="teachers.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="4.5" r="3" fill="currentColor" opacity="0.85"/>
-          <path d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        O'qituvchilar
-      </a>
-
-      <div class="nav-label">Moliya</div>
-      <a class="nav-item" href="payments.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="3" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-          <path d="M1 6h14" stroke="currentColor" stroke-width="1.3"/>
-          <rect x="3" y="9" width="4" height="1.5" rx="0.5" fill="currentColor" opacity="0.6"/>
-        </svg>
-        To'lovlar
-      </a>
-
-      <a class="nav-item" href="student-transactions.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <path d="M2 5h12M2 5l3-3M2 5l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M14 11H2M14 11l-3-3M14 11l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-        </svg>
-        O'quvchi transaksiya
-      </a>
-
-      <a class="nav-item" href="teacher-transactions.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <path d="M14 5H2M14 5l-3-3M14 5l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M2 11h12M2 11l3-3M2 11l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-        </svg>
-        O'qituvchi transaksiya
-      </a>
-
-      <div class="nav-label">Tahlil</div>
-      <a class="nav-item" href="reports.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/>
-          <path d="M4 11l2.5-3 2.5 2L12 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Hisobot
-      </a>
-
-    </nav>
-
-    <div class="logout-area">
-      <button class="logout-btn" onclick="Auth.logout()">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-          <path d="M11 11l3-3-3-3M14 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Chiqish
-      </button>
-    </div>
-
-  </aside>
-
-  <!-- ===== MAIN CONTENT ===== -->
-  <div class="main-content">
-
-    <div class="topbar">
-      <span class="page-title">O'quvchilar</span>
-      <div class="topbar-right">
-        <span class="admin-label" id="admin-name">Admin</span>
-        <div class="avatar" id="admin-avatar">AD</div>
-      </div>
-    </div>
-
-    <div id="content-area">
-
-      <!-- SEARCH + ADD BUTTON -->
-      <div class="students-toolbar">
-        <div class="search-wrapper">
-          <svg class="search-icon" viewBox="0 0 16 16" fill="none">
-            <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/>
-            <path d="M10 10l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-          <input
-            type="text"
-            id="search-input"
-            class="search-input"
-            placeholder="Ism, familiya yoki telefon raqam bo'yicha qidirish..."
-            autocomplete="off"
-          />
-          <button class="search-btn" id="search-btn">Qidirish</button>
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="logo-area">
+          <div class="logo-circle">OC</div>
+          <div class="logo-name">O'quv Markaz</div>
+          <div class="logo-sub">Admin Panel</div>
         </div>
-        <button class="add-btn" id="add-student-btn">
-          <svg viewBox="0 0 16 16" fill="none" width="15" height="15">
-            <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-          Yangi o'quvchi
-        </button>
-      </div>
-
-      <!-- QIDIRUV NATIJALARI (dastlab yashirin) -->
-      <div id="search-section" class="section hidden">
-        <div class="section-header">
-          <h2 class="section-title">
-            <span class="section-dot search-dot"></span>
-            Qidiruv natijalari
-          </h2>
-          <span class="section-count" id="search-count">0 ta</span>
+        <nav class="nav-section">
+          <div class="nav-label">Asosiy</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="1"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.9"
+              />
+              <rect
+                x="9"
+                y="1"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+              <rect
+                x="1"
+                y="9"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+              <rect
+                x="9"
+                y="9"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+            </svg>
+            Dashboard
+          </a>
+          <div class="nav-label">O'quv jarayoni</div>
+          <a class="nav-item active" href="students.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <circle cx="6" cy="5" r="3" fill="currentColor" opacity="0.85" />
+              <path
+                d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <circle cx="12" cy="5" r="2" fill="currentColor" opacity="0.5" />
+              <path
+                d="M12 10c1.5 0 3 1 3 3"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                opacity="0.5"
+              />
+            </svg>
+            O'quvchilar
+          </a>
+          <a class="nav-item" href="group.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="4"
+                width="14"
+                height="9"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.3"
+                opacity="0.85"
+              />
+              <path
+                d="M5 4V3a3 3 0 016 0v1"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M5 9h6M8 7v4"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+            </svg>
+            Guruhlar
+          </a>
+          <a class="nav-item" href="teacher.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <circle
+                cx="8"
+                cy="4.5"
+                r="3"
+                fill="currentColor"
+                opacity="0.85"
+              />
+              <path
+                d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            O'qituvchilar
+          </a>
+          <div class="nav-label">Moliya</div>
+          <a class="nav-item" href="payment.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="3"
+                width="14"
+                height="10"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.3"
+              />
+              <path d="M1 6h14" stroke="currentColor" stroke-width="1.3" />
+              <rect
+                x="3"
+                y="9"
+                width="4"
+                height="1.5"
+                rx="0.5"
+                fill="currentColor"
+                opacity="0.6"
+              />
+            </svg>
+            To'lovlar
+          </a>
+          <a class="nav-item" href="student_transaction.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M2 5h12M2 5l3-3M2 5l3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M14 11H2M14 11l-3-3M14 11l-3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                opacity="0.6"
+              />
+            </svg>
+            O'quvchi transaksiya
+          </a>
+          <a class="nav-item" href="teacher_transaction.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M14 5H2M14 5l-3-3M14 5l-3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M2 11h12M2 11l3-3M2 11l3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                opacity="0.6"
+              />
+            </svg>
+            O'qituvchi transaksiya
+          </a>
+          </a>
+          <div class="nav-label">Sozlamalar</div>
+          <a class="nav-item" href="account.html">
+            Shaxsiy hisob
+          </a>
+        </nav>
+        <div class="logout-area">
+          <button class="logout-btn" onclick="authLogout()">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M11 11l3-3-3-3M14 8H6"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Chiqish
+          </button>
         </div>
-        <div id="search-results"></div>
-      </div>
+      </aside>
 
-      <!-- TO'LOV MUDDATI O'TGAN STUDENTLAR -->
-      <div id="expired-section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <span class="section-dot expired-dot"></span>
-            To'lov muddati o'tganlar
-          </h2>
-          <span class="section-count" id="expired-count">—</span>
-        </div>
-
-        <!-- Sahifalar bo'yicha bo'limlar shu yerga dinamik qo'shiladi -->
-        <div id="expired-pages-container">
-          <div class="loading">
-            <div class="spinner"></div>
-            Yuklanmoqda...
+      <!-- MAIN -->
+      <div class="main-content">
+        <div class="topbar">
+          <span class="page-title">O'quvchilar</span>
+          <div class="topbar-right">
+            <span class="admin-label" id="admin-name">Admin</span>
+            <div class="avatar" id="admin-avatar">AD</div>
           </div>
         </div>
 
-        <!-- PAGINATION -->
-        <div class="pagination" id="pagination"></div>
-      </div>
+        <div id="content-area">
+          <!-- TOOLBAR -->
+          <div class="toolbar">
+            <!-- Search and Create button -->
+            <div class="toolbar-top">
+              <div class="search-box">
+                <input
+                  type="text"
+                  id="search-input"
+                  class="search-input"
+                  placeholder="O'quvchini izlash..."
+                  maxlength="150"
+                  onkeydown="if (event.key === 'Enter') doSearch();"
+                />
+                <button class="search-btn" onclick="doSearch()">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </button>
+              </div>
+              <button class="create-btn" onclick="openCreateModal()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M8 3v10M3 8h10"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                O'quvchi yaratish
+              </button>
+            </div>
 
-    </div><!-- /#content-area -->
-  </div><!-- /.main-content -->
-</div><!-- /.layout -->
+            <!-- Filters -->
+            <div class="filters-row">
+              <!-- Group Filter -->
+              <div class="custom-dropdown" id="group-dropdown">
+                <div
+                  class="dropdown-trigger"
+                  onclick="toggleDropdown('group-dropdown')"
+                >
+                  <span id="group-trigger-text">Guruh: Barchasi</span>
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M4 6l4 4 4-4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div class="dropdown-menu">
+                  <div class="dropdown-search">
+                    <input
+                      type="text"
+                      id="group-search"
+                      placeholder="Guruhni qidiring..."
+                      onkeyup="filterDropdownList('group-list', this.value)"
+                    />
+                  </div>
+                  <div class="dropdown-list" id="group-list">
+                    <div class="dropdown-empty">Yuklanmoqda...</div>
+                  </div>
+                </div>
+              </div>
 
-<script>
-/* ═══════════════════════════════════════════════════════
-   STUDENTS.JS — O'quvchilar sahifasi logikasi
+              <!-- Teacher Filter -->
+              <div class="custom-dropdown" id="teacher-dropdown">
+                <div
+                  class="dropdown-trigger"
+                  onclick="toggleDropdown('teacher-dropdown')"
+                >
+                  <span id="teacher-trigger-text">O'qituvchi: Barchasi</span>
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M4 6l4 4 4-4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div class="dropdown-menu">
+                  <div class="dropdown-search">
+                    <input
+                      type="text"
+                      id="teacher-search"
+                      placeholder="O'qituvchini qidiring..."
+                      onkeyup="filterDropdownList('teacher-list', this.value)"
+                    />
+                  </div>
+                  <div class="dropdown-list" id="teacher-list">
+                    <div class="dropdown-empty">Yuklanmoqda...</div>
+                  </div>
+                </div>
+              </div>
 
-   Bu sahifada 2 xil holatda ma'lumot ko'rsatiladi:
-   1. Sahifa ochilganda → to'lov muddati o'tgan studentlar
-   2. Qidiruv → qidiruv natijalari
+              <!-- Discount Filter -->
+              <div class="custom-dropdown" id="discount-dropdown">
+                <div
+                  class="dropdown-trigger"
+                  onclick="toggleDropdown('discount-dropdown')"
+                >
+                  <span id="discount-trigger-text">Chegirma: Barchasi</span>
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M4 6l4 4 4-4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div class="dropdown-menu">
+                  <div class="dropdown-list" id="discount-list">
+                    <div
+                      class="dropdown-item"
+                      onclick="selectDiscount(null, 'Barchasi')"
+                    >
+                      Barchasi
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      onclick="selectDiscount('True', 'Hammasi')"
+                    >
+                      Hammasi (Istalgan)
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      onclick="selectDiscount('INSTITUTION', 'Markaz')"
+                    >
+                      Markaz
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      onclick="selectDiscount('TEACHER', 'O\'qituvchi')"
+                    >
+                      O'qituvchi
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      onclick="selectDiscount('BOTH', 'Umumiy')"
+                    >
+                      Umumiy
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-   PAGINATION (sahifalash) haqida:
-   - Backend barcha expired studentlarni qaytaradi
-   - Biz ularni JS da 20 talik bo'laklarga ajratamiz
-   - currentPage orqali qaysi bo'lim ko'rsatilishini boshqaramiz
-═══════════════════════════════════════════════════════ */
+              <div style="margin-left: 20px; display: flex; gap: 8px;">
+                <button class="apply-filter-btn" onclick="doSearch()">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Filtrlash
+                </button>
+                <button class="clear-filter-btn" onclick="clearFilters()">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M12 4L4 12M4 4l8 8"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Tozalash
+                </button>
+              </div>
+            </div>
+          </div>
 
-const API_BASE_STUDENTS = "http://127.0.0.1:8000/api/v1";
-
-// ─── STATE (dastur holati) ───────────────────────────
-// Bu o'zgaruvchilar sahifa davomida ma'lumotlarni saqlaydi
-let allExpiredStudents = [];   // Barcha expired studentlar (backend dan kelgan)
-let currentPage = 1;           // Hozir ko'rsatilayotgan sahifa raqami
-const PAGE_SIZE = 20;          // Har bir sahifada nechta student
-
-/* ─────────────────────────────────────────────────────
-   apiFetch — BARCHA API SO'ROVLAR SHUNING ORQALI KETADI
-
-   Bu funksiya oddiy fetch dan farqi:
-   - Avtomatik token qo'shadi (Authorization header)
-   - Token eskirgan bo'lsa (401) → refresh qiladi
-   - Refresh ham ishlamasa → login sahifasiga yuboradi
-
-   Bu pattern "interceptor" deyiladi — har bir so'rovni
-   ushlab, tekshirib, keyin yuboradi. Python da bu
-   decorator ga o'xshaydi.
-───────────────────────────────────────────────────── */
-async function apiFetch(url, options = {}) {
-  // 1. Tokenni localStorage dan olish
-  const token = Auth.getToken();
-
-  // 2. Headers ni tayyorlash (token + content-type)
-  const headers = {
-    "Authorization": `Bearer ${token}`,
-    "Content-Type": "application/json",
-    ...(options.headers || {})   // Agar qo'shimcha header kerak bo'lsa
-  };
-
-  // 3. So'rov yuborish
-  let res = await fetch(url, { ...options, headers, credentials: "include" });
-
-  // 4. 401 = token eskirgan → refresh qilib, qayta urinib ko'ramiz
-  if (res.status === 401) {
-    const refreshed = await Auth.refreshToken();
-
-    if (!refreshed) {
-      // Refresh ham ishlamadi → logout
-      Auth.logout();
-      return null;
-    }
-
-    // Yangi token bilan qayta so'rov
-    headers["Authorization"] = `Bearer ${Auth.getToken()}`;
-    res = await fetch(url, { ...options, headers, credentials: "include" });
-  }
-
-  return res;
-}
-
-/* ─────────────────────────────────────────────────────
-   renderTable — Studentlar ro'yxatini jadval sifatida chizadi
-
-   students — ko'rsatiladigan studentlar massivi
-   Qaytadi: jadval HTML string
-
-   Nima uchun string qaytaradi?
-   innerHTML ga birdan beriladi → DOM ni bir marta yangilaydi
-   (har bir student uchun alohida DOM operatsiyasi emas)
-───────────────────────────────────────────────────── */
-function renderTable(students) {
-  if (!students || students.length === 0) {
-    return `<div class="empty-state">
-      <svg viewBox="0 0 48 48" fill="none" width="40" height="40">
-        <circle cx="24" cy="20" r="10" stroke="currentColor" stroke-width="2" opacity="0.3"/>
-        <path d="M8 40c0-8.84 7.16-16 16-16s16 7.16 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-      </svg>
-      <p>O'quvchilar topilmadi</p>
-    </div>`;
-  }
-
-  // Jadval satrlari (tbody ichidagi <tr> lar)
-  const rows = students.map(item => {
-    // expired_days rang belgilash:
-    // 0-7 kun → sariq ogohlantirish
-    // 8+ kun  → qizil xavfli
-    const days = item.expired_days;
-    const badgeClass = days <= 7 ? "badge-warning" : "badge-danger";
-    const daysText = days === 0 ? "Bugun" : `${days} kun`;
-
-    return `<tr>
-      <td>
-        <a href="#" class="student-link"
-           data-id="${item.student.student_id}"
-           onclick="goToStudent(event, ${item.student.student_id})">
-          ${item.student.first_name} ${item.student.last_name}
-        </a>
-      </td>
-      <td>
-        <a href="#" class="group-link"
-           data-id="${item.group_id}"
-           onclick="goToGroup(event, ${item.group_id})">
-          ${item.group_name}
-        </a>
-      </td>
-      <td>
-        <div class="contact-cell">
-          <span>${item.student_contact}</span>
-          <span class="parent-contact">${item.student_parent_contact}</span>
+          <!-- TABLE AREA -->
+          <div class="table-wrap" id="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>FIO</th>
+                  <th>Guruhlar</th>
+                  <th>Qo'shilgan sana</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <!-- JS renders rows here -->
+              </tbody>
+            </table>
+            <div class="pagination" id="pagination-area">
+              <!-- JS renders pagination here -->
+            </div>
+          </div>
         </div>
-      </td>
-      <td>
-        <span class="badge ${badgeClass}">${daysText}</span>
-      </td>
-    </tr>`;
-  }).join("");
-
-  return `
-    <div class="table-wrapper">
-      <table class="students-table">
-        <thead>
-          <tr>
-            <th>To'liq ism</th>
-            <th>Guruh</th>
-            <th>Kontakt</th>
-            <th>Kechikkan kunlar</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows}
-        </tbody>
-      </table>
+      </div>
     </div>
-  `;
-}
 
-/* ─────────────────────────────────────────────────────
-   renderPagination — Sahifalash tugmalarini chizadi
+    <!-- CREATE STUDENT MODAL -->
+    <div class="modal-overlay" id="create-student-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <span class="modal-title">Yangi o'quvchi qo'shish</span>
+          <button class="modal-close" onclick="closeCreateModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <form id="create-student-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="first_name">Ism <span class="req">*</span></label>
+                <input type="text" id="first_name" class="form-input" minlength="1" maxlength="50" required placeholder="O'quvchining ismi" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="last_name">Familiya <span class="req">*</span></label>
+                <input type="text" id="last_name" class="form-input" minlength="1" maxlength="50" required placeholder="O'quvchining familiyasi" />
+              </div>
 
-   Misol: [← Avvalgi] [1] [2] [3] [Keyingi →]
+              <div class="form-group full-width">
+                <label class="form-label">Guruh <span class="req">*</span></label>
+                <div class="custom-dropdown" id="create-group-dropdown">
+                  <div class="dropdown-trigger" onclick="toggleDropdown('create-group-dropdown')">
+                    <span id="create-group-trigger-text">Guruhni tanlang...</span>
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                      <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <div class="dropdown-menu">
+                    <div class="dropdown-search">
+                      <input type="text" id="create-group-search" placeholder="Guruhni qidiring..." onkeyup="filterDropdownList('create-group-list', this.value)" />
+                    </div>
+                    <div class="dropdown-list" id="create-group-list">
+                      <div class="dropdown-empty">Yuklanmoqda...</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-   totalPages — umumiy nechta sahifa bor
-   currentPage — hozir qaysi sahifadamiz
-───────────────────────────────────────────────────── */
-function renderPagination(totalPages) {
-  if (totalPages <= 1) {
-    document.getElementById("pagination").innerHTML = "";
-    return;
-  }
+              <div class="form-group">
+                <label class="form-label" for="student_number">O'quvchi tel raqami <span class="req">*</span></label>
+                <input type="text" id="student_number" class="form-input" minlength="1" maxlength="20" required placeholder="+998 90 123 45 67" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="student_parent_number">Ota-ona tel raqami <span class="req">*</span></label>
+                <input type="text" id="student_parent_number" class="form-input" minlength="1" maxlength="20" required placeholder="+998 90 123 45 67" />
+              </div>
 
-  let html = "";
+              <div class="form-group">
+                <label class="form-label" for="student_telegram">O'quvchi telegrami (ixtiyoriy)</label>
+                <input type="text" id="student_telegram" class="form-input" maxlength="30" placeholder="@username" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="student_parent_telegram">Ota-ona telegrami (ixtiyoriy)</label>
+                <input type="text" id="student_parent_telegram" class="form-input" maxlength="30" placeholder="@username" />
+              </div>
 
-  // "Avvalgi" tugmasi
-  html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}"
-    onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-    ← Avvalgi
-  </button>`;
+              <button type="submit" class="submit-btn">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <path d="M2.5 8h11M8 2.5v11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                O'quvchini saqlash
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
-  // Raqamli tugmalar
-  for (let i = 1; i <= totalPages; i++) {
-    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}"
-      onclick="goToPage(${i})">${i}</button>`;
-  }
+    <script>
+      const BASE = "http://10.13.155.23:8000/api/v1";
+      const LIMIT = 20;
 
-  // "Keyingi" tugmasi
-  html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}"
-    onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-    Keyingi →
-  </button>`;
+      let currentPage = 1;
+      let totalStudents = 0;
 
-  document.getElementById("pagination").innerHTML = html;
-}
+      // Filters State
+      let searchQuery = "";
+      let selectedGroupId = null;
+      let selectedTeacherId = null;
+      let selectedDiscount = null; // 'True', 'INSTITUTION', 'TEACHER', 'BOTH'
+      let createSelectedGroupId = null; // Modal form group state
 
-/* ─────────────────────────────────────────────────────
-   goToPage — Sahifani almashtiradi
+      let allGroups = [];
+      let allTeachers = [];
 
-   Qanday ishlaydi:
-   allExpiredStudents massivini "kesib" olamiz
-   slice(start, end) — masalan 20dan 40gacha
+      // AUTH & INIT
+      if (!localStorage.getItem("access_token")) {
+        window.location.replace("../index.html");
+      }
 
-   Python da: students[20:40]
-   JS da:     students.slice(20, 40)
-───────────────────────────────────────────────────── */
-function goToPage(page) {
-  const totalPages = Math.ceil(allExpiredStudents.length / PAGE_SIZE);
-  if (page < 1 || page > totalPages) return;
+      window.addEventListener("pageshow", function (event) {
+        if (
+          event.persisted ||
+          (performance.getEntriesByType &&
+            performance.getEntriesByType("navigation").length &&
+            performance.getEntriesByType("navigation")[0].type ===
+              "back_forward")
+        ) {
+          if (!localStorage.getItem("access_token")) {
+            window.location.replace("../index.html");
+          }
+        }
+      });
 
-  currentPage = page;
+      const getToken = () => localStorage.getItem("access_token");
+      const saveToken = (t) => localStorage.setItem("access_token", t);
 
-  // Hozirgi sahifaga mos studentlarni olish
-  const start = (currentPage - 1) * PAGE_SIZE;   // 1-sahifa: 0, 2-sahifa: 20 ...
-  const end   = start + PAGE_SIZE;                // 1-sahifa: 20, 2-sahifa: 40 ...
-  const pageStudents = allExpiredStudents.slice(start, end);
+      async function authLogout() {
+        const token = getToken();
+        showLoader();
+        if (token) {
+          try {
+            await fetch(`${BASE}/auth/logout`, {
+              method: "POST",
+              credentials: "include",
+              headers: { Authorization: `Bearer ${token}` },
+            });
+          } catch (e) {}
+        }
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.replace("../index.html");
+      }
 
-  // Jadvalni yangilash
-  document.getElementById("expired-pages-container").innerHTML = renderTable(pageStudents);
+      async function tryRefresh() {
+        try {
+          const r = await fetch(`${BASE}/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+          });
+          if (!r.ok) throw 0;
+          const d = await r.json();
+          if (d.access_token) {
+            saveToken(d.access_token);
+            return d.access_token;
+          }
+          throw 0;
+        } catch {
+          authLogout();
+          return null;
+        }
+      }
 
-  // Pagination yangilash
-  renderPagination(totalPages);
+      async function apiFetch(url, opts = {}) {
+        const token = getToken();
+        const headers = {
+          "Content-Type": "application/json",
+          ...(opts.headers || {}),
+        };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  // Sahifa tepasiga scroll
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
+        const go = (tok) => {
+          const h = { ...headers };
+          if (tok) h["Authorization"] = `Bearer ${tok}`;
+          return fetch(url, { ...opts, credentials: "include", headers: h });
+        };
 
-/* ─────────────────────────────────────────────────────
-   loadExpiredStudents — TO'LOV MUDDATI O'TGAN STUDENTLAR
+        let res;
+        try {
+          res = await go(token);
+        } catch (e) {
+          toast(`Tarmoq xatoligi: ${e.message}`, "error");
+          return null;
+        }
 
-   Sahifa ochilganda bir marta chaqiriladi.
-   Backend dan barcha expired studentlarni olib,
-   allExpiredStudents ga saqlaydi va 1-sahifani ko'rsatadi.
-───────────────────────────────────────────────────── */
-async function loadExpiredStudents() {
-  const container = document.getElementById("expired-pages-container");
+        if (res.status === 401 || res.status === 403) {
+          const nt = await tryRefresh();
+          if (!nt) return null;
+          try {
+            res = await go(nt);
+          } catch (e) {
+            return null;
+          }
+          if (res.status === 401 || res.status === 403) {
+            authLogout();
+            return null;
+          }
+        }
+        return res;
+      }
 
-  try {
-    const res = await apiFetch(`${API_BASE_STUDENTS}/student/expired`);
+      // UI HELPERS
+      function showLoader() {
+        document.getElementById("global-loader").classList.add("active");
+      }
+      function hideLoader() {
+        document.getElementById("global-loader").classList.remove("active");
+      }
 
-    if (!res) return; // apiFetch logout qildi
+      // Boshqa sahifalarga o'tishda aylanacha ishlab turishi uchun
+      window.addEventListener("beforeunload", function () {
+        showLoader();
+      });
 
-    if (!res.ok) {
-      container.innerHTML = `<div class="error-box">
-        Ma'lumot yuklanmadi (${res.status}). Qayta urinib ko'ring.
-      </div>`;
-      return;
-    }
+      function toast(msg, type = "error") {
+        const c = document.getElementById("toast-container");
+        const el = document.createElement("div");
+        el.className = `toast ${type}`;
+        el.textContent = msg;
+        c.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = "0";
+          setTimeout(() => el.remove(), 300);
+        }, 3800);
+      }
 
-    const data = await res.json();
+      function esc(s) {
+        return s == null
+          ? "—"
+          : String(s)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+      }
 
-    // Ma'lumotlarni global state ga saqlaymiz
-    allExpiredStudents = data;
+      const UZ_MONTHS = [
+        "yanvar",
+        "fevral",
+        "mart",
+        "aprel",
+        "may",
+        "iyun",
+        "iyul",
+        "avgust",
+        "sentabr",
+        "oktabr",
+        "noyabr",
+        "dekabr",
+      ];
+      function fmtDate(str) {
+        if (!str) return "—";
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str;
+        return `${d.getDate()}-${UZ_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+      }
 
-    // Count ko'rsatish
-    document.getElementById("expired-count").textContent = `${data.length} ta`;
+      // CUSTOM DROPDOWNS LOGIC
+      function toggleDropdown(id) {
+        const el = document.getElementById(id);
+        const isActive = el.classList.contains("active");
 
-    if (data.length === 0) {
-      container.innerHTML = renderTable([]);
-      return;
-    }
+        // Close all other dropdowns
+        document
+          .querySelectorAll(".custom-dropdown")
+          .forEach((d) => d.classList.remove("active"));
 
-    // 1-sahifani ko'rsatish
-    goToPage(1);
+        if (!isActive) {
+          el.classList.add("active");
+          const searchInput = el.querySelector(".dropdown-search input");
+          if (searchInput) searchInput.focus();
+        }
+      }
 
-  } catch (err) {
-    console.error("loadExpiredStudents xatolik:", err);
-    container.innerHTML = `<div class="error-box">
-      Internet aloqasi uzildi yoki server ishlamayapti.
-    </div>`;
-  }
-}
+      document.addEventListener("click", function (event) {
+        if (!event.target.closest(".custom-dropdown")) {
+          document
+            .querySelectorAll(".custom-dropdown")
+            .forEach((d) => d.classList.remove("active"));
+        }
+      });
 
-/* ─────────────────────────────────────────────────────
-   searchStudents — QIDIRUV
+      function filterDropdownList(listId, query) {
+        query = query.toLowerCase();
+        const list = document.getElementById(listId);
+        const items = list.querySelectorAll(
+          ".dropdown-item:not(.dropdown-empty)",
+        );
+        let hasVisible = false;
 
-   Enter yoki tugma bosilganda chaqiriladi.
-   Qidiruv bo'sh bo'lsa — search sectionni yashiradi.
-───────────────────────────────────────────────────── */
-async function searchStudents() {
-  const query = document.getElementById("search-input").value.trim();
-  const searchSection  = document.getElementById("search-section");
-  const searchResults  = document.getElementById("search-results");
-  const searchCount    = document.getElementById("search-count");
+        items.forEach((item) => {
+          if (item.textContent.toLowerCase().includes(query)) {
+            item.style.display = "block";
+            hasVisible = true;
+          } else {
+            item.style.display = "none";
+          }
+        });
 
-  // Bo'sh qidiruv → natijalar bo'limini yashiramiz
-  if (!query) {
-    searchSection.classList.add("hidden");
-    return;
-  }
+        let emptyMsg = list.querySelector(".dropdown-empty");
+        if (!hasVisible) {
+          if (!emptyMsg) {
+            emptyMsg = document.createElement("div");
+            emptyMsg.className = "dropdown-empty";
+            emptyMsg.textContent = "Hech narsa topilmadi";
+            list.appendChild(emptyMsg);
+          }
+          emptyMsg.style.display = "block";
+        } else if (emptyMsg) {
+          emptyMsg.style.display = "none";
+        }
+      }
 
-  // Qidiruv bo'limini ko'rsatamiz va loading holati
-  searchSection.classList.remove("hidden");
-  searchResults.innerHTML = `<div class="loading"><div class="spinner"></div>Qidirilmoqda...</div>`;
-  searchCount.textContent = "...";
+      function updateTriggerStyle(id, value) {
+        const trigger = document.querySelector(`#${id} .dropdown-trigger`);
+        if (value !== null) {
+          trigger.classList.add("has-value");
+        } else {
+          trigger.classList.remove("has-value");
+        }
+      }
 
-  try {
-    // ⚠️ ENDPOINT NI O'ZINGIZ TO'LDIRING
-    const res = await apiFetch(`${API_BASE_STUDENTS}/YOUR_SEARCH_ENDPOINT?q=${encodeURIComponent(query)}`);
+      function selectGroup(id, name) {
+        selectedGroupId = id;
+        document.getElementById("group-trigger-text").textContent = id
+          ? `Guruh: ${name}`
+          : "Guruh: Barchasi";
+        updateTriggerStyle("group-dropdown", id);
+        document.getElementById("group-dropdown").classList.remove("active");
+      }
 
-    if (!res) return;
+      function selectTeacher(id, name) {
+        selectedTeacherId = id;
+        document.getElementById("teacher-trigger-text").textContent = id
+          ? `O'qituvchi: ${name}`
+          : "O'qituvchi: Barchasi";
+        updateTriggerStyle("teacher-dropdown", id);
+        document.getElementById("teacher-dropdown").classList.remove("active");
+      }
 
-    if (!res.ok) {
-      searchResults.innerHTML = `<div class="error-box">Qidiruv amalga oshmadi (${res.status}).</div>`;
-      return;
-    }
+      function selectDiscount(val, text) {
+        selectedDiscount = val;
+        document.getElementById("discount-trigger-text").textContent = val
+          ? `Chegirma: ${text}`
+          : "Chegirma: Barchasi";
+        updateTriggerStyle("discount-dropdown", val);
+        document.getElementById("discount-dropdown").classList.remove("active");
+      }
 
-    const data = await res.json();
-    searchCount.textContent = `${data.length} ta`;
-    searchResults.innerHTML = renderTable(data);
+      // CREATE MODAL GROUP LOGIC
+      function selectCreateGroup(id, name) {
+        createSelectedGroupId = id;
+        const triggerText = document.getElementById("create-group-trigger-text");
+        const trigger = document.querySelector("#create-group-dropdown .dropdown-trigger");
+        triggerText.textContent = name;
+        trigger.classList.add("has-value");
+        document.getElementById("create-group-dropdown").classList.remove("active");
+      }
 
-  } catch (err) {
-    console.error("searchStudents xatolik:", err);
-    searchResults.innerHTML = `<div class="error-box">Qidiruv amalga oshmadi.</div>`;
-  }
-}
+      // FETCH FILTERS DATA
+      async function loadFilterData() {
+        // Fetch Groups
+        const rGroups = await apiFetch(`${BASE}/group/all`);
+        if (rGroups && rGroups.ok) {
+          allGroups = await rGroups.json();
+          renderGroupsList();
+        }
 
-/* ─────────────────────────────────────────────────────
-   goToStudent / goToGroup — LINK BOSILGANDA
+        // Fetch Teachers
+        const rTeachers = await apiFetch(`${BASE}/teacher/all`);
+        if (rTeachers && rTeachers.ok) {
+          allTeachers = await rTeachers.json();
+          renderTeachersList();
+        }
+      }
 
-   Hozir faqat placeholder — keyinchalik to'ldirasiz.
-   event.preventDefault() — <a> ning standart
-   sahifani yuklash harakatini to'xtatadi.
-───────────────────────────────────────────────────── */
-function goToStudent(event, studentId) {
-  event.preventDefault();
-  // TODO: student_info.html ga o'tish
-  // window.location.href = `student_info.html?id=${studentId}`;
-  console.log("Student ID:", studentId);
-}
+      function renderGroupsList() {
+        const list = document.getElementById("group-list");
+        const createList = document.getElementById("create-group-list");
+        
+        if (!allGroups.length) {
+          list.innerHTML = '<div class="dropdown-empty">Guruhlar mavjud emas</div>';
+          createList.innerHTML = '<div class="dropdown-empty">Guruhlar mavjud emas</div>';
+          return;
+        }
 
-function goToGroup(event, groupId) {
-  event.preventDefault();
-  // TODO: group_info.html ga o'tish
-  // window.location.href = `group_info.html?id=${groupId}`;
-  console.log("Group ID:", groupId);
-}
+        let html = `<div class="dropdown-item" onclick="selectGroup(null, 'Barchasi')">Barchasi</div>`;
+        let createHtml = "";
+        
+        allGroups.forEach((g) => {
+          html += `<div class="dropdown-item" onclick="selectGroup(${g.group_id}, '${esc(g.name)}')">${esc(g.name)}</div>`;
+          createHtml += `<div class="dropdown-item" onclick="selectCreateGroup(${g.group_id}, '${esc(g.name)}')">${esc(g.name)}</div>`;
+        });
 
-/* ─────────────────────────────────────────────────────
-   EVENT LISTENERS — TUGMALAR VA KEYBOARD
+        list.innerHTML = html;
+        createList.innerHTML = createHtml;
+      }
 
-   Sahifa tayyor bo'lganda (DOMContentLoaded) barcha
-   event handlerlarni ulaydi.
-───────────────────────────────────────────────────── */
-document.addEventListener("DOMContentLoaded", async () => {
+      function renderTeachersList() {
+        const list = document.getElementById("teacher-list");
+        if (!allTeachers.length) {
+          list.innerHTML =
+            '<div class="dropdown-empty">O\'qituvchilar mavjud emas</div>';
+          return;
+        }
 
-  // 1. Login tekshiruvi — token yo'q bo'lsa chiqib ketadi
-  if (!Auth.isLoggedIn()) {
-    window.location.href = "/login.html";
-    return;
-  }
+        let html = `<div class="dropdown-item" onclick="selectTeacher(null, 'Barchasi')">Barchasi</div>`;
+        html += allTeachers
+          .map((t) => {
+            const name = `${t.first_name} ${t.last_name}`;
+            return `<div class="dropdown-item" onclick="selectTeacher(${t.teacher_id}, '${esc(name)}')">${esc(name)}</div>`;
+          })
+          .join("");
+        list.innerHTML = html;
+      }
 
-  // 2. Qidiruv tugmasi bosilganda
-  document.getElementById("search-btn").addEventListener("click", searchStudents);
+      // SEARCH & FETCH STUDENTS
+      function doSearch() {
+        searchQuery = document.getElementById("search-input").value.trim();
+        currentPage = 1;
+        fetchStudents();
+      }
 
-  // 3. Input da Enter bosilganda
-  document.getElementById("search-input").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") searchStudents();
-  });
+      function clearFilters() {
+        searchQuery = "";
+        document.getElementById("search-input").value = "";
+        
+        selectedGroupId = null;
+        document.getElementById("group-trigger-text").textContent = "Guruh: Barchasi";
+        updateTriggerStyle("group-dropdown", null);
+        selectedTeacherId = null;
+        document.getElementById("teacher-trigger-text").textContent = "O'qituvchi: Barchasi";
+        updateTriggerStyle("teacher-dropdown", null);
+        selectedDiscount = null;
+        document.getElementById("discount-trigger-text").textContent = "Chegirma: Barchasi";
+        updateTriggerStyle("discount-dropdown", null);
 
-  // 4. Input bo'shatilganda — natijalarni yashiramiz
-  document.getElementById("search-input").addEventListener("input", (e) => {
-    if (e.target.value.trim() === "") {
-      document.getElementById("search-section").classList.add("hidden");
-    }
-  });
+        doSearch();
+      }
 
-  // 5. "Yangi o'quvchi" tugmasi — hozir placeholder
-  document.getElementById("add-student-btn").addEventListener("click", () => {
-    // TODO: window.location.href = "student_create.html";
-    alert("Bu bo'lim tez orada qo'shiladi!");
-  });
+      async function fetchStudents() {
+        const offset = (currentPage - 1) * LIMIT;
+        const isSearching =
+          searchQuery ||
+          selectedGroupId ||
+          selectedTeacherId ||
+          selectedDiscount;
 
-  // 6. Expired studentlarni yuklash
-  await loadExpiredStudents();
-});
-</script>
+        let url = "";
+        if (isSearching) {
+          url = `${BASE}/student/search/?limit=${LIMIT}&offset=${offset}`;
+          if (searchQuery)
+            url += `&student_name=${encodeURIComponent(searchQuery)}`;
+          if (selectedGroupId) url += `&group_id=${selectedGroupId}`;
+          if (selectedTeacherId) url += `&teacher_id=${selectedTeacherId}`;
+          if (selectedDiscount) url += `&discount=${selectedDiscount}`;
+        } else {
+          url = `${BASE}/student/?limit=${LIMIT}&offset=${offset}`;
+        }
 
-</body>
+        showLoader();
+        const r = await apiFetch(url);
+        hideLoader();
+
+        if (!r) return;
+        if (!r.ok) {
+          try {
+            const err = await r.json();
+            toast(err.detail || "Xatolik yuz berdi");
+          } catch {
+            toast(`Server xatoligi: ${r.status}`);
+          }
+          return;
+        }
+
+        const data = await r.json();
+        totalStudents = data.student_num || 0;
+        renderTable(data.response || []);
+        renderPagination();
+      }
+
+      // RENDER TABLE & PAGINATION
+      function renderTable(dataArray) {
+        const tbody = document.getElementById("table-body");
+
+        if (!dataArray || dataArray.length === 0) {
+          tbody.innerHTML = `<tr class="empty-row"><td colspan="4">Hech qanday o'quvchi topilmadi</td></tr>`;
+          return;
+        }
+
+        let html = "";
+        const startIndex = (currentPage - 1) * LIMIT;
+        dataArray.forEach((item, index) => {
+          const s = item.student;
+          const groups = item.groups || [];
+          const sName = `${s.first_name} ${s.last_name}`;
+          const seqNum = startIndex + index + 1;
+
+          let groupsHtml = "—";
+          if (groups.length > 0) {
+            groupsHtml = groups
+              .map(
+                (g) =>
+                  `<a href="group_info.html?id=${g.group_id}" class="group-chip">${esc(g.name)}</a>`,
+              )
+              .join("");
+          }
+
+          html += `
+          <tr>
+            <td class="date-cell">${seqNum}</td>
+            <td><a href="student_info.html?id=${s.student_id}" class="student-link">${esc(sName)}</a></td>
+            <td>${groupsHtml}</td>
+            <td class="date-cell">${fmtDate(s.created_at)}</td>
+          </tr>`;
+        });
+
+        tbody.innerHTML = html;
+      }
+
+      function renderPagination() {
+        const totalPages = Math.max(1, Math.ceil(totalStudents / LIMIT));
+        const area = document.getElementById("pagination-area");
+
+        const start = totalStudents > 0 ? (currentPage - 1) * LIMIT + 1 : 0;
+        const end = Math.min(currentPage * LIMIT, totalStudents);
+
+        let nums = "";
+        for (
+          let i = Math.max(1, currentPage - 2);
+          i <= Math.min(totalPages, currentPage + 2);
+          i++
+        ) {
+          nums += `<button class="page-num ${i === currentPage ? "active" : ""}" onclick="goPage(${i})">${i}</button>`;
+        }
+
+        area.innerHTML = `
+          <span class="page-info">${start}–${end} / ${totalStudents} ta</span>
+          <button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage <= 1 ? "disabled" : ""}>← Oldingi</button>
+          <div class="page-nums">${nums}</div>
+          <button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage >= totalPages ? "disabled" : ""}>Keyingi →</button>
+        `;
+      }
+
+      function goPage(page) {
+        const totalPages = Math.max(1, Math.ceil(totalStudents / LIMIT));
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        fetchStudents();
+      }
+
+      // CREATE STUDENT MODAL LOGIC
+      function openCreateModal() {
+        document.getElementById('create-student-modal').classList.add('active');
+      }
+      
+      function closeCreateModal() {
+        document.getElementById('create-student-modal').classList.remove('active');
+      }
+      
+      document.getElementById('create-student-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCreateModal();
+        }
+      });
+
+      document.getElementById("create-student-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        if (!createSelectedGroupId) {
+          toast("Iltimos, o'quvchi guruhini tanlang");
+          return;
+        }
+
+        const payload = {
+          first_name: document.getElementById("first_name").value.trim(),
+          last_name: document.getElementById("last_name").value.trim(),
+          group_id: createSelectedGroupId,
+          student_number: document.getElementById("student_number").value.trim(),
+          student_parent_number: document.getElementById("student_parent_number").value.trim(),
+          student_telegram: document.getElementById("student_telegram").value.trim() || null,
+          student_parent_telegram: document.getElementById("student_parent_telegram").value.trim() || null,
+        };
+
+        showLoader();
+        const r = await apiFetch(`${BASE}/student/register`, {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        if (!r) {
+          hideLoader();
+          return;
+        }
+
+        if (!r.ok) {
+          hideLoader();
+          try {
+            const err = await r.json();
+            if (Array.isArray(err.detail)) {
+              err.detail.forEach((e) => toast(e.msg || "Xatolik"));
+            } else {
+              toast(err.detail || "Saqlashda xatolik yuz berdi");
+            }
+          } catch {
+            toast(`Server xatoligi: ${r.status}`);
+          }
+          return;
+        }
+
+        const responseData = await r.json();
+        window.location.href = `student_info.html?id=${responseData.student_id}`;
+      });
+
+      // INITIALIZE
+      (async () => {
+        showLoader();
+        await loadFilterData();
+        await fetchStudents();
+        // hideLoader is handled inside fetchStudents
+      })();
+    </script>
+  </body>
 </html>

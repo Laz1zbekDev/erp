@@ -1,642 +1,1813 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uz">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>O'quvchi ma'lumotlari</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:#0f1117; --surface:#171b26; --surface2:#1e2333; --surface3:#242840;
-      --border:#ffffff0f; --border2:#ffffff18; --border3:#ffffff25;
-      --accent:#6c8ef5; --accent2:#a78bfa; --accent-glow:#6c8ef530;
-      --text:#e8eaf0; --text-muted:#6b7280; --text-dim:#9ca3af;
-      --success:#34d399; --warning:#fbbf24; --danger:#f87171;
-      --sidebar-w:240px; --topbar-h:60px;
-      --radius:10px; --radius-sm:6px; --radius-xs:4px;
-      --mono:'JetBrains Mono',monospace; --sans:'Outfit',sans-serif;
-    }
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;}
-    .layout{display:flex;height:100vh;overflow:hidden;}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>O'quvchi ma'lumotlari</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0f1117;
+        --surface: #171b26;
+        --surface2: #1e2333;
+        --surface3: #242840;
+        --border: #ffffff0f;
+        --border2: #ffffff18;
+        --border3: #ffffff25;
+        --accent: #6c8ef5;
+        --accent2: #a78bfa;
+        --accent-glow: #6c8ef530;
+        --text: #e8eaf0;
+        --text-muted: #6b7280;
+        --text-dim: #9ca3af;
+        --success: #34d399;
+        --warning: #fbbf24;
+        --danger: #f87171;
+        --sidebar-w: 240px;
+        --topbar-h: 60px;
+        --radius: 10px;
+        --radius-sm: 6px;
+        --radius-xs: 4px;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Outfit", sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 14px;
+      }
+      .layout {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-    /* SIDEBAR */
-    .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;scrollbar-width:none;position:relative;z-index:10;}
-    .sidebar::-webkit-scrollbar{display:none;}
-    .sidebar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
-    .logo-area{padding:22px 20px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
-    .logo-circle{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-bottom:10px;box-shadow:0 0 20px var(--accent-glow);}
-    .logo-name{font-weight:600;font-size:15px;}
-    .logo-sub{font-size:11px;color:var(--text-muted);margin-top:2px;letter-spacing:.3px;}
-    .nav-section{flex:1;padding:10px 12px;}
-    .nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);padding:14px 8px 6px;}
-    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);color:var(--text-dim);text-decoration:none;font-size:13.5px;transition:background .15s,color .15s;position:relative;}
-    .nav-item:hover{background:var(--surface2);color:var(--text);}
-    .nav-item.active{background:var(--accent-glow);color:var(--accent);font-weight:500;}
-    .nav-item.active::before{content:'';position:absolute;left:0;top:25%;bottom:25%;width:3px;border-radius:2px;background:var(--accent);}
-    .nav-icon{width:16px;height:16px;flex-shrink:0;}
-    .logout-area{padding:12px;border-top:1px solid var(--border);flex-shrink:0;}
-    .logout-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:var(--radius-sm);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13.5px;font-family:var(--sans);transition:background .15s,color .15s;}
-    .logout-btn:hover{background:#f8717118;color:var(--danger);}
+      /* SIDEBAR */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        overflow-y: auto;
+        scrollbar-width: none;
+        position: relative;
+        z-index: 10;
+      }
+      .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+      .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+      }
+      .logo-area {
+        padding: 22px 20px 18px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logo-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 10px;
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+      .logo-name {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .logo-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+        letter-spacing: 0.3px;
+      }
+      .nav-section {
+        flex: 1;
+        padding: 10px 12px;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--text-muted);
+        padding: 14px 8px 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 13.5px;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        position: relative;
+      }
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--accent-glow);
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 25%;
+        bottom: 25%;
+        width: 3px;
+        border-radius: 2px;
+        background: var(--accent);
+      }
+      .nav-icon {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      .logout-area {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 13.5px;
+        font-family: var(--sans);
+        transition:
+          background 0.15s,
+          color 0.15s;
+      }
+      .logout-btn:hover {
+        background: #f8717118;
+        color: var(--danger);
+      }
 
-    /* MAIN */
-    .main-content{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-    .topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;}
-    .topbar-left{display:flex;align-items:center;gap:12px;}
-    .back-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border2);color:var(--text-dim);font-size:13px;font-family:var(--sans);cursor:pointer;transition:.15s;}
-    .back-btn:hover{border-color:var(--accent);color:var(--accent);}
-    .page-title{font-size:16px;font-weight:600;}
-    .topbar-right{display:flex;align-items:center;gap:12px;}
-    .delete-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);background:#f8717112;border:1px solid #f8717130;color:var(--danger);font-size:13px;font-family:var(--sans);cursor:pointer;transition:.15s;font-weight:500;}
-    .delete-btn:hover{background:#f8717122;border-color:var(--danger);}
-    .admin-label{font-size:13px;color:var(--text-muted);}
-    .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
-    #content-area{flex:1;overflow-y:auto;padding:24px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+      /* MAIN */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .topbar {
+        height: var(--topbar-h);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        flex-shrink: 0;
+      }
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 13px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .back-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .page-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .delete-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: var(--radius-sm);
+        background: #f8717112;
+        border: 1px solid #f8717130;
+        color: var(--danger);
+        font-size: 13px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+        font-weight: 500;
+      }
+      .delete-btn:hover {
+        background: #f8717122;
+        border-color: var(--danger);
+      }
+      .admin-label {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      #content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border2) transparent;
+      }
 
-    /* LOADING */
-    .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:300px;color:var(--text-muted);font-size:13px;}
-    .spinner{width:30px;height:30px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--accent);animation:spin .7s linear infinite;}
-    @keyframes spin{to{transform:rotate(360deg);}}
-    .spinner-sm{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.2);border-top-color:var(--accent);animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;}
+      /* LOADING */
+      .loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        min-height: 300px;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+      .spinner {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid var(--border2);
+        border-top-color: var(--accent);
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .spinner-sm {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-top-color: var(--accent);
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .pending-input {
+        width: 64px;
+        height: 28px;
+        padding: 0 8px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid #68A9F560;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 12px;
+        outline: none;
+        transition: border-color 0.15s;
+        -moz-appearance: textfield;
+      }
+      .pending-input::-webkit-inner-spin-button,
+      .pending-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+      .pending-input:focus {
+        border-color: #68A9F5;
+      }
+      .pending-btn {
+        height: 28px;
+        padding: 0 12px;
+        border-radius: var(--radius-sm);
+        background: #68A9F515;
+        border: 1px solid #68A9F5;
+        color: #68A9F5;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        font-family: var(--sans);
+        white-space: nowrap;
+      }
+      .pending-btn:hover:not(:disabled) {
+        background: #68A9F5;
+        color: #fff;
+      }
+      .pending-btn:disabled{
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+  
 
-    /* INFO CARD */
-    .info-combined{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;}
-    .info-combined-header{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:8px;}
-    .info-combined-header span{font-size:13px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;}
-    .info-panels{display:grid;grid-template-columns:1fr 1fr;}
-    .info-panel{padding:20px;position:relative;}
-    .info-panel:first-child{border-right:1px solid var(--border);}
-    .info-panel-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
-    .edit-icon-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);padding:3px 5px;border-radius:var(--radius-xs);transition:.15s;display:flex;align-items:center;}
-    .edit-icon-btn:hover{color:var(--accent);background:var(--accent-glow);}
-    .info-row{margin-bottom:10px;}
-    .info-label{font-size:11px;color:var(--text-muted);margin-bottom:3px;}
-    .info-value{font-size:14px;color:var(--text);font-weight:500;}
-    .info-value.mono{font-family:var(--mono);font-size:13px;}
-    .info-empty{color:var(--text-muted);font-style:italic;font-size:13px;}
+      /* INFO CARD */
+      .info-combined {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 16px;
+        overflow: hidden;
+      }
+      .info-combined-header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface2);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .info-combined-header span {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .info-panels {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .info-panel {
+        padding: 20px;
+        position: relative;
+      }
+      .info-panel:first-child {
+        border-right: 1px solid var(--border);
+      }
+      .info-panel-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .edit-icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        padding: 3px 5px;
+        border-radius: var(--radius-xs);
+        transition: 0.15s;
+        display: flex;
+        align-items: center;
+      }
+      .edit-icon-btn:hover {
+        color: var(--accent);
+        background: var(--accent-glow);
+      }
+      .info-row {
+        margin-bottom: 10px;
+      }
+      .info-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 3px;
+      }
+      .info-value {
+        font-size: 14px;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .info-value.mono {
+        font-family: var(--mono);
+        font-size: 13px;
+      }
+      .info-empty {
+        color: var(--text-muted);
+        font-style: italic;
+        font-size: 13px;
+      }
 
-    /* EDIT */
-    .edit-form{display:none;}
-    .edit-form.active{display:block;}
-    .edit-static.hidden{display:none;}
-    .edit-input{width:100%;padding:7px 10px;border-radius:var(--radius-sm);background:var(--surface3);border:1px solid var(--border2);color:var(--text);font-family:var(--sans);font-size:13.5px;outline:none;transition:border-color .15s;margin-bottom:8px;}
-    .edit-input:focus{border-color:var(--accent);}
-    .edit-actions{display:flex;gap:6px;margin-top:4px;}
-    .btn-save{padding:5px 14px;border-radius:var(--radius-sm);background:var(--accent);border:none;color:#fff;font-size:12.5px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:.15s;}
-    .btn-save:hover:not(:disabled){background:#5a7de8;}
-    .btn-save:disabled{opacity:.5;cursor:not-allowed;}
-    .btn-cancel{padding:5px 12px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border2);color:var(--text-dim);font-size:12.5px;font-family:var(--sans);cursor:pointer;transition:.15s;}
-    .btn-cancel:hover{border-color:var(--border3);color:var(--text);}
+      /* EDIT */
+      .edit-form {
+        display: none;
+      }
+      .edit-form.active {
+        display: block;
+      }
+      .edit-static.hidden {
+        display: none;
+      }
+      .edit-input {
+        width: 100%;
+        padding: 7px 10px;
+        border-radius: var(--radius-sm);
+        background: var(--surface3);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 13.5px;
+        outline: none;
+        transition: border-color 0.15s;
+        margin-bottom: 8px;
+      }
+      .edit-input:focus {
+        border-color: var(--accent);
+      }
+      .edit-actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 4px;
+      }
+      .btn-save {
+        padding: 5px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        font-size: 12.5px;
+        font-weight: 600;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .btn-save:hover:not(:disabled) {
+        background: #5a7de8;
+      }
+      .btn-save:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-cancel {
+        padding: 5px 12px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 12.5px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .btn-cancel:hover {
+        border-color: var(--border3);
+        color: var(--text);
+      }
 
-    /* GROUPS */
-    .groups-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-    .groups-section-title{font-size:15px;font-weight:600;}
-    .add-group-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent);font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:.15s;}
-    .add-group-btn:hover{background:var(--accent);color:#fff;}
+      /* GROUPS */
+      .groups-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .groups-section-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .add-group-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--accent-glow);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 500;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .add-group-btn:hover {
+        background: var(--accent);
+        color: #fff;
+      }
 
-    /* GROUP CARD */
-    .group-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;transition:opacity .3s;}
-    .group-card-header{padding:14px 18px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-    .group-name-block{display:flex;flex-direction:column;gap:3px;}
-    .group-card-name{font-size:15px;font-weight:600;}
-    .group-card-meta{font-size:11.5px;color:var(--text-muted);}
-    .exclude-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--radius-sm);background:#f8717112;border:1px solid #f8717130;color:var(--danger);font-size:12px;font-family:var(--sans);cursor:pointer;transition:.15s;}
-    .exclude-btn:hover{background:#f8717120;border-color:var(--danger);}
+      /* GROUP CARD */
+      .group-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 14px;
+        overflow: hidden;
+        transition: opacity 0.3s;
+      }
+      .group-card-header {
+        padding: 14px 18px;
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .group-name-block {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .group-card-name {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .group-link {
+        color: var(--text);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .group-link:hover {
+        color: var(--accent);
+      }
+      .group-card-meta {
+        font-size: 11.5px;
+        color: var(--text-muted);
+      }
+      .exclude-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 12px;
+        border-radius: var(--radius-sm);
+        background: #f8717112;
+        border: 1px solid #f8717130;
+        color: var(--danger);
+        font-size: 12px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .exclude-btn:hover {
+        background: #f8717120;
+        border-color: var(--danger);
+      }
 
-    .group-card-body{padding:18px;}
-    .group-info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
-    .gi-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;}
-    .gi-label{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);margin-bottom:5px;}
-    .gi-value{font-size:13.5px;color:var(--text);font-weight:500;}
-    .gi-value.mono{font-family:var(--mono);}
-    .day-chip{display:inline-block;padding:2px 9px;border-radius:20px;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent);font-size:11px;font-weight:600;margin:2px 2px 0 0;}
+      .group-card-body {
+        padding: 18px;
+      }
+      .group-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .gi-item {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 12px 14px;
+      }
+      .gi-label {
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--text-muted);
+        margin-bottom: 5px;
+      }
+      .gi-value {
+        font-size: 13.5px;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .gi-value.mono {
+        font-family: var(--mono);
+      }
+      .day-chip {
+        display: inline-block;
+        padding: 2px 9px;
+        border-radius: 20px;
+        background: var(--accent-glow);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 600;
+        margin: 2px 2px 0 0;
+      }
 
-    /* PAYMENT */
-    .payment-row{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;flex-wrap:wrap;}
-    .payment-label{font-size:11.5px;color:var(--text-muted);min-width:130px;}
-    .payment-date{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);margin-right:auto;}
-    .pay-btn{padding:5px 12px;border-radius:var(--radius-sm);background:#34d39918;border:1px solid #34d39940;color:var(--success);font-size:12px;font-family:var(--sans);cursor:pointer;transition:.15s;font-weight:500;}
-    .pay-btn:hover{background:#34d39928;border-color:var(--success);}
-    .time-btn{padding:5px 12px;border-radius:var(--radius-sm);background:var(--surface3);border:1px solid var(--border2);color:var(--text-dim);font-size:12px;font-family:var(--sans);cursor:pointer;transition:.15s;}
-    .time-btn:hover{border-color:var(--accent);color:var(--accent);}
-    .inline-time-form{display:none;padding:10px 14px;background:var(--surface3);border:1px solid var(--border2);border-radius:var(--radius-sm);margin-bottom:10px;}
-    .inline-time-form.active{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
-    .inline-field{display:flex;flex-direction:column;gap:4px;}
-    .inline-label{font-size:11px;color:var(--text-muted);}
-    .inline-input{padding:6px 10px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:12.5px;outline:none;transition:border-color .15s;width:100px;}
-    .inline-input:focus{border-color:var(--accent);}
+      /* PAYMENT */
+      .payment-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      .payment-label {
+        font-size: 11.5px;
+        color: var(--text-muted);
+        min-width: 130px;
+      }
+      .payment-date {
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        margin-right: auto;
+      }
+      .pay-btn {
+        height: 28px;
+        padding: 0 12px;
+        border-radius: var(--radius-sm);
+        background: #34d39918;
+        border: 1px solid #34d39940;
+        color: var(--success);
+        font-size: 12px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+      }
+      .pay-btn:hover {
+        background: #34d39928;
+        border-color: var(--success);
+      }
+      .time-btn {
+        height: 28px;
+        padding: 0 12px;
+        border-radius: var(--radius-sm);
+        background: var(--surface3);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 12px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+        display: inline-flex;
+        align-items: center;
+      }
+      .time-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .inline-time-form {
+        display: none;
+        padding: 10px 14px;
+        background: var(--surface3);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        margin-bottom: 10px;
+      }
+      .inline-time-form.active {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
+      .inline-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .inline-label {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .inline-input {
+        padding: 6px 10px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 12.5px;
+        outline: none;
+        transition: border-color 0.15s;
+        width: 100px;
+      }
+      .inline-input:focus {
+        border-color: var(--accent);
+      }
 
-    /* DISCOUNT */
-    .discount-section{margin-top:10px;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);}
-    .discount-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-    .discount-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);}
-    .discount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-    .discount-type-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:600;}
-    .dt-umumiy{background:#6c8ef520;color:var(--accent);}
-    .dt-markaz{background:#34d39920;color:var(--success);}
-    .no-discount{font-size:12.5px;color:var(--text-muted);font-style:italic;}
-    .discount-edit-form{display:none;margin-top:10px;}
-    .discount-edit-form.active{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;}
-    .discount-select{padding:6px 10px;border-radius:var(--radius-sm);background:var(--surface3);border:1px solid var(--border2);color:var(--text);font-family:var(--sans);font-size:12.5px;outline:none;}
-    .discount-select:focus{border-color:var(--accent);}
+      /* DISCOUNT */
+      .discount-section {
+        margin-top: 10px;
+        padding: 14px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+      }
+      .discount-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .discount-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--text-muted);
+      }
+      .discount-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .discount-type-badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-size: 11.5px;
+        font-weight: 600;
+      }
+      .dt-umumiy {
+        background: #6c8ef520;
+        color: var(--accent);
+      }
+      .dt-markaz {
+        background: #34d39920;
+        color: var(--success);
+      }
+      .no-discount {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        font-style: italic;
+      }
+      .discount-edit-form {
+        display: none;
+        margin-top: 10px;
+      }
+      .discount-edit-form.active {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
+      .discount-select {
+        padding: 6px 10px;
+        border-radius: var(--radius-sm);
+        background: var(--surface3);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 12.5px;
+        outline: none;
+      }
+      .discount-select:focus {
+        border-color: var(--accent);
+      }
 
-    /* MODAL */
-    .modal-overlay{position:fixed;inset:0;background:#000a;z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
-    .modal-overlay.active{opacity:1;pointer-events:all;}
-    .modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);width:420px;max-width:90vw;max-height:80vh;display:flex;flex-direction:column;transform:scale(.96);transition:transform .2s;}
-    .modal-overlay.active .modal{transform:scale(1);}
-    .modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-    .modal-title{font-size:15px;font-weight:600;}
-    .modal-close{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:var(--radius-xs);transition:.15s;}
-    .modal-close:hover{color:var(--text);background:var(--surface2);}
-    .modal-search{padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
-    .modal-search-input{width:100%;padding:8px 12px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:var(--sans);font-size:13.5px;outline:none;transition:border-color .15s;}
-    .modal-search-input:focus{border-color:var(--accent);}
-    .modal-body{overflow-y:auto;flex:1;padding:8px 0;}
-    .modal-group-item{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border);}
-    .modal-group-item:last-child{border-bottom:none;}
-    .modal-group-item:hover{background:var(--surface2);}
-    .modal-group-item.selected{background:var(--accent-glow);}
-    .modal-group-name{font-size:13.5px;font-weight:500;}
-    .modal-group-check{width:18px;height:18px;border-radius:4px;background:var(--accent);display:flex;align-items:center;justify-content:center;opacity:0;transition:.15s;}
-    .modal-group-item.selected .modal-group-check{opacity:1;}
-    .modal-footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;}
-    .modal-empty{padding:32px;text-align:center;color:var(--text-muted);font-size:13px;}
+      /* MODAL */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: #000a;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        width: 420px;
+        max-width: 90vw;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        transform: scale(0.96);
+        transition: transform 0.2s;
+      }
+      .modal-overlay.active .modal {
+        transform: scale(1);
+      }
+      .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .modal-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 18px;
+        line-height: 1;
+        padding: 2px 6px;
+        border-radius: var(--radius-xs);
+        transition: 0.15s;
+      }
+      .modal-close:hover {
+        color: var(--text);
+        background: var(--surface2);
+      }
+      .modal-search {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .modal-search-input {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 13.5px;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .modal-search-input:focus {
+        border-color: var(--accent);
+      }
+      .modal-body {
+        overflow-y: auto;
+        flex: 1;
+        padding: 8px 0;
+      }
+      .modal-group-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        cursor: pointer;
+        transition: background 0.12s;
+        border-bottom: 1px solid var(--border);
+      }
+      .modal-group-item:last-child {
+        border-bottom: none;
+      }
+      .modal-group-item:hover {
+        background: var(--surface2);
+      }
+      .modal-group-item.selected {
+        background: var(--accent-glow);
+      }
+      .modal-group-name {
+        font-size: 13.5px;
+        font-weight: 500;
+      }
+      .modal-group-check {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: 0.15s;
+      }
+      .modal-group-item.selected .modal-group-check {
+        opacity: 1;
+      }
+      .modal-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-shrink: 0;
+      }
+      .modal-empty {
+        padding: 32px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
 
-    /* CONFIRM MODAL */
-    .confirm-modal{width:360px;}
-    .confirm-body{padding:24px 20px 16px;}
-    .confirm-icon{font-size:32px;margin-bottom:12px;text-align:center;}
-    .confirm-text{font-size:14px;color:var(--text-dim);text-align:center;line-height:1.6;}
-    .confirm-actions{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
-    .btn-danger{padding:7px 16px;border-radius:var(--radius-sm);background:#f8717118;border:1px solid #f8717140;color:var(--danger);font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:.15s;}
-    .btn-danger:hover{background:#f8717128;border-color:var(--danger);}
-    .btn-neutral{padding:7px 14px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border2);color:var(--text-dim);font-size:13px;font-family:var(--sans);cursor:pointer;transition:.15s;}
-    .btn-neutral:hover{border-color:var(--border3);color:var(--text);}
-    .btn-confirm-ok{padding:7px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:.15s;border:none;}
-    .btn-confirm-ok.is-danger{background:#f8717118;border:1px solid #f8717140;color:var(--danger);}
-    .btn-confirm-ok.is-danger:hover{background:#f8717128;border-color:var(--danger);}
-    .btn-confirm-ok.is-primary{background:var(--accent);border:1px solid var(--accent);color:#fff;}
-    .btn-confirm-ok.is-primary:hover{background:#5a7de8;}
+      /* CONFIRM MODAL */
+      .confirm-modal {
+        width: 360px;
+      }
+      .confirm-body {
+        padding: 24px 20px 16px;
+      }
+      .confirm-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+      .confirm-text {
+        font-size: 14px;
+        color: var(--text-dim);
+        text-align: center;
+        line-height: 1.6;
+      }
+      .confirm-actions {
+        padding: 14px 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .btn-danger {
+        padding: 7px 16px;
+        border-radius: var(--radius-sm);
+        background: #f8717118;
+        border: 1px solid #f8717140;
+        color: var(--danger);
+        font-size: 13px;
+        font-weight: 600;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .btn-danger:hover {
+        background: #f8717128;
+        border-color: var(--danger);
+      }
+      .btn-neutral {
+        padding: 7px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 13px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .btn-neutral:hover {
+        border-color: var(--border3);
+        color: var(--text);
+      }
+      .btn-confirm-ok {
+        padding: 7px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-weight: 600;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+        border: none;
+      }
+      .btn-confirm-ok.is-danger {
+        background: #f8717118;
+        border: 1px solid #f8717140;
+        color: var(--danger);
+      }
+      .btn-confirm-ok.is-danger:hover {
+        background: #f8717128;
+        border-color: var(--danger);
+      }
+      .btn-confirm-ok.is-primary {
+        background: var(--accent);
+        border: 1px solid var(--accent);
+        color: #fff;
+      }
+      .btn-confirm-ok.is-primary:hover {
+        background: #5a7de8;
+      }
 
-    /* TOAST */
-    #toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-    .toast{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text);max-width:340px;animation:toastIn .2s ease;pointer-events:all;box-shadow:0 8px 32px #0008;}
-    .toast.error{border-color:var(--danger);color:var(--danger);}
-    .toast.success{border-color:var(--success);color:var(--success);}
-    @keyframes toastIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+      /* TOAST */
+      #toast-container {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 100005;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+      .toast {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        font-size: 15px;
+        color: var(--text);
+        max-width: 400px;
+        animation: toastIn 0.3s ease;
+        pointer-events: all;
+        box-shadow: 0 8px 32px #0008;
+      }
+      .toast.error {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .toast.success {
+        border-color: var(--success);
+        color: var(--success);
+      }
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateY(-12px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
 
-    /* MISC */
-    .empty-state{padding:32px;text-align:center;color:var(--text-muted);font-size:13px;background:var(--surface2);border-radius:var(--radius-sm);}
-    .error-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:300px;color:var(--text-muted);}
-    .err-code{font-size:48px;font-weight:700;color:var(--border2);}
-    .err-msg{font-size:14px;}
-  </style>
-</head>
-<body>
+      /* MISC */
+      .empty-state {
+        padding: 32px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+        background: var(--surface2);
+        border-radius: var(--radius-sm);
+      }
+      .error-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-height: 300px;
+        color: var(--text-muted);
+      }
+      .err-code {
+        font-size: 48px;
+        font-weight: 700;
+        color: var(--border2);
+      }
+      .err-msg {
+        font-size: 14px;
+      }
 
-<div id="toast-container"></div>
-
-<!-- CONFIRM MODAL -->
-<div class="modal-overlay" id="confirm-overlay">
-  <div class="modal confirm-modal">
-    <div class="confirm-body">
-      <div class="confirm-icon" id="confirm-icon">⚠️</div>
-      <div class="confirm-text" id="confirm-text">Haqiqatan ham davom etmoqchimisiz?</div>
+      /* GLOBAL LOADER */
+      .global-loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 17, 23, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .global-loader-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .global-spinner {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid var(--border2);
+        border-top-color: var(--accent);
+        animation: spin 0.7s linear infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- GLOBAL LOADER -->
+    <div class="global-loader-overlay" id="global-loader">
+      <div class="global-spinner"></div>
     </div>
-    <div class="confirm-actions">
-      <button class="btn-neutral" id="confirm-cancel-btn">Bekor qilish</button>
-      <button class="btn-confirm-ok is-danger" id="confirm-ok-btn">Tasdiqlash</button>
-    </div>
-  </div>
-</div>
 
-<!-- ADD GROUP MODAL -->
-<div class="modal-overlay" id="group-modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">Guruhga qo'shish</span>
-      <button class="modal-close" id="group-modal-close-btn">✕</button>
-    </div>
-    <div class="modal-search">
-      <input class="modal-search-input" id="group-search-input" placeholder="Guruh nomini qidiring..."/>
-    </div>
-    <div class="modal-body" id="group-modal-list"></div>
-    <div class="modal-footer">
-      <button class="btn-neutral" id="group-modal-cancel-btn">Yopish</button>
-      <button class="btn-save" id="group-add-confirm-btn" disabled>Qo'shish</button>
-    </div>
-  </div>
-</div>
+    <div id="toast-container"></div>
 
-<div class="layout">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo-area">
-      <div class="logo-circle">OC</div>
-      <div class="logo-name">O'quv Markaz</div>
-      <div class="logo-sub">Admin Panel</div>
-    </div>
-    <nav class="nav-section">
-      <div class="nav-label">Asosiy</div>
-      <a class="nav-item" href="dashboard.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9"/>
-          <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
-          <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
-          <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
-        </svg>
-        Dashboard
-      </a>
-      <div class="nav-label">O'quv jarayoni</div>
-      <a class="nav-item" href="students.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <circle cx="6" cy="5" r="3" fill="currentColor" opacity="0.85"/>
-          <path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <circle cx="12" cy="5" r="2" fill="currentColor" opacity="0.5"/>
-          <path d="M12 10c1.5 0 3 1 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-        </svg>
-        O'quvchilar
-      </a>
-      <a class="nav-item" href="group.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3" opacity="0.85"/>
-          <path d="M5 4V3a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-          <path d="M5 9h6M8 7v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        </svg>
-        Guruhlar
-      </a>
-      <a class="nav-item" href="teacher.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="4.5" r="3" fill="currentColor" opacity="0.85"/>
-          <path d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        O'qituvchilar
-      </a>
-      <div class="nav-label">Moliya</div>
-      <a class="nav-item" href="payment.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="3" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-          <path d="M1 6h14" stroke="currentColor" stroke-width="1.3"/>
-          <rect x="3" y="9" width="4" height="1.5" rx="0.5" fill="currentColor" opacity="0.6"/>
-        </svg>
-        To'lovlar
-      </a>
-      <a class="nav-item" href="student_transaction.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <path d="M2 5h12M2 5l3-3M2 5l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M14 11H2M14 11l-3-3M14 11l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-        </svg>
-        O'quvchi transaksiya
-      </a>
-      <a class="nav-item" href="teacher_transaction.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <path d="M14 5H2M14 5l-3-3M14 5l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M2 11h12M2 11l3-3M2 11l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-        </svg>
-        O'qituvchi transaksiya
-      </a>
-      <div class="nav-label">Tahlil</div>
-      <a class="nav-item" href="report.html">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/>
-          <path d="M4 11l2.5-3 2.5 2L12 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Hisobot
-      </a>
-    </nav>
-    <div class="logout-area">
-      <button class="logout-btn" id="logout-btn">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
-          <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-          <path d="M11 11l3-3-3-3M14 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Chiqish
-      </button>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <div class="main-content">
-    <div class="topbar">
-      <div class="topbar-left">
-        <button class="back-btn" id="back-btn">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Orqaga
-        </button>
-        <span class="page-title" id="page-title">O'quvchi ma'lumotlari</span>
+    <!-- CONFIRM MODAL -->
+    <div class="modal-overlay" id="confirm-overlay">
+      <div class="modal confirm-modal">
+        <div class="confirm-body">
+          <div class="confirm-icon" id="confirm-icon">⚠️</div>
+          <div class="confirm-text" id="confirm-text">
+            Haqiqatan ham davom etmoqchimisiz?
+          </div>
+        </div>
+        <div class="confirm-actions">
+          <button class="btn-neutral" id="confirm-cancel-btn">
+            Bekor qilish
+          </button>
+          <button class="btn-confirm-ok is-danger" id="confirm-ok-btn">
+            Tasdiqlash
+          </button>
+        </div>
       </div>
-      <div class="topbar-right">
-        <button class="delete-btn" id="delete-student-btn" style="display:none">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M2 4h12M5 4V2.5a.5.5 0 01.5-.5h5a.5.5 0 01.5.5V4M6 7v5M10 7v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-            <rect x="3" y="4" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/>
-          </svg>
-          O'chirish
-        </button>
-        <span class="admin-label" id="admin-name">Admin</span>
-        <div class="avatar" id="admin-avatar">AD</div>
+    </div>
+
+    <!-- ADD GROUP MODAL -->
+    <div class="modal-overlay" id="group-modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <span class="modal-title">Guruhga qo'shish</span>
+          <button class="modal-close" id="group-modal-close-btn">✕</button>
+        </div>
+        <div class="modal-search">
+          <input
+            class="modal-search-input"
+            id="group-search-input"
+            placeholder="Guruh nomini qidiring..."
+          />
+        </div>
+        <div class="modal-body" id="group-modal-list"></div>
+        <div class="modal-footer">
+          <button class="btn-neutral" id="group-modal-cancel-btn">
+            Yopish
+          </button>
+          <button class="btn-save" id="group-add-confirm-btn" disabled>
+            Qo'shish
+          </button>
+        </div>
       </div>
     </div>
-    <div id="content-area">
-      <div class="loading"><div class="spinner"></div>Yuklanmoqda...</div>
+
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="logo-area">
+          <div class="logo-circle">OC</div>
+          <div class="logo-name">O'quv Markaz</div>
+          <div class="logo-sub">Admin Panel</div>
+        </div>
+        <nav class="nav-section">
+          <div class="nav-label">Asosiy</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="1"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.9"
+              />
+              <rect
+                x="9"
+                y="1"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+              <rect
+                x="1"
+                y="9"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+              <rect
+                x="9"
+                y="9"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+            </svg>
+            Dashboard
+          </a>
+          <div class="nav-label">O'quv jarayoni</div>
+          <a class="nav-item" href="students.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <circle cx="6" cy="5" r="3" fill="currentColor" opacity="0.85" />
+              <path
+                d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <circle cx="12" cy="5" r="2" fill="currentColor" opacity="0.5" />
+              <path
+                d="M12 10c1.5 0 3 1 3 3"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                opacity="0.5"
+              />
+            </svg>
+            O'quvchilar
+          </a>
+          <a class="nav-item" href="group.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="4"
+                width="14"
+                height="9"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.3"
+                opacity="0.85"
+              />
+              <path
+                d="M5 4V3a3 3 0 016 0v1"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M5 9h6M8 7v4"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+            </svg>
+            Guruhlar
+          </a>
+          <a class="nav-item" href="teacher.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <circle
+                cx="8"
+                cy="4.5"
+                r="3"
+                fill="currentColor"
+                opacity="0.85"
+              />
+              <path
+                d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            O'qituvchilar
+          </a>
+          <div class="nav-label">Moliya</div>
+          <a class="nav-item" href="payment.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="3"
+                width="14"
+                height="10"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.3"
+              />
+              <path d="M1 6h14" stroke="currentColor" stroke-width="1.3" />
+              <rect
+                x="3"
+                y="9"
+                width="4"
+                height="1.5"
+                rx="0.5"
+                fill="currentColor"
+                opacity="0.6"
+              />
+            </svg>
+            To'lovlar
+          </a>
+          <a class="nav-item" href="student_transaction.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M2 5h12M2 5l3-3M2 5l3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M14 11H2M14 11l-3-3M14 11l-3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                opacity="0.6"
+              />
+            </svg>
+            O'quvchi transaksiya
+          </a>
+          <a class="nav-item" href="teacher_transaction.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M14 5H2M14 5l-3-3M14 5l-3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M2 11h12M2 11l3-3M2 11l3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                opacity="0.6"
+              />
+            </svg>
+            O'qituvchi transaksiya
+          </a>
+          </a>
+          <div class="nav-label">Sozlamalar</div>
+          <a class="nav-item" href="account.html">
+            Shaxsiy hisob
+          </a>
+        </nav>
+        <div class="logout-area">
+          <button class="logout-btn" id="logout-btn">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M11 11l3-3-3-3M14 8H6"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Chiqish
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="main-content">
+        <div class="topbar">
+          <div class="topbar-left">
+            <button class="back-btn" id="back-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M10 3L5 8l5 5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Orqaga
+            </button>
+            <span class="page-title" id="page-title"
+              >O'quvchi ma'lumotlari</span
+            >
+          </div>
+          <div class="topbar-right">
+            <button
+              class="delete-btn"
+              id="delete-student-btn"
+              style="display: none"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M2 4h12M5 4V2.5a.5.5 0 01.5-.5h5a.5.5 0 01.5.5V4M6 7v5M10 7v5"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                />
+                <rect
+                  x="3"
+                  y="4"
+                  width="10"
+                  height="10"
+                  rx="1"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                />
+              </svg>
+              O'chirish
+            </button>
+            <span class="admin-label" id="admin-name">Admin</span>
+            <div class="avatar" id="admin-avatar">AD</div>
+          </div>
+        </div>
+        <div id="content-area">
+          <div class="loading">
+            <div class="spinner"></div>
+            Yuklanmoqda...
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+    <!-- .layout -->
 
-</div><!-- .layout -->
+    <script>
+      const BASE = "http://10.13.155.23:8000/api/v1";
+      const urlParams = new URLSearchParams(window.location.search);
+      const STUDENT_ID = parseInt(urlParams.get("id"));
 
-<script>
-const BASE = 'http://127.0.0.1:8000/api/v1';
-const urlParams   = new URLSearchParams(window.location.search);
-const STUDENT_ID  = parseInt(urlParams.get('id'));
+      let studentData = null;
+      let allGroups = [];
+      let selectedGroupId = null;
+      let confirmCallback = null;
 
-let studentData     = null;
-let allGroups       = [];
-let selectedGroupId = null;
-let confirmCallback = null;
+      // ── REFERRER SAQLASH ─────────────────────────────────────────────────────────
+      // Sahifaga birinchi kelganda referrer'ni sessionStorage'ga saqlaymiz
+      // (chunki student_info → student_info redirect bo'lganda referrer o'zgarib ketadi)
+      (function saveReferrer() {
+        const key = `prev_page_${STUDENT_ID}`;
+        // Faqat birinchi marta yoki student_info o'zi bo'lmagan holda saqlaymiz
+        const stored = sessionStorage.getItem(key);
+        const ref = document.referrer;
+        const currentPath = location.pathname.split("/").pop();
 
-// ── REFERRER SAQLASH ─────────────────────────────────────────────────────────
-// Sahifaga birinchi kelganda referrer'ni sessionStorage'ga saqlaymiz
-// (chunki student_info → student_info redirect bo'lganda referrer o'zgarib ketadi)
-(function saveReferrer() {
-  const key = `prev_page_${STUDENT_ID}`;
-  // Faqat birinchi marta yoki student_info o'zi bo'lmagan holda saqlaymiz
-  const stored = sessionStorage.getItem(key);
-  const ref = document.referrer;
-  const currentPath = location.pathname.split('/').pop();
+        if (!stored) {
+          // Referrer student_info emas va bo'sh emas bo'lsa saqlash
+          if (ref && !ref.includes("student_info")) {
+            sessionStorage.setItem(key, ref);
+          } else if (!ref) {
+            // Referrer yo'q — to'g'ridan-to'g'ri kirgan, students.html ni default qilamiz
+            sessionStorage.setItem(key, "students.html");
+          }
+          // Agar referrer student_info bo'lsa — saqlangan qiymat bor bo'lishi kerak (yoki yo'q)
+        }
+        // Agar stored bor bo'lsa — uni ishlatamiz, o'zgartirmaymiz
+      })();
 
-  if (!stored) {
-    // Referrer student_info emas va bo'sh emas bo'lsa saqlash
-    if (ref && !ref.includes('student_info')) {
-      sessionStorage.setItem(key, ref);
-    } else if (!ref) {
-      // Referrer yo'q — to'g'ridan-to'g'ri kirgan, students.html ni default qilamiz
-      sessionStorage.setItem(key, 'students.html');
-    }
-    // Agar referrer student_info bo'lsa — saqlangan qiymat bor bo'lishi kerak (yoki yo'q)
-  }
-  // Agar stored bor bo'lsa — uni ishlatamiz, o'zgartirmaymiz
-})();
+      function getBackUrl() {
+        const key = `prev_page_${STUDENT_ID}`;
+        return sessionStorage.getItem(key) || "students.html";
+      }
 
-function getBackUrl() {
-  const key = `prev_page_${STUDENT_ID}`;
-  return sessionStorage.getItem(key) || 'students.html';
-}
+      function clearReferrer() {
+        sessionStorage.removeItem(`prev_page_${STUDENT_ID}`);
+      }
 
-function clearReferrer() {
-  sessionStorage.removeItem(`prev_page_${STUDENT_ID}`);
-}
+      // ── NAVIGATION ───────────────────────────────────────────────────────────────
+      function goBack() {
+        const backUrl = getBackUrl();
+        clearReferrer();
+        // Agar to'liq URL bo'lsa shu URL ga, aks holda relative path
+        if (backUrl.startsWith("http")) {
+          window.location.href = backUrl;
+        } else {
+          window.location.href = backUrl;
+        }
+      }
 
-// ── NAVIGATION ───────────────────────────────────────────────────────────────
-function goBack() {
-  const backUrl = getBackUrl();
-  clearReferrer();
-  // Agar to'liq URL bo'lsa shu URL ga, aks holda relative path
-  if (backUrl.startsWith('http')) {
-    window.location.href = backUrl;
-  } else {
-    window.location.href = backUrl;
-  }
-}
+      function goBackAfterDelete() {
+        const backUrl = getBackUrl();
+        clearReferrer();
+        // O'chirishdan keyin ham xuddi shu logika
+        if (backUrl.startsWith("http")) {
+          window.location.href = backUrl;
+        } else {
+          window.location.href = backUrl;
+        }
+      }
 
-function goBackAfterDelete() {
-  const backUrl = getBackUrl();
-  clearReferrer();
-  // O'chirishdan keyin ham xuddi shu logika
-  if (backUrl.startsWith('http')) {
-    window.location.href = backUrl;
-  } else {
-    window.location.href = backUrl;
-  }
-}
+      // ── SIDEBAR ACTIVE ───────────────────────────────────────────────────────────
+      // Qaysi sahifadan kelgan bo'lsa o'sha nav-item ni active qilamiz
+      (function setActiveSidebar() {
+        const backUrl = getBackUrl();
+        const navItems = document.querySelectorAll(".nav-item");
+        navItems.forEach((item) => {
+          item.classList.remove("active");
+        });
+      })();
 
-// ── SIDEBAR ACTIVE ───────────────────────────────────────────────────────────
-// Qaysi sahifadan kelgan bo'lsa o'sha nav-item ni active qilamiz
-(function setActiveSidebar() {
-  const backUrl = getBackUrl();
-  const navItems = document.querySelectorAll('.nav-item');
-  navItems.forEach(item => {
-    const href = item.getAttribute('href');
-    if (href && backUrl && backUrl.includes(href.replace('.html', ''))) {
-      item.classList.add('active');
-    }
-  });
-})();
+      if (!localStorage.getItem("access_token")) {
+        window.location.replace("../index.html");
+      }
 
-// ── AUTH ─────────────────────────────────────────────────────────────────────
-const getToken  = () => localStorage.getItem('access_token');
-const saveToken = t  => localStorage.setItem('access_token', t);
+      window.addEventListener("pageshow", function (event) {
+        if (
+          event.persisted ||
+          (performance.getEntriesByType &&
+            performance.getEntriesByType("navigation").length &&
+            performance.getEntriesByType("navigation")[0].type ===
+              "back_forward")
+        ) {
+          if (!localStorage.getItem("access_token")) {
+            window.location.replace("../index.html");
+          }
+        }
+      });
 
-async function authLogout() {
-  try {
-    await fetch(`${BASE}/auth/logout`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-  } catch {}
-  localStorage.removeItem('access_token');
-  window.location.href = '../index.html';
-}
+      // ── AUTH ─────────────────────────────────────────────────────────────────────
+      const getToken = () => localStorage.getItem("access_token");
+      const saveToken = (t) => localStorage.setItem("access_token", t);
 
-async function tryRefresh() {
-  try {
-    const r = await fetch(`${BASE}/auth/refresh`, { method: 'POST', credentials: 'include' });
-    if (!r.ok) throw 0;
-    const d = await r.json();
-    if (d.access_token) { saveToken(d.access_token); return d.access_token; }
-    throw 0;
-  } catch { authLogout(); return null; }
-}
+      function authLogout() {
+        const token = getToken();
+        localStorage.clear();
+        sessionStorage.clear();
+        if (token) {
+          fetch(`${BASE}/auth/logout`, {
+            method: "POST",
+            credentials: "include",
+            keepalive: true,
+            headers: { Authorization: `Bearer ${token}` },
+          }).catch(() => {});
+        }
+        window.location.replace("../index.html");
+      }
 
-async function apiFetch(url, opts = {}) {
-  const token = getToken();
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(opts.headers || {})
-  };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
+      async function tryRefresh() {
+        try {
+          const r = await fetch(`${BASE}/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+          });
+          if (!r.ok) throw 0;
+          const d = await r.json();
+          if (d.access_token) {
+            saveToken(d.access_token);
+            return d.access_token;
+          }
+          throw 0;
+        } catch {
+          authLogout();
+          return null;
+        }
+      }
 
-  const go = (tok) => {
-    const h = { ...headers };
-    if (tok) h['Authorization'] = `Bearer ${tok}`;
-    return fetch(url, { ...opts, credentials: 'include', headers: h });
-  };
+      async function apiFetch(url, opts = {}) {
+        const token = getToken();
+        const headers = {
+          "Content-Type": "application/json",
+          ...(opts.headers || {}),
+        };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  let res;
-  try {
-    res = await go(token);
-  } catch (e) {
-    toast(`Tarmoq xatoligi: ${e.message}`, 'error');
-    return null;
-  }
+        const go = (tok) => {
+          const h = { ...headers };
+          if (tok) h["Authorization"] = `Bearer ${tok}`;
+          return fetch(url, { ...opts, credentials: "include", headers: h });
+        };
 
-  if (res.status === 401 || res.status === 403) {
-    const nt = await tryRefresh();
-    if (!nt) return null;
-    try {
-      res = await go(nt);
-    } catch (e) {
-      toast(`Tarmoq xatoligi: ${e.message}`, 'error');
-      return null;
-    }
-    if (res.status === 401 || res.status === 403) {
-      authLogout();
-      return null;
-    }
-  }
-  return res;
-}
+        let res;
+        try {
+          res = await go(token);
+        } catch (e) {
+          toast(`Tarmoq xatoligi: ${e.message}`, "error");
+          return null;
+        }
 
-// ── TOAST ─────────────────────────────────────────────────────────────────────
-function toast(msg, type = 'error') {
-  const c  = document.getElementById('toast-container');
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.textContent = msg;
-  c.appendChild(el);
-  setTimeout(() => {
-    el.style.opacity = '0';
-    el.style.transition = 'opacity .3s';
-    setTimeout(() => el.remove(), 300);
-  }, 3800);
-}
+        if (res.status === 401 || res.status === 403) {
+          const nt = await tryRefresh();
+          if (!nt) return null;
+          try {
+            res = await go(nt);
+          } catch (e) {
+            toast(`Tarmoq xatoligi: ${e.message}`, "error");
+            return null;
+          }
+          if (res.status === 401 || res.status === 403) {
+            authLogout();
+            return null;
+          }
+        }
+        return res;
+      }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function esc(s) {
-  return s == null ? '' : String(s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+      // ── GLOBAL LOADER ─────────────────────────────────────────────────────────────
+      function showLoader() {
+        document.getElementById("global-loader").classList.add("active");
+      }
+      function hideLoader() {
+        document.getElementById("global-loader").classList.remove("active");
+      }
 
-function fmtMoney(n) {
-  if (n == null) return '—';
-  return Number(n).toLocaleString('uz-UZ') + " so'm";
-}
+      // ── TOAST ─────────────────────────────────────────────────────────────────────
+      function toast(msg, type = "error") {
+        const c = document.getElementById("toast-container");
+        const el = document.createElement("div");
+        el.className = `toast ${type}`;
+        el.textContent = msg;
+        c.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = "0";
+          el.style.transition = "opacity .3s";
+          setTimeout(() => el.remove(), 300);
+        }, 3800);
+      }
 
-const UZ_MONTHS = [
-  'yanvar','fevral','mart','aprel','may','iyun',
-  'iyul','avgust','sentabr','oktabr','noyabr','dekabr'
-];
-function fmtDate(str) {
-  if (!str) return '—';
-  const d = new Date(str);
-  if (isNaN(d.getTime())) return str;
-  return `${d.getDate()}-${UZ_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-}
+      // ── HELPERS ───────────────────────────────────────────────────────────────────
+      function esc(s) {
+        return s == null
+          ? ""
+          : String(s)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+      }
 
-function fmtTime(str) {
-  if (!str) return '—';
-  const p = str.split(':');
-  return p.length >= 2 ? `${p[0]}:${p[1]}` : str;
-}
+      function fmtMoney(n) {
+        if (n == null) return "—";
+        return Number(n).toLocaleString("uz-UZ") + " so'm";
+      }
 
-const DAY_MAP = {
-  monday:'Dushanba', tuesday:'Seshanba', wednesday:'Chorshanba',
-  thursday:'Payshanba', friday:'Juma', saturday:'Shanba', sunday:'Yakshanba',
-  dushanba:'Dushanba', seshanba:'Seshanba', chorshanba:'Chorshanba',
-  payshanba:'Payshanba', juma:'Juma', shanba:'Shanba', yakshanba:'Yakshanba'
-};
-function fmtDays(str) {
-  if (!str) return '<span style="color:var(--text-muted)">—</span>';
-  return str.split(',').map(d => {
-    const name = DAY_MAP[d.trim().toLowerCase()] || d.trim();
-    return `<span class="day-chip">${esc(name)}</span>`;
-  }).join('');
-}
+      const UZ_MONTHS = [
+        "yanvar",
+        "fevral",
+        "mart",
+        "aprel",
+        "may",
+        "iyun",
+        "iyul",
+        "avgust",
+        "sentabr",
+        "oktabr",
+        "noyabr",
+        "dekabr",
+      ];
+      function fmtDate(str) {
+        if (!str) return "—";
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str;
+        return `${d.getDate()}-${UZ_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+      }
 
-async function handleApiError(r) {
-  if (!r) return;
-  try {
-    const err = await r.json();
-    if (Array.isArray(err.detail)) {
-      err.detail.forEach(e => toast(e.msg || JSON.stringify(e)));
-    } else {
-      toast(err.detail || `Xatolik: ${r.status}`);
-    }
-  } catch {
-    toast(`Server xatoligi: ${r.status}`);
-  }
-}
+      function fmtTime(str) {
+        if (!str) return "—";
+        const p = str.split(":");
+        return p.length >= 2 ? `${p[0]}:${p[1]}` : str;
+      }
 
-// ── CONFIRM MODAL ─────────────────────────────────────────────────────────────
-// FIX: onclick atributi o'rniga addEventListener ishlatamiz —
-// onclick="runConfirm()" deb yozilganda ba'zan confirmCallback ni
-// yo'qotib qo'yishi mumkin edi (inline event handler scope muammosi)
-document.getElementById('confirm-cancel-btn').addEventListener('click', closeConfirm);
-document.getElementById('confirm-ok-btn').addEventListener('click', runConfirm);
-document.getElementById('confirm-overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeConfirm();
-});
+      const DAY_MAP = {
+        monday: "Dushanba",
+        tuesday: "Seshanba",
+        wednesday: "Chorshanba",
+        thursday: "Payshanba",
+        friday: "Juma",
+        saturday: "Shanba",
+        sunday: "Yakshanba",
+        dushanba: "Dushanba",
+        seshanba: "Seshanba",
+        chorshanba: "Chorshanba",
+        payshanba: "Payshanba",
+        juma: "Juma",
+        shanba: "Shanba",
+        yakshanba: "Yakshanba",
+      };
+      function fmtDays(str) {
+        if (!str) return '<span style="color:var(--text-muted)">—</span>';
+        return str
+          .split(",")
+          .map((d) => {
+            const name = DAY_MAP[d.trim().toLowerCase()] || d.trim();
+            return `<span class="day-chip">${esc(name)}</span>`;
+          })
+          .join("");
+      }
 
-function showConfirm(text, icon, okLabel, variant, cb) {
-  document.getElementById('confirm-text').textContent = text;
-  document.getElementById('confirm-icon').textContent = icon;
-  const btn = document.getElementById('confirm-ok-btn');
-  btn.textContent = okLabel;
-  btn.className = `btn-confirm-ok ${variant === 'primary' ? 'is-primary' : 'is-danger'}`;
-  confirmCallback = cb;
-  document.getElementById('confirm-overlay').classList.add('active');
-}
+      async function handleApiError(r) {
+        if (!r) return;
+        try {
+          const err = await r.json();
+          if (Array.isArray(err.detail)) {
+            err.detail.forEach((e) => toast(e.msg || JSON.stringify(e)));
+          } else {
+            toast(err.detail || `Xatolik: ${r.status}`);
+          }
+        } catch {
+          toast(`Server xatoligi: ${r.status}`);
+        }
+      }
 
-function closeConfirm() {
-  document.getElementById('confirm-overlay').classList.remove('active');
-  confirmCallback = null;
-}
+      // ── CONFIRM MODAL ─────────────────────────────────────────────────────────────
+      // FIX: onclick atributi o'rniga addEventListener ishlatamiz —
+      // onclick="runConfirm()" deb yozilganda ba'zan confirmCallback ni
+      // yo'qotib qo'yishi mumkin edi (inline event handler scope muammosi)
+      document
+        .getElementById("confirm-cancel-btn")
+        .addEventListener("click", closeConfirm);
+      document
+        .getElementById("confirm-ok-btn")
+        .addEventListener("click", runConfirm);
+      document
+        .getElementById("confirm-overlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeConfirm();
+        });
 
-function runConfirm() {
-  const cb = confirmCallback;
-  closeConfirm(); // avval yopamiz, keyin callback — callback ichida ham showConfirm chaqirilishi mumkin
-  if (typeof cb === 'function') cb();
-}
+      function showConfirm(text, icon, okLabel, variant, cb) {
+        document.getElementById("confirm-text").textContent = text;
+        document.getElementById("confirm-icon").textContent = icon;
+        const btn = document.getElementById("confirm-ok-btn");
+        btn.textContent = okLabel;
+        btn.className = `btn-confirm-ok ${variant === "primary" ? "is-primary" : "is-danger"}`;
+        confirmCallback = cb;
+        document.getElementById("confirm-overlay").classList.add("active");
+      }
 
-// ── ADMIN ─────────────────────────────────────────────────────────────────────
-async function loadAdmin() {
-  const r = await apiFetch(`${BASE}/auth/admin_me`);
-  if (!r || !r.ok) return;
-  const d = await r.json();
-  const name = d.full_name || d.username || 'Admin';
-  document.getElementById('admin-name').textContent = name;
-  document.getElementById('admin-avatar').textContent =
-    name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2);
-}
+      function closeConfirm() {
+        document.getElementById("confirm-overlay").classList.remove("active");
+        confirmCallback = null;
+      }
 
-// ── LOAD STUDENT ──────────────────────────────────────────────────────────────
-async function loadStudent() {
-  if (!STUDENT_ID || isNaN(STUDENT_ID)) {
-    renderError(400, "Student ID ko'rsatilmagan");
-    return;
-  }
-  const r = await apiFetch(`${BASE}/student/info/${STUDENT_ID}`);
-  if (!r) return;
-  if (r.status === 404) { renderError(404, "O'quvchi topilmadi"); return; }
-  if (!r.ok) { await handleApiError(r); return; }
-  studentData = await r.json();
-  renderPage();
-}
+      function runConfirm() {
+        const cb = confirmCallback;
+        closeConfirm(); // avval yopamiz, keyin callback — callback ichida ham showConfirm chaqirilishi mumkin
+        if (typeof cb === "function") cb();
+      }
 
-function renderError(code, msg) {
-  document.getElementById('content-area').innerHTML =
-    `<div class="error-state"><div class="err-code">${code}</div><div class="err-msg">${esc(msg)}</div></div>`;
-}
+      // ── LOAD STUDENT ──────────────────────────────────────────────────────────────
+      async function loadStudent() {
+        if (!STUDENT_ID || isNaN(STUDENT_ID)) {
+          renderError(400, "Student ID ko'rsatilmagan");
+          return;
+        }
+        const r = await apiFetch(`${BASE}/student/info/${STUDENT_ID}`);
+        if (!r) return;
+        if (r.status === 404) {
+          renderError(404, "O'quvchi topilmadi");
+          return;
+        }
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+        studentData = await r.json();
+        renderPage();
+      }
 
-// ── RENDER PAGE ───────────────────────────────────────────────────────────────
-function renderPage() {
-  const s = studentData;
-  document.getElementById('page-title').textContent =
-    `${s.student.first_name} ${s.student.last_name}`;
-  document.getElementById('delete-student-btn').style.display = 'flex';
-  document.getElementById('content-area').innerHTML = buildInfoCard(s) + buildGroupsSection(s);
-}
+      function renderError(code, msg) {
+        document.getElementById("content-area").innerHTML =
+          `<div class="error-state"><div class="err-code">${code}</div><div class="err-msg">${esc(msg)}</div></div>`;
+      }
 
-// ── INFO CARD ─────────────────────────────────────────────────────────────────
-function buildInfoCard(s) {
-  const c = s.contact;
-  return `
+      // ── RENDER PAGE ───────────────────────────────────────────────────────────────
+      function renderPage() {
+        const s = studentData;
+        document.getElementById("page-title").textContent =
+          `${s.student.first_name} ${s.student.last_name}`;
+        document.getElementById("delete-student-btn").style.display = "flex";
+        document.getElementById("content-area").innerHTML =
+          buildInfoCard(s) + buildGroupsSection(s);
+      }
+
+      // ── INFO CARD ─────────────────────────────────────────────────────────────────
+      function buildInfoCard(s) {
+        const c = s.contact;
+        return `
   <div class="info-combined">
     <div class="info-combined-header">
       <span>🎓</span>
@@ -665,10 +1836,10 @@ function buildInfoCard(s) {
         <div class="edit-form" id="name-form">
           <div class="info-label" style="margin-bottom:4px">Ism</div>
           <input class="edit-input" id="inp-firstname" placeholder="Ism" maxlength="50"
-            value="${esc(s.student.first_name)}"/>
+            value="${esc(s.student.first_name)}" onkeydown="if(event.key==='Enter') saveName()"/>
           <div class="info-label" style="margin-bottom:4px">Familiya</div>
           <input class="edit-input" id="inp-lastname" placeholder="Familiya" maxlength="50"
-            value="${esc(s.student.last_name)}"/>
+            value="${esc(s.student.last_name)}" onkeydown="if(event.key==='Enter') saveName()"/>
           <div class="edit-actions">
             <button class="btn-save" id="name-save-btn" onclick="saveName()">Saqlash</button>
             <button class="btn-cancel" onclick="cancelNameEdit()">Bekor qilish</button>
@@ -713,16 +1884,16 @@ function buildInfoCard(s) {
         <div class="edit-form" id="contact-form">
           <div class="info-label" style="margin-bottom:4px">O'quvchi raqami</div>
           <input class="edit-input" id="inp-stunum" placeholder="+998..." maxlength="20"
-            value="${esc(c.student_number || '')}"/>
+            value="${esc(c.student_number || "")}" onkeydown="if(event.key==='Enter') saveContact()"/>
           <div class="info-label" style="margin-bottom:4px">Ota-ona raqami</div>
           <input class="edit-input" id="inp-parnum" placeholder="+998..." maxlength="20"
-            value="${esc(c.student_parent_number || '')}"/>
+            value="${esc(c.student_parent_number || "")}" onkeydown="if(event.key==='Enter') saveContact()"/>
           <div class="info-label" style="margin-bottom:4px">O'quvchi Telegram</div>
           <input class="edit-input" id="inp-stutg" placeholder="@username" maxlength="30"
-            value="${esc(c.student_telegram || '')}"/>
+            value="${esc(c.student_telegram || "")}" onkeydown="if(event.key==='Enter') saveContact()"/>
           <div class="info-label" style="margin-bottom:4px">Ota-ona Telegram</div>
           <input class="edit-input" id="inp-partg" placeholder="@username" maxlength="30"
-            value="${esc(c.student_parent_telegram || '')}"/>
+            value="${esc(c.student_parent_telegram || "")}" onkeydown="if(event.key==='Enter') saveContact()"/>
           <div class="edit-actions">
             <button class="btn-save" id="contact-save-btn" onclick="saveContact()">Saqlash</button>
             <button class="btn-cancel" onclick="cancelContactEdit()">Bekor qilish</button>
@@ -732,24 +1903,27 @@ function buildInfoCard(s) {
 
     </div>
   </div>`;
-}
+      }
 
-function pencilSvg() {
-  return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      function pencilSvg() {
+        return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
     <path d="M11.5 2.5a1.5 1.5 0 012.12 2.12l-8.5 8.5-3 .88.88-3 8.5-8.5z"
       stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`;
-}
+      }
 
-// ── GROUPS SECTION ────────────────────────────────────────────────────────────
-function buildGroupsSection(s) {
-  let cards = '';
-  if (!s.groups || s.groups.length === 0) {
-    cards = '<div class="empty-state">Hozircha hech qanday guruh yo\'q</div>';
-  } else {
-    s.groups.forEach(g => { cards += buildGroupCard(g); });
-  }
-  return `
+      // ── GROUPS SECTION ────────────────────────────────────────────────────────────
+      function buildGroupsSection(s) {
+        let cards = "";
+        if (!s.groups || s.groups.length === 0) {
+          cards =
+            '<div class="empty-state">Hozircha hech qanday guruh yo\'q</div>';
+        } else {
+          s.groups.forEach((g) => {
+            cards += buildGroupCard(g);
+          });
+        }
+        return `
   <div class="groups-section-header">
     <div class="groups-section-title">Guruhlar</div>
     <button class="add-group-btn" onclick="openGroupModal()">
@@ -760,19 +1934,24 @@ function buildGroupsSection(s) {
     </button>
   </div>
   <div id="groups-container">${cards}</div>`;
-}
+      }
 
-function buildGroupCard(g) {
-  const perm   = (studentData.permissions || []).find(p => p.group_id === g.group_id);
-  const disc   = (studentData.discounts   || []).find(d => d.group_id === g.group_id);
-  const joinAt = perm ? fmtDate(perm.created_at)       : '—';
-  const permDt = perm ? fmtDate(perm.permission_date)  : '—';
-  const toPay  = disc && disc.discount_amount > 0
-    ? Math.round(g.price - g.price * disc.discount_amount / 100)
-    : g.price;
+      function buildGroupCard(g) {
+        const perm = (studentData.permissions || []).find(
+          (p) => p.group_id === g.group_id,
+        );
+        const disc = (studentData.discounts || []).find(
+          (d) => d.group_id === g.group_id,
+        );
+        const joinAt = perm ? fmtDate(perm.created_at) : "—";
+        const permDt = perm ? fmtDate(perm.permission_date) : "—";
+        const toPay =
+          disc && disc.discount_amount > 0
+            ? Math.round(g.price - (g.price * disc.discount_amount) / 100)
+            : g.price;
 
-  const discStatic = disc
-    ? `<div class="discount-grid">
+        const discStatic = disc
+          ? `<div class="discount-grid">
         <div class="gi-item">
           <div class="gi-label">Chegirma miqdori</div>
           <div class="gi-value mono">${disc.discount_amount}%</div>
@@ -788,13 +1967,15 @@ function buildGroupCard(g) {
           <div class="gi-value mono">${fmtMoney(toPay)}</div>
         </div>
       </div>`
-    : `<div class="no-discount">Chegirma mavjud emas</div>`;
+          : `<div class="no-discount">Chegirma mavjud emas</div>`;
 
-  return `
+        return `
   <div class="group-card" id="gcard-${g.group_id}">
     <div class="group-card-header">
       <div class="group-name-block">
-        <div class="group-card-name">${esc(g.name)}</div>
+        <div class="group-card-name">
+          <a href="group_info.html?id=${g.group_id}" class="group-link">${esc(g.name)}</a>
+        </div>
         <div class="group-card-meta">Qo'shilgan: ${joinAt}</div>
       </div>
       <button class="exclude-btn" onclick="askExcludeGroup(${g.group_id}, '${esc(g.name)}')">
@@ -811,6 +1992,10 @@ function buildGroupCard(g) {
       <div class="payment-row">
         <span class="payment-label">Oylik to'lov sanasi</span>
         <span class="payment-date" id="permdate-${g.group_id}">${permDt}</span>
+        <div class="pending-cell" id="pcell-${g.group_id}" style="display:flex; align-items:center; gap:6px;">
+          <input type="number" min="1" max="365" class="pending-input" id="pinp-${g.group_id}" placeholder="kun" onkeydown="if(event.key==='Enter')submitPendingGroup(${g.group_id})"/>
+          <button class="pending-btn" onclick="submitPendingGroup(${g.group_id})">Kutish</button>
+        </div>
         <button class="pay-btn" onclick="askPayment(${g.group_id})">To'lov qilish</button>
         <button class="time-btn" onclick="toggleTimeForm(${g.group_id})">Vaqt belgilash</button>
       </div>
@@ -819,11 +2004,11 @@ function buildGroupCard(g) {
       <div class="inline-time-form" id="timef-${g.group_id}">
         <div class="inline-field">
           <span class="inline-label">Kunlar</span>
-          <input class="inline-input" id="tinp-days-${g.group_id}" type="number" min="1" max="365" placeholder="kun"/>
+          <input class="inline-input" id="tinp-days-${g.group_id}" type="number" min="1" max="365" placeholder="kun" onkeydown="if(event.key==='Enter') askSetTime(${g.group_id})"/>
         </div>
         <div class="inline-field">
           <span class="inline-label">Narx (so'm)</span>
-          <input class="inline-input" id="tinp-price-${g.group_id}" type="number" min="0" placeholder="narx" style="width:120px"/>
+          <input class="inline-input" id="tinp-price-${g.group_id}" type="number" min="0" placeholder="narx" style="width:120px" onkeydown="if(event.key==='Enter') askSetTime(${g.group_id})"/>
         </div>
         <div class="inline-field" style="justify-content:flex-end;flex-direction:row;gap:6px;align-self:flex-end">
           <button class="btn-save" onclick="askSetTime(${g.group_id})">Saqlash</button>
@@ -864,13 +2049,13 @@ function buildGroupCard(g) {
           <div class="inline-field">
             <span class="inline-label">Miqdor (%)</span>
             <input class="inline-input" id="disc-inp-amount-${g.group_id}" type="number"
-              min="0" max="100" value="${disc ? disc.discount_amount : 0}" style="width:80px"/>
+              min="0" max="100" value="${disc ? disc.discount_amount : 0}" style="width:80px" onkeydown="if(event.key==='Enter') saveDiscount(${g.group_id}, ${g.price})"/>
           </div>
           <div class="inline-field">
             <span class="inline-label">Turi</span>
-            <select class="discount-select" id="disc-inp-type-${g.group_id}">
-              <option value="umumiy" ${disc && disc.discount_type === 'umumiy' ? 'selected' : ''}>Umumiy</option>
-              <option value="markaz" ${disc && disc.discount_type === 'markaz' ? 'selected' : ''}>Markaz</option>
+            <select class="discount-select" id="disc-inp-type-${g.group_id}" onkeydown="if(event.key==='Enter') saveDiscount(${g.group_id}, ${g.price})">
+              <option value="umumiy" ${disc && disc.discount_type === "umumiy" ? "selected" : ""}>Umumiy</option>
+              <option value="markaz" ${disc && disc.discount_type === "markaz" ? "selected" : ""}>Markaz</option>
             </select>
           </div>
           <div class="inline-field" style="flex-direction:row;gap:6px;align-self:flex-end">
@@ -883,228 +2068,375 @@ function buildGroupCard(g) {
 
     </div>
   </div>`;
-}
+      }
 
-// ── NAME EDIT ─────────────────────────────────────────────────────────────────
-function toggleNameEdit() {
-  document.getElementById('name-static').classList.add('hidden');
-  document.getElementById('name-form').classList.add('active');
-  document.getElementById('inp-firstname').focus();
-}
-function cancelNameEdit() {
-  document.getElementById('name-static').classList.remove('hidden');
-  document.getElementById('name-form').classList.remove('active');
-  document.getElementById('inp-firstname').value = studentData.student.first_name;
-  document.getElementById('inp-lastname').value  = studentData.student.last_name;
-}
-async function saveName() {
-  const fn = document.getElementById('inp-firstname').value.trim();
-  const ln = document.getElementById('inp-lastname').value.trim();
-  if (!fn || fn.length > 50) { toast("Ism 1–50 ta belgi bo'lishi kerak"); return; }
-  if (!ln || ln.length > 50) { toast("Familiya 1–50 ta belgi bo'lishi kerak"); return; }
-  const btn = document.getElementById('name-save-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-sm"></span>';
-  const params = new URLSearchParams({ first_name: fn, last_name: ln });
-  const r = await apiFetch(`${BASE}/student/student_name/${STUDENT_ID}?${params}`, { method: 'PATCH' });
-  btn.disabled = false; btn.textContent = 'Saqlash';
-  if (!r) return;
-  if (!r.ok) { await handleApiError(r); return; }
-  const d = await r.json();
-  studentData.student.first_name = d.first_name;
-  studentData.student.last_name  = d.last_name;
-  document.getElementById('disp-firstname').textContent = d.first_name;
-  document.getElementById('disp-lastname').textContent  = d.last_name;
-  document.getElementById('page-title').textContent     = `${d.first_name} ${d.last_name}`;
-  cancelNameEdit();
-  toast("Ism-familiya yangilandi ✓", 'success');
-}
+      // ── NAME EDIT ─────────────────────────────────────────────────────────────────
+      function toggleNameEdit() {
+        document.getElementById("name-static").classList.add("hidden");
+        document.getElementById("name-form").classList.add("active");
+        document.getElementById("inp-firstname").focus();
+      }
+      function cancelNameEdit() {
+        document.getElementById("name-static").classList.remove("hidden");
+        document.getElementById("name-form").classList.remove("active");
+        document.getElementById("inp-firstname").value =
+          studentData.student.first_name;
+        document.getElementById("inp-lastname").value =
+          studentData.student.last_name;
+      }
+      async function saveName() {
+        const fn = document.getElementById("inp-firstname").value.trim();
+        const ln = document.getElementById("inp-lastname").value.trim();
+        if (!fn || fn.length > 50) {
+          toast("Ism 1–50 ta belgi bo'lishi kerak");
+          return;
+        }
+        if (!ln || ln.length > 50) {
+          toast("Familiya 1–50 ta belgi bo'lishi kerak");
+          return;
+        }
+        const btn = document.getElementById("name-save-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-sm"></span>';
+        const params = new URLSearchParams({ first_name: fn, last_name: ln });
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/student/student_name/${STUDENT_ID}?${params}`,
+          { method: "PATCH" },
+        );
+        hideLoader();
+        btn.disabled = false;
+        btn.textContent = "Saqlash";
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+        const d = await r.json();
+        studentData.student.first_name = d.first_name;
+        studentData.student.last_name = d.last_name;
+        document.getElementById("disp-firstname").textContent = d.first_name;
+        document.getElementById("disp-lastname").textContent = d.last_name;
+        document.getElementById("page-title").textContent =
+          `${d.first_name} ${d.last_name}`;
+        cancelNameEdit();
+        toast("Ism-familiya yangilandi ✓", "success");
+      }
 
-// ── CONTACT EDIT ──────────────────────────────────────────────────────────────
-function toggleContactEdit() {
-  document.getElementById('contact-static').classList.add('hidden');
-  document.getElementById('contact-form').classList.add('active');
-  document.getElementById('inp-stunum').focus();
-}
-function cancelContactEdit() {
-  document.getElementById('contact-static').classList.remove('hidden');
-  document.getElementById('contact-form').classList.remove('active');
-  const c = studentData.contact;
-  document.getElementById('inp-stunum').value = c.student_number || '';
-  document.getElementById('inp-parnum').value = c.student_parent_number || '';
-  document.getElementById('inp-stutg').value  = c.student_telegram || '';
-  document.getElementById('inp-partg').value  = c.student_parent_telegram || '';
-}
-async function saveContact() {
-  const stunum = document.getElementById('inp-stunum').value.trim();
-  const parnum = document.getElementById('inp-parnum').value.trim();
-  const stutg  = document.getElementById('inp-stutg').value.trim();
-  const partg  = document.getElementById('inp-partg').value.trim();
-  if (stunum.length > 20) { toast("O'quvchi raqami 20 belgidan oshmasin"); return; }
-  if (parnum.length > 20) { toast("Ota-ona raqami 20 belgidan oshmasin"); return; }
-  if (stutg.length  > 30) { toast("O'quvchi Telegram 30 belgidan oshmasin"); return; }
-  if (partg.length  > 30) { toast("Ota-ona Telegram 30 belgidan oshmasin"); return; }
-  const btn = document.getElementById('contact-save-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-sm"></span>';
-  const body = {};
-  if (stunum) body.student_num = stunum;
-  if (parnum) body.student_parent_num = parnum;
-  if (stutg)  body.student_telegram = stutg;
-  if (partg)  body.student_parent_telegram = partg;
-  const r = await apiFetch(`${BASE}/student/student_contact/${STUDENT_ID}`, {
-    method: 'PATCH', body: JSON.stringify(body)
-  });
-  btn.disabled = false; btn.textContent = 'Saqlash';
-  if (!r) return;
-  if (!r.ok) { await handleApiError(r); return; }
-  const d = await r.json();
-  studentData.contact = d;
-  const set = (id, val, empty) => {
-    const el = document.getElementById(id);
-    el.innerHTML = val ? esc(val) : `<span class="info-empty">${empty}</span>`;
-  };
-  set('disp-stunum', d.student_number,         '—');
-  set('disp-parnum', d.student_parent_number,   '—');
-  set('disp-stutg',  d.student_telegram,        'Kiritilmagan');
-  set('disp-partg',  d.student_parent_telegram, 'Kiritilmagan');
-  cancelContactEdit();
-  toast("Kontakt ma'lumotlari yangilandi ✓", 'success');
-}
+      // ── CONTACT EDIT ──────────────────────────────────────────────────────────────
+      function toggleContactEdit() {
+        document.getElementById("contact-static").classList.add("hidden");
+        document.getElementById("contact-form").classList.add("active");
+        document.getElementById("inp-stunum").focus();
+      }
+      function cancelContactEdit() {
+        document.getElementById("contact-static").classList.remove("hidden");
+        document.getElementById("contact-form").classList.remove("active");
+        const c = studentData.contact;
+        document.getElementById("inp-stunum").value = c.student_number || "";
+        document.getElementById("inp-parnum").value =
+          c.student_parent_number || "";
+        document.getElementById("inp-stutg").value = c.student_telegram || "";
+        document.getElementById("inp-partg").value =
+          c.student_parent_telegram || "";
+      }
+      async function saveContact() {
+        const stunum = document.getElementById("inp-stunum").value.trim();
+        const parnum = document.getElementById("inp-parnum").value.trim();
+        const stutg = document.getElementById("inp-stutg").value.trim();
+        const partg = document.getElementById("inp-partg").value.trim();
+        if (stunum.length > 20) {
+          toast("O'quvchi raqami 20 belgidan oshmasin");
+          return;
+        }
+        if (parnum.length > 20) {
+          toast("Ota-ona raqami 20 belgidan oshmasin");
+          return;
+        }
+        if (stutg.length > 30) {
+          toast("O'quvchi Telegram 30 belgidan oshmasin");
+          return;
+        }
+        if (partg.length > 30) {
+          toast("Ota-ona Telegram 30 belgidan oshmasin");
+          return;
+        }
+        const btn = document.getElementById("contact-save-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-sm"></span>';
+        const body = {};
+        if (stunum) body.student_num = stunum;
+        if (parnum) body.student_parent_num = parnum;
+        if (stutg) body.student_telegram = stutg;
+        if (partg) body.student_parent_telegram = partg;
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/student/student_contact/${STUDENT_ID}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify(body),
+          },
+        );
+        hideLoader();
+        btn.disabled = false;
+        btn.textContent = "Saqlash";
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+        const d = await r.json();
+        studentData.contact = d;
+        const set = (id, val, empty) => {
+          const el = document.getElementById(id);
+          el.innerHTML = val
+            ? esc(val)
+            : `<span class="info-empty">${empty}</span>`;
+        };
+        set("disp-stunum", d.student_number, "—");
+        set("disp-parnum", d.student_parent_number, "—");
+        set("disp-stutg", d.student_telegram, "Kiritilmagan");
+        set("disp-partg", d.student_parent_telegram, "Kiritilmagan");
+        cancelContactEdit();
+        toast("Kontakt ma'lumotlari yangilandi ✓", "success");
+      }
 
-// ── DELETE STUDENT ────────────────────────────────────────────────────────────
-function askDeleteStudent() {
-  showConfirm(
-    `${studentData.student.first_name} ${studentData.student.last_name} o'chirilsin? Bu amalni qaytarib bo'lmaydi.`,
-    '🗑️', "Ha, o'chirish", 'danger', deleteStudent
-  );
-}
-async function deleteStudent() {
-  const r = await apiFetch(`${BASE}/student/delete/${STUDENT_ID}`, { method: 'DELETE' });
-  if (!r) return;
-  if (r.status === 204 || r.ok) {
-    toast("O'quvchi o'chirildi ✓", 'success');
-    setTimeout(() => goBackAfterDelete(), 800);
-  } else {
-    await handleApiError(r);
-  }
-}
+      // ── DELETE STUDENT ────────────────────────────────────────────────────────────
+      function askDeleteStudent() {
+        showConfirm(
+          `${studentData.student.first_name} ${studentData.student.last_name} o'chirilsin? Bu amalni qaytarib bo'lmaydi.`,
+          "🗑️",
+          "Ha, o'chirish",
+          "danger",
+          deleteStudent,
+        );
+      }
+      async function deleteStudent() {
+        showLoader();
+        const r = await apiFetch(`${BASE}/student/delete/${STUDENT_ID}`, {
+          method: "DELETE",
+        });
+        hideLoader();
+        if (!r) return;
+        if (r.status === 204 || r.ok) {
+          toast("O'quvchi o'chirildi ✓", "success");
+          setTimeout(() => goBackAfterDelete(), 800);
+        } else {
+          await handleApiError(r);
+        }
+      }
 
-// ── EXCLUDE GROUP ─────────────────────────────────────────────────────────────
-function askExcludeGroup(groupId, groupName) {
-  showConfirm(
-    `"${groupName}" guruhidan chiqarilsinmi?`,
-    '⚠️', 'Chiqarish', 'danger', () => excludeGroup(groupId)
-  );
-}
-async function excludeGroup(groupId) {
-  const r = await apiFetch(
-    `${BASE}/student/exclusion_group/?student_id=${STUDENT_ID}&group_id=${groupId}`,
-    { method: 'DELETE' }
-  );
-  if (!r) return;
-  if (!r.ok && r.status !== 204) { await handleApiError(r); return; }
-  studentData.groups      = (studentData.groups      || []).filter(g => g.group_id !== groupId);
-  studentData.permissions = (studentData.permissions || []).filter(p => p.group_id !== groupId);
-  studentData.discounts   = (studentData.discounts   || []).filter(d => d.group_id !== groupId);
-  const card = document.getElementById(`gcard-${groupId}`);
-  if (card) {
-    card.style.opacity = '0';
-    setTimeout(() => card.remove(), 300);
-  }
-  toast("Guruhdan chiqarildi ✓", 'success');
-}
+      // ── EXCLUDE GROUP ─────────────────────────────────────────────────────────────
+      function askExcludeGroup(groupId, groupName) {
+        showConfirm(
+          `"${groupName}" guruhidan chiqarilsinmi?`,
+          "⚠️",
+          "Chiqarish",
+          "danger",
+          () => excludeGroup(groupId),
+        );
+      }
+      async function excludeGroup(groupId) {
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/student/exclusion_group/?student_id=${STUDENT_ID}&group_id=${groupId}`,
+          { method: "DELETE" },
+        );
+        hideLoader();
+        if (!r) return;
+        if (!r.ok && r.status !== 204) {
+          await handleApiError(r);
+          return;
+        }
+        studentData.groups = (studentData.groups || []).filter(
+          (g) => g.group_id !== groupId,
+        );
+        studentData.permissions = (studentData.permissions || []).filter(
+          (p) => p.group_id !== groupId,
+        );
+        studentData.discounts = (studentData.discounts || []).filter(
+          (d) => d.group_id !== groupId,
+        );
+        const card = document.getElementById(`gcard-${groupId}`);
+        if (card) {
+          card.style.opacity = "0";
+          setTimeout(() => card.remove(), 300);
+        }
+        toast("Guruhdan chiqarildi ✓", "success");
+      }
 
-// ── PAYMENT ───────────────────────────────────────────────────────────────────
-function askPayment(groupId) {
-  showConfirm(
-    "Ushbu guruh uchun to'lov amalga oshirilsinmi?",
-    '💳', "To'lovni tasdiqlash", 'primary', () => doPayment(groupId)
-  );
-}
-async function doPayment(groupId) {
-  const r = await apiFetch(
-    `${BASE}/student/student_per_date/?student_id=${STUDENT_ID}&group_id=${groupId}`,
-    { method: 'PATCH' }
-  );
-  if (!r) return;
-  if (!r.ok) { await handleApiError(r); return; }
-  const d = await r.json();
-  updatePermDate(groupId, d);
-  toast("To'lov muvaffaqiyatli amalga oshirildi ✓", 'success');
-}
+      // ── PENDING GROUP ─────────────────────────────────────────────────────────────
+      async function submitPendingGroup(groupId) {
+        const inp = document.getElementById(`pinp-${groupId}`);
+        const days = parseInt(inp?.value);
+        if (!days || days < 1) {
+          toast("Iltimos, kunlar sonini kiriting (kamida 1)");
+          return;
+        }
+        const cell = document.getElementById(`pcell-${groupId}`);
+        const btn = cell?.querySelector(".pending-btn");
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "...";
+        }
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/dashboard/pending/?student_id=${STUDENT_ID}&group_id=${groupId}&days=${days}`,
+          { method: "PATCH" },
+        );
+        hideLoader();
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Kutish";
+        }
+        if (!r) return;
+        if (r.status === 204 || r.ok) {
+          toast("Kutish muvaffaqiyatli belgilandi ✓", "success");
+          if (inp) inp.value = "";
+          try {
+            const d = await r.json();
+            if (d && d.permission_date) {
+              updatePermDate(groupId, d);
+            }
+          } catch (e) {}
+        } else {
+          await handleApiError(r);
+        }
+      }
 
-// ── TIME FORM ─────────────────────────────────────────────────────────────────
-function toggleTimeForm(groupId) {
-  document.getElementById(`timef-${groupId}`).classList.toggle('active');
-}
-function askSetTime(groupId) {
-  const days  = parseInt(document.getElementById(`tinp-days-${groupId}`).value);
-  const price = parseInt(document.getElementById(`tinp-price-${groupId}`).value);
-  if (!days || days < 1)       { toast("Kunlar sonini kiriting (kamida 1)"); return; }
-  if (isNaN(price) || price < 0) { toast("Narxni kiriting"); return; }
-  showConfirm(
-    `${days} kun, ${fmtMoney(price)} miqdorida vaqt belgilansinmi?`,
-    '📅', 'Tasdiqlash', 'primary', () => doSetTime(groupId, days, price)
-  );
-}
-async function doSetTime(groupId, days, price) {
-  const r = await apiFetch(
-    `${BASE}/student/student_per_date/?days=${days}&price=${price}&student_id=${STUDENT_ID}&group_id=${groupId}`,
-    { method: 'PATCH' }
-  );
-  if (!r) return;
-  if (!r.ok) { await handleApiError(r); return; }
-  const d = await r.json();
-  updatePermDate(groupId, d);
-  toggleTimeForm(groupId);
-  document.getElementById(`tinp-days-${groupId}`).value  = '';
-  document.getElementById(`tinp-price-${groupId}`).value = '';
-  toast("Vaqt muvaffaqiyatli belgilandi ✓", 'success');
-}
-function updatePermDate(groupId, d) {
-  if (!studentData.permissions) studentData.permissions = [];
-  const idx = studentData.permissions.findIndex(p => p.group_id === groupId);
-  if (idx >= 0) Object.assign(studentData.permissions[idx], d);
-  else studentData.permissions.push(d);
-  const el = document.getElementById(`permdate-${groupId}`);
-  if (el) el.textContent = fmtDate(d.permission_date);
-}
+      // ── PAYMENT ───────────────────────────────────────────────────────────────────
+      function askPayment(groupId) {
+        showConfirm(
+          "Ushbu guruh uchun to'lov amalga oshirilsinmi?",
+          "💳",
+          "To'lovni tasdiqlash",
+          "primary",
+          () => doPayment(groupId),
+        );
+      }
+      async function doPayment(groupId) {
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/student/student_per_date/?student_id=${STUDENT_ID}&group_id=${groupId}`,
+          { method: "PATCH" },
+        );
+        hideLoader();
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+        const d = await r.json();
+        updatePermDate(groupId, d);
+        toast("To'lov muvaffaqiyatli amalga oshirildi ✓", "success");
+      }
 
-// ── DISCOUNT EDIT ─────────────────────────────────────────────────────────────
-function toggleDiscountEdit(groupId) {
-  document.getElementById(`disc-static-${groupId}`).style.display = 'none';
-  document.getElementById(`disc-form-${groupId}`).classList.add('active');
-}
-function cancelDiscountEdit(groupId) {
-  document.getElementById(`disc-static-${groupId}`).style.display = '';
-  document.getElementById(`disc-form-${groupId}`).classList.remove('active');
-}
-async function saveDiscount(groupId, groupPrice) {
-  const amount = parseInt(document.getElementById(`disc-inp-amount-${groupId}`).value);
-  const type   = document.getElementById(`disc-inp-type-${groupId}`).value;
-  if (isNaN(amount) || amount < 0 || amount > 100) {
-    toast("Chegirma 0–100% orasida bo'lishi kerak"); return;
-  }
-  const btn = document.getElementById(`disc-save-btn-${groupId}`);
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-sm"></span>';
-  const r = await apiFetch(
-    `${BASE}/student/student_discount/?student_id=${STUDENT_ID}&group_id=${groupId}&discount=${amount}&discount_type=${type}`,
-    { method: 'PUT' }
-  );
-  btn.disabled = false; btn.textContent = 'Saqlash';
-  if (!r) return;
-  if (!r.ok) { await handleApiError(r); return; }
-  const d = await r.json();
-  if (!studentData.discounts) studentData.discounts = [];
-  const idx = studentData.discounts.findIndex(x => x.group_id === groupId);
-  if (idx >= 0) studentData.discounts[idx] = d;
-  else studentData.discounts.push(d);
-  const toPay = d.discount_amount > 0
-    ? Math.round(groupPrice - groupPrice * d.discount_amount / 100)
-    : groupPrice;
-  document.getElementById(`disc-static-${groupId}`).innerHTML = `
+      // ── TIME FORM ─────────────────────────────────────────────────────────────────
+      function toggleTimeForm(groupId) {
+        document.getElementById(`timef-${groupId}`).classList.toggle("active");
+      }
+      function askSetTime(groupId) {
+        const days = parseInt(
+          document.getElementById(`tinp-days-${groupId}`).value,
+        );
+        const price = parseInt(
+          document.getElementById(`tinp-price-${groupId}`).value,
+        );
+        if (!days || days < 1) {
+          toast("Kunlar sonini kiriting (kamida 1)");
+          return;
+        }
+        if (isNaN(price) || price < 0) {
+          toast("Narxni kiriting");
+          return;
+        }
+        showConfirm(
+          `${days} kun, ${fmtMoney(price)} miqdorida vaqt belgilansinmi?`,
+          "📅",
+          "Tasdiqlash",
+          "primary",
+          () => doSetTime(groupId, days, price),
+        );
+      }
+      async function doSetTime(groupId, days, price) {
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/student/student_per_date/?days=${days}&price=${price}&student_id=${STUDENT_ID}&group_id=${groupId}`,
+          { method: "PATCH" },
+        );
+        hideLoader();
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+        const d = await r.json();
+        updatePermDate(groupId, d);
+        toggleTimeForm(groupId);
+        document.getElementById(`tinp-days-${groupId}`).value = "";
+        document.getElementById(`tinp-price-${groupId}`).value = "";
+        toast("Vaqt muvaffaqiyatli belgilandi ✓", "success");
+      }
+      function updatePermDate(groupId, d) {
+        if (!studentData.permissions) studentData.permissions = [];
+        const idx = studentData.permissions.findIndex(
+          (p) => p.group_id === groupId,
+        );
+        if (idx >= 0) Object.assign(studentData.permissions[idx], d);
+        else studentData.permissions.push(d);
+        const el = document.getElementById(`permdate-${groupId}`);
+        if (el) el.textContent = fmtDate(d.permission_date);
+      }
+
+      // ── DISCOUNT EDIT ─────────────────────────────────────────────────────────────
+      function toggleDiscountEdit(groupId) {
+        document.getElementById(`disc-static-${groupId}`).style.display =
+          "none";
+        document.getElementById(`disc-form-${groupId}`).classList.add("active");
+      }
+      function cancelDiscountEdit(groupId) {
+        document.getElementById(`disc-static-${groupId}`).style.display = "";
+        document
+          .getElementById(`disc-form-${groupId}`)
+          .classList.remove("active");
+      }
+      async function saveDiscount(groupId, groupPrice) {
+        const amount = parseInt(
+          document.getElementById(`disc-inp-amount-${groupId}`).value,
+        );
+        const type = document.getElementById(`disc-inp-type-${groupId}`).value;
+        if (isNaN(amount) || amount < 0 || amount > 100) {
+          toast("Chegirma 0–100% orasida bo'lishi kerak");
+          return;
+        }
+        const btn = document.getElementById(`disc-save-btn-${groupId}`);
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-sm"></span>';
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/student/student_discount/?student_id=${STUDENT_ID}&group_id=${groupId}&discount=${amount}&discount_type=${type}`,
+          { method: "PUT" },
+        );
+        hideLoader();
+        btn.disabled = false;
+        btn.textContent = "Saqlash";
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+        const d = await r.json();
+        if (!studentData.discounts) studentData.discounts = [];
+        const idx = studentData.discounts.findIndex(
+          (x) => x.group_id === groupId,
+        );
+        if (idx >= 0) studentData.discounts[idx] = d;
+        else studentData.discounts.push(d);
+        const toPay =
+          d.discount_amount > 0
+            ? Math.round(groupPrice - (groupPrice * d.discount_amount) / 100)
+            : groupPrice;
+        document.getElementById(`disc-static-${groupId}`).innerHTML = `
     <div class="discount-grid">
       <div class="gi-item">
         <div class="gi-label">Chegirma miqdori</div>
@@ -1121,51 +2453,69 @@ async function saveDiscount(groupId, groupPrice) {
         <div class="gi-value mono">${fmtMoney(toPay)}</div>
       </div>
     </div>`;
-  cancelDiscountEdit(groupId);
-  toast("Chegirma yanglandi ✓", 'success');
-}
+        cancelDiscountEdit(groupId);
+        toast("Chegirma yanglandi ✓", "success");
+      }
 
-// ── ADD GROUP MODAL ───────────────────────────────────────────────────────────
-// FIX: onclick atributi o'rniga addEventListener — modal tugmalari
-document.getElementById('group-modal-close-btn').addEventListener('click', closeGroupModal);
-document.getElementById('group-modal-cancel-btn').addEventListener('click', closeGroupModal);
-document.getElementById('group-add-confirm-btn').addEventListener('click', confirmAddGroup);
-document.getElementById('group-search-input').addEventListener('input', filterGroups);
-document.getElementById('group-modal-overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeGroupModal();
-});
+      // ── ADD GROUP MODAL ───────────────────────────────────────────────────────────
+      // FIX: onclick atributi o'rniga addEventListener — modal tugmalari
+      document
+        .getElementById("group-modal-close-btn")
+        .addEventListener("click", closeGroupModal);
+      document
+        .getElementById("group-modal-cancel-btn")
+        .addEventListener("click", closeGroupModal);
+      document
+        .getElementById("group-add-confirm-btn")
+        .addEventListener("click", confirmAddGroup);
+      document
+        .getElementById("group-search-input")
+        .addEventListener("input", filterGroups);
+      document
+        .getElementById("group-modal-overlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeGroupModal();
+        });
 
-async function openGroupModal() {
-  selectedGroupId = null;
-  document.getElementById('group-add-confirm-btn').disabled = true;
-  document.getElementById('group-search-input').value = '';
-  document.getElementById('group-modal-list').innerHTML =
-    '<div class="modal-empty"><div class="spinner" style="margin:0 auto 8px"></div>Yuklanmoqda...</div>';
-  document.getElementById('group-modal-overlay').classList.add('active');
+      async function openGroupModal() {
+        selectedGroupId = null;
+        document.getElementById("group-add-confirm-btn").disabled = true;
+        document.getElementById("group-search-input").value = "";
+        document.getElementById("group-modal-list").innerHTML =
+          '<div class="modal-empty"><div class="spinner" style="margin:0 auto 8px"></div>Yuklanmoqda...</div>';
+        document.getElementById("group-modal-overlay").classList.add("active");
 
-  const r = await apiFetch(`${BASE}/group/all`);
-  if (!r || !r.ok) {
-    document.getElementById('group-modal-list').innerHTML =
-      '<div class="modal-empty">Guruhlarni yuklashda xatolik</div>';
-    return;
-  }
-  allGroups = await r.json();
-  renderGroupList();
-}
+        const r = await apiFetch(`${BASE}/group/all`);
+        if (!r || !r.ok) {
+          document.getElementById("group-modal-list").innerHTML =
+            '<div class="modal-empty">Guruhlarni yuklashda xatolik</div>';
+          return;
+        }
+        allGroups = await r.json();
+        renderGroupList();
+      }
 
-function renderGroupList() {
-  const existingIds = new Set((studentData.groups || []).map(g => g.group_id));
-  const query = document.getElementById('group-search-input').value.toLowerCase();
-  const filtered = allGroups.filter(g =>
-    !existingIds.has(g.group_id) && g.name.toLowerCase().includes(query)
-  );
-  const list = document.getElementById('group-modal-list');
-  if (!filtered.length) {
-    list.innerHTML = '<div class="modal-empty">Guruh topilmadi</div>';
-    return;
-  }
-  list.innerHTML = filtered.map(g => `
-    <div class="modal-group-item ${selectedGroupId === g.group_id ? 'selected' : ''}"
+      function renderGroupList() {
+        const existingIds = new Set(
+          (studentData.groups || []).map((g) => g.group_id),
+        );
+        const query = document
+          .getElementById("group-search-input")
+          .value.toLowerCase();
+        const filtered = allGroups.filter(
+          (g) =>
+            !existingIds.has(g.group_id) &&
+            g.name.toLowerCase().includes(query),
+        );
+        const list = document.getElementById("group-modal-list");
+        if (!filtered.length) {
+          list.innerHTML = '<div class="modal-empty">Guruh topilmadi</div>';
+          return;
+        }
+        list.innerHTML = filtered
+          .map(
+            (g) => `
+    <div class="modal-group-item ${selectedGroupId === g.group_id ? "selected" : ""}"
          onclick="selectModalGroup(${g.group_id})" id="mgi-${g.group_id}">
       <span class="modal-group-name">${esc(g.name)}</span>
       <div class="modal-group-check">
@@ -1173,64 +2523,82 @@ function renderGroupList() {
           <path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-    </div>`).join('');
-}
+    </div>`,
+          )
+          .join("");
+      }
 
-function filterGroups() { renderGroupList(); }
+      function filterGroups() {
+        renderGroupList();
+      }
 
-function selectModalGroup(id) {
-  selectedGroupId = id;
-  document.getElementById('group-add-confirm-btn').disabled = false;
-  document.querySelectorAll('.modal-group-item').forEach(el => el.classList.remove('selected'));
-  const el = document.getElementById(`mgi-${id}`);
-  if (el) el.classList.add('selected');
-}
+      function selectModalGroup(id) {
+        selectedGroupId = id;
+        document.getElementById("group-add-confirm-btn").disabled = false;
+        document
+          .querySelectorAll(".modal-group-item")
+          .forEach((el) => el.classList.remove("selected"));
+        const el = document.getElementById(`mgi-${id}`);
+        if (el) el.classList.add("selected");
+      }
 
-function closeGroupModal() {
-  document.getElementById('group-modal-overlay').classList.remove('active');
-  selectedGroupId = null;
-}
+      function closeGroupModal() {
+        document
+          .getElementById("group-modal-overlay")
+          .classList.remove("active");
+        selectedGroupId = null;
+      }
 
-async function confirmAddGroup() {
-  if (!selectedGroupId) return;
-  const btn = document.getElementById('group-add-confirm-btn');
-  btn.disabled = true;
-  btn.innerHTML = "<span class='spinner-sm'></span> Qo'shilmoqda...";
-  const r = await apiFetch(
-    `${BASE}/student/add_group?student_id=${STUDENT_ID}&group_id=${selectedGroupId}`,
-    { method: 'POST' }
-  );
-  btn.disabled = false; btn.textContent = "Qo'shish";
-  if (!r) return;
-  if (!r.ok) { await handleApiError(r); closeGroupModal(); return; }
-  const d = await r.json();
-  studentData.groups.push(d.group);
-  if (d.student_per) {
-    if (!studentData.permissions) studentData.permissions = [];
-    studentData.permissions.push(d.student_per);
-  }
-  if (d.discount) {
-    if (!studentData.discounts) studentData.discounts = [];
-    studentData.discounts.push(d.discount);
-  }
-  const container = document.getElementById('groups-container');
-  const emptyState = container.querySelector('.empty-state');
-  if (emptyState) emptyState.remove();
-  container.insertAdjacentHTML('beforeend', buildGroupCard(d.group));
-  closeGroupModal();
-  toast(`"${d.group.name}" guruhiga qo'shildi ✓`, 'success');
-}
+      async function confirmAddGroup() {
+        if (!selectedGroupId) return;
+        const btn = document.getElementById("group-add-confirm-btn");
+        btn.disabled = true;
+        btn.innerHTML = "<span class='spinner-sm'></span> Qo'shilmoqda...";
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/student/add_group?student_id=${STUDENT_ID}&group_id=${selectedGroupId}`,
+          { method: "POST" },
+        );
+        hideLoader();
+        btn.disabled = false;
+        btn.textContent = "Qo'shish";
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          closeGroupModal();
+          return;
+        }
+        const d = await r.json();
+        studentData.groups.push(d.group);
+        if (d.student_per) {
+          if (!studentData.permissions) studentData.permissions = [];
+          studentData.permissions.push(d.student_per);
+        }
+        if (d.discount) {
+          if (!studentData.discounts) studentData.discounts = [];
+          studentData.discounts.push(d.discount);
+        }
+        const container = document.getElementById("groups-container");
+        const emptyState = container.querySelector(".empty-state");
+        if (emptyState) emptyState.remove();
+        container.insertAdjacentHTML("beforeend", buildGroupCard(d.group));
+        closeGroupModal();
+        toast(`"${d.group.name}" guruhiga qo'shildi ✓`, "success");
+      }
 
-// ── EVENT LISTENERS ───────────────────────────────────────────────────────────
-document.getElementById('back-btn').addEventListener('click', goBack);
-document.getElementById('delete-student-btn').addEventListener('click', askDeleteStudent);
-document.getElementById('logout-btn').addEventListener('click', authLogout);
+      // ── EVENT LISTENERS ───────────────────────────────────────────────────────────
+      document.getElementById("back-btn").addEventListener("click", goBack);
+      document
+        .getElementById("delete-student-btn")
+        .addEventListener("click", askDeleteStudent);
+      document
+        .getElementById("logout-btn")
+        .addEventListener("click", authLogout);
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
-(async () => {
-  await loadAdmin();
-  await loadStudent();
-})();
-</script>
-</body>
+      // ── INIT ──────────────────────────────────────────────────────────────────────
+      (async () => {
+        await loadStudent();
+      })();
+    </script>
+  </body>
 </html>

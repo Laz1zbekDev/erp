@@ -8,6 +8,8 @@ from .students import Student
 from .teachers import Teacher
 from .users import User
 from .transaction import AdminTransaction, StudentTransaction, TeacherTransaction
+from .attendance import Attendance
+
 
 __all__ = [
     "Admin",
@@ -23,4 +25,5 @@ __all__ = [
     "AdminTransaction",
     "StudentTransaction",
     "TeacherTransaction",
+    "Attendance"
 ]

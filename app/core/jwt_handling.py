@@ -41,7 +41,13 @@ def decode_access_token(token: str) -> dict:
         payload = jwt.decode(token, ACCESS_SECRET, algorithms=[ALGORITHM])
         if payload.get("type") != "access":
             print("bu token access token emas")
-            raise HTTPException(status_code=401, detail="Bu acces token emas")
+            raise HTTPException(
+                status_code=401,
+                detail={
+                    "error_code": "TOKEN_INVALID",  # ← frontend shu ni o'qiydi
+                    "message": "Access token noto'g'ri",
+                },
+            )
 
         return payload
 
@@ -50,7 +56,13 @@ def decode_access_token(token: str) -> dict:
         raise HTTPException(status_code=401, detail="access token muddati tugagan")
     except JWTError:
         print("access token noto'g'ri")
-        raise HTTPException(status_code=401, detail="access token noto'g'ri")
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "TOKEN_INVALID",  # ← frontend shu ni o'qiydi
+                "message": "Access token noto'g'ri",
+            },
+        )
 
 
 def decode_refresh_token(token: str) -> dict:
@@ -59,8 +71,13 @@ def decode_refresh_token(token: str) -> dict:
 
         if payload.get("type") != "refresh":
             print("bu token refresh token emas")
-            raise HTTPException(status_code=401, detail="bu token refresh token emas")
-
+            raise HTTPException(
+                status_code=401,
+                detail={
+                    "error_code": "TOKEN_INVALID",  # ← frontend shu ni o'qiydi
+                    "message": "Access token noto'g'ri",
+                },
+            )
         return payload
 
     except ExpiredSignatureError:
@@ -68,4 +85,10 @@ def decode_refresh_token(token: str) -> dict:
         raise HTTPException(status_code=401, detail="refresh token muddati tugagan")
     except JWTError:
         print("refresh token noto'g'ri")
-        raise HTTPException(status_code=401, detail="refresh token noto'g'ri")
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "TOKEN_INVALID",  # ← frontend shu ni o'qiydi
+                "message": "Access token noto'g'ri",
+            },
+        )

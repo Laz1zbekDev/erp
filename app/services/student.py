@@ -2,7 +2,7 @@ from datetime import datetime, date, timedelta
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, delete, update
+from sqlalchemy import select, func, delete, update, or_, and_
 from sqlalchemy.orm import selectinload
 
 from .user import create_user
@@ -13,6 +13,7 @@ from ..models import (
     StudentPermissionDate,
     StudentDiscount,
     StudentGr,
+    Group,
 )
 from ..schemas import RegisterStudent
 from ..utils.enums import DiscountType, UserRole
@@ -97,6 +98,12 @@ async def all_student_number(session: AsyncSession) -> int:
     return result.scalar_one()
 
 
+async def get_all_students(session: AsyncSession) -> list[Student]:
+    result = await session.execute(select(Student).where(Student.status))
+
+    return result.scalars().all()
+
+
 async def get_student_by_id(session: AsyncSession, student_id: int) -> Student | None:
     student = await session.execute(
         select(Student).where(Student.student_id == student_id, Student.status)
@@ -108,7 +115,7 @@ async def get_student_by_id(session: AsyncSession, student_id: int) -> Student |
 async def get_student_full_info(session: AsyncSession, student_id: int) -> Student:
     stmt = (
         select(Student)
-        .where(Student.student_id == student_id)
+        .where(Student.student_id == student_id, Student.status)
         .options(
             selectinload(Student.groups),
             selectinload(Student.contact),
@@ -159,9 +166,7 @@ async def get_student_permission(
     return result.scalar_one_or_none()
 
 
-async def get_student_per_and_student(
-    session: AsyncSession, offset: int = 0, limit: int = 20
-) -> list[StudentPermissionDate]:
+async def get_student_per_and_student(session: AsyncSession, offset: int, limit: int):
     today = date.today()
     stmt = (
         select(StudentPermissionDate)
@@ -181,6 +186,33 @@ async def get_student_per_and_student(
     return result.scalars().all()
 
 
+async def get_student_and_group_by_per_date(
+    session: AsyncSession, offset: int, limit: int
+) -> list[Student]:
+    today = date.today()
+    has_expired_permission = (
+        select(1)
+        .where(
+            StudentPermissionDate.student_id == Student.student_id,
+            StudentPermissionDate.permission_date < today,
+            StudentPermissionDate.pending_deadline < today,
+        )
+        .correlate(Student)
+        .exists()
+    )
+
+    stmt = (
+        select(Student)
+        .where(Student.status)
+        .options(selectinload(Student.student_per_dates), selectinload(Student.groups))
+        .order_by(has_expired_permission.desc())
+        .offset(offset)
+        .limit(limit)
+    )
+    result = await session.execute(stmt)
+    return list(result.scalars().all())
+
+
 async def count_student_per_and_student(session: AsyncSession) -> int:
     today = date.today()
 
@@ -197,10 +229,69 @@ async def count_student_per_and_student(session: AsyncSession) -> int:
     return result.scalar_one()
 
 
-async def update_student_pending(session: AsyncSession, student_id: int, days: int):
+async def search_student(
+    session: AsyncSession,
+    student_name: str | None,
+    group_id: int | None,
+    teacher_id: int | None,
+    discount: DiscountType | bool | None,
+) -> list[Student]:
+    stmt = select(Student).where(Student.status).options(selectinload(Student.groups))
+
+    if student_name:
+        student_name = student_name.strip().lower()
+        parts = student_name.split()
+        if len(parts) == 1:
+            term = f"%{parts[0]}%"
+            stmt = stmt.where(
+                or_(Student.first_name.ilike(term), Student.last_name.ilike(term))
+            )
+        elif len(parts) >= 2:
+            term1 = f"%{parts[0]}%"
+            term2 = f"%{parts[1]}%"
+            stmt = stmt.where(
+                or_(
+                    and_(
+                        Student.first_name.ilike(term1), Student.last_name.ilike(term2)
+                    ),
+                    and_(
+                        Student.first_name.ilike(term2), Student.last_name.ilike(term1)
+                    ),
+                )
+            )
+
+    if group_id is not None:
+        stmt = stmt.where(Student.groups.any(Group.group_id == group_id))
+
+    if teacher_id is not None:
+        stmt = stmt.where(Student.groups.any(Group.teacher_id == teacher_id))
+
+    if discount is not None and discount is not False:
+        if discount is True:
+            stmt = stmt.where(
+                Student.student_discount.any(StudentDiscount.discount_amount > 0)
+            )
+        else:
+            stmt = stmt.where(
+                Student.student_discount.any(
+                    and_(
+                        StudentDiscount.discount_amount > 0,
+                        StudentDiscount.discount_type == discount,
+                    )
+                )
+            )
+
+    result = await session.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def update_student_pending(
+    session: AsyncSession, student_id: int, group_id: int, days: int
+):
     result = await session.execute(
         select(StudentPermissionDate).where(
-            StudentPermissionDate.student_id == student_id
+            StudentPermissionDate.student_id == student_id,
+            StudentPermissionDate.group_id == group_id,
         )
     )
     check = result.scalar_one_or_none()
@@ -210,6 +301,7 @@ async def update_student_pending(session: AsyncSession, student_id: int, days: i
     check.pending_deadline = date.today() + timedelta(days=days)
 
     await session.commit()
+    await session.refresh(check)
 
     return check
 

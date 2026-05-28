@@ -27,7 +27,9 @@ class AdminTransaction(Base, TimeMixin):
         SmallInteger, ForeignKey("admins.admin_id"), nullable=False
     )
     amount: Mapped[int] = mapped_column(Integer, nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=True)
+    description: Mapped[str] = mapped_column(String(255), nullable=True)
+
+    admin: Mapped["Admin"] = relationship("Admin", back_populates="admin_transactions")
 
 
 class TeacherTransaction(Base, TimeMixin):
@@ -42,7 +44,14 @@ class TeacherTransaction(Base, TimeMixin):
         SmallInteger, ForeignKey("teachers.teacher_id"), nullable=False
     )
     amount: Mapped[int] = mapped_column(Integer, nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=True)
+    description: Mapped[str] = mapped_column(String(255), nullable=True)
+
+    teacher: Mapped["Teacher"] = relationship(
+        "Teacher", back_populates="teacher_transactions"
+    )
+    admin: Mapped["Admin"] = relationship(
+        "Admin", back_populates="teacher_transactions"
+    )
 
 
 class StudentTransaction(Base, TimeMixin):
@@ -75,4 +84,17 @@ class StudentTransaction(Base, TimeMixin):
             values_callable=lambda x: [e.value for e in x],
         ),
         nullable=True,
+    )
+
+    student: Mapped["Student"] = relationship(
+        "Student", back_populates="student_transactions"
+    )
+    teacher: Mapped["Teacher"] = relationship(
+        "Teacher", back_populates="student_transactions"
+    )
+    group: Mapped["Group"] = relationship(
+        "Group", back_populates="student_transactions"
+    )
+    admin: Mapped["Admin"] = relationship(
+        "Admin", back_populates="student_transactions"
     )

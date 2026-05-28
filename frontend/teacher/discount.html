@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chegirmalar — Liderlar akademiyasi</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F5F4F0; --surface: #FFFFFF; --surface2: #EFEDE8;
+      --border: #E2E0DA; --text: #1A1917; --muted: #7A786F;
+      --accent: #2D6A4F; --accent-bg: #EAF4EE;
+      --accent2: #B7410E; --accent2-bg: #FDF0EB;
+      --nav-h: 64px; --font: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace;
+      --radius: 14px; --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
+      --panel-bg: #1e3d2f;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      background: var(--bg);
+      font-family: var(--font);
+      color: var(--text);
+      overflow: hidden;
+      position: fixed; /* Butun ekran bo'ylab qotirib qo'yadi va ortiqcha siljishni yo'qotadi */
+      inset: 0;
+    }
+
+    /* ═════════════════ STOL USTASIGA O'RANG ════════════════ */
+    @media (min-width: 900px) {
+      body { background: var(--panel-bg); display: flex; align-items: stretch; min-height: 100vh; overflow: hidden; }
+      .side-panel { flex: 1; background: var(--panel-bg); position: relative; overflow: hidden; }
+      .side-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(45,106,79,.35) 0%, transparent 70%), radial-gradient(ellipse at 80% 100%, rgba(45,106,79,.2) 0%, transparent 60%); pointer-events: none; }
+      .side-panel::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+      .phone-shell { width: 840px; flex-shrink: 0; height: 100vh; background: var(--bg); position: relative; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.25), 0 32px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.15); }
+      .phone-shell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent); z-index: 999; pointer-events: none; }
+    }
+    @media (max-width: 899px) {
+      .side-panel { display: none; }
+      .phone-shell {
+        width: 100%;
+        height: 100%; /* min-height: 100vh o'rniga 100% yozing */
+        position: relative;
+        overflow: hidden;
+      }
+    }
+
+    /* ── YUQORI SARLAVHA ── */
+    .top-header { position: absolute; top: 0; left: 0; right: 0; z-index: 200; height: 56px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+    .header-brand { display: flex; align-items: center; gap: 10px; }
+    .header-logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .header-logo svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+    .header-name { font-size: 15px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+    .header-sub { font-size: 11px; color: var(--muted); }
+    
+    .add-btn { display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; font-family: var(--font); font-size: 13px; font-weight: 500; transition: opacity .15s; }
+    .add-btn:hover { opacity: .85; }
+    .add-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; }
+
+    /* ── ASOSIY QISM ── */
+    .phone-inner { position: absolute; inset: 0; overflow: hidden; }
+    .main { height: 100%; overflow-y: auto; padding-top: calc(56px + 16px); padding-bottom: calc(var(--nav-h) + 16px); padding-left: 16px; padding-right: 16px; }
+
+    .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
+    .summary-label { font-size: 13px; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+    .summary-total { font-size: 24px; font-weight: 700; color: var(--accent); font-family: var(--mono); letter-spacing: -.02em; }
+
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .section-title { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+    .section-badge { font-size: 11px; font-weight: 500; font-family: var(--mono); background: var(--accent-bg); color: var(--accent); padding: 3px 9px; border-radius: 20px; }
+
+    /* ── CHEGIRMA KARTASI ── */
+    .discount-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; box-shadow: var(--shadow); animation: slideUp .25s both ease; display: flex; align-items: center; gap: 12px; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .discount-amount { width: 48px; height: 48px; border-radius: 50%; background: var(--accent2-bg); border: 1px solid rgba(183, 65, 14, 0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent2); font-family: var(--mono); font-weight: 700; font-size: 14px; }
+    .discount-amount span { font-size: 10px; font-weight: 500; opacity: 0.8; margin-top: -2px; }
+    
+    .discount-info { flex: 1; min-width: 0; }
+    .discount-name { font-size: 15px; font-weight: 600; letter-spacing: -.02em; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .discount-group { font-size: 11px; color: var(--accent); font-weight: 500; background: var(--accent-bg); border-radius: 4px; display: inline-block; padding: 2px 6px; }
+
+    .edit-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: all .15s; flex-shrink: 0; }
+    .edit-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+    .edit-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; }
+
+    /* ── SAHIFALASHTIRISH ── */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+    .page-btn { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+    .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+    .page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .page-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .page-info { text-align: center; font-size: 12px; color: var(--muted); margin-bottom: 4px; font-family: var(--mono); }
+
+    /* ── BO'SH HOLAT ── */
+    .empty-state { text-align: center; padding: 40px 20px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); margin-top: 20px; }
+    .empty-icon { width: 52px; height: 52px; border-radius: 50%; background: var(--surface2); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; }
+    .empty-icon svg { width: 24px; height: 24px; stroke: var(--muted); stroke-width: 1.5; fill: none; }
+    .empty-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+    .empty-sub { font-size: 13px; color: var(--muted); }
+
+    /* ── PASTIKI NAV ── */
+    .bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: var(--surface); border-top: 1px solid var(--border); display: flex; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; text-decoration: none; color: var(--muted); transition: color .15s; padding: 8px 4px; -webkit-tap-highlight-color: transparent; }
+    .nav-item.active { color: var(--accent); }
+    .nav-item svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-item.active svg { stroke-width: 2.2; }
+    .nav-label { font-size: 10px; font-weight: 500; }
+    .nav-item.active .nav-label { font-weight: 600; }
+
+    /* ── MODAL (CHEGIRMA QO'SHISH/TAHRIRLASH) ── */
+    .modal-overlay { position: absolute; inset: 0; background: rgba(26,25,23,0.4); backdrop-filter: blur(2px); z-index: 300; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    @media (min-width: 900px) { .modal-overlay { align-items: center; justify-content: center; } }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    
+    .modal-content { background: var(--bg); width: 100%; max-height: 90vh; border-radius: 20px 20px 0 0; padding: 20px 16px; position: relative; transform: translateY(100%); transition: transform .3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+    @media (min-width: 900px) { .modal-content { width: 400px; border-radius: var(--radius); transform: translateY(20px) scale(0.95); } }
+    .modal-overlay.open .modal-content { transform: translateY(0) scale(1); }
+    
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-title { font-size: 18px; font-weight: 600; }
+    .close-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); }
+    .close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+    
+    .form-group { margin-bottom: 16px; position: relative; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-family: var(--font); font-size: 14px; color: var(--text); outline: none; transition: border-color .15s; }
+    .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,106,79,.1); }
+    .form-input:disabled { background: var(--surface2); color: var(--muted); cursor: not-allowed; }
+    
+    /* Autocomplete */
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-top: 4px; box-shadow: var(--shadow); z-index: 10; display: none; }
+    .autocomplete-list.open { display: block; }
+    .auto-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--surface2); transition: background .15s; }
+    .auto-item:last-child { border-bottom: none; }
+    .auto-item:hover { background: var(--surface2); }
+    .auto-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .auto-group { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    
+    /* Tanlangan o'quvchi kartasi */
+    .selected-student-card { display: none; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid var(--accent); background: var(--accent-bg); border-radius: var(--radius-sm); margin-bottom: 16px; }
+    .selected-student-card.active { display: flex; }
+    .ss-info { flex: 1; }
+    .ss-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .ss-group { font-size: 11px; color: var(--accent); font-weight: 500; }
+    .ss-clear { background: none; border: none; color: var(--accent2); cursor: pointer; padding: 4px; }
+    .ss-clear svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+    .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+    .btn { flex: 1; padding: 12px; border-radius: var(--radius-sm); font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; border: none; text-align: center; transition: opacity .15s; }
+    .btn-cancel { background: var(--surface2); color: var(--text); }
+    .btn-save { background: var(--accent); color: #fff; }
+    .btn:hover { opacity: .85; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .help-text { font-size: 11px; color: var(--muted); margin-top: 4px; display: block; }
+
+    /* YUKLASH / XATO */
+/* YUKLASH / XATO (O'lcham to'g'rilandi) */
+    .state-screen { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      /* Tepa sarlavha (56px) + pastki menyu (64px) + paddinglarni (32px) hisobga olgan holda ekranga moslash */
+      height: calc(100vh - 152px); 
+      gap: 12px; 
+      text-align: center; 
+    }
+    .spinner { width: 36px; height: 36px; border-radius: 50%; border: 3px solid var(--border); border-top-color: var(--accent); animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-text { font-size: 14px; color: var(--muted); }
+    .hidden { display: none !important; }
+    .retry-btn { margin-top: 8px; padding: 9px 20px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-family: var(--font); font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+    .retry-btn:hover { opacity: 0.85; }
+
+    /* TO'LIQ EKRAN YUKLANISH (Yangi qatlam) */
+    .global-loader {
+      position: fixed;
+      inset: 0;
+      background: rgba(245, 244, 240, 0.7); /* Orqa fon bilan moslashtirilgan shaffoflik */
+      backdrop-filter: blur(3px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="side-panel"></div>
+  
+  <div class="phone-shell">
+    <div class="phone-inner">
+      <!-- YUQORI SARLAVHA -->
+      <header class="top-header">
+        <div class="header-brand">
+          <div class="header-logo">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div>
+            <div class="header-name">O'quv Markazi</div>
+            <div class="header-sub">Chegirmalar</div>
+          </div>
+        </div>
+        <button class="add-btn" onclick="openCreateModal()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Qo'shish
+        </button>
+      </header>
+
+      <!-- ASOSIY QISM -->
+      <main class="main" id="main-scroll">
+        <!-- Loading -->
+        <div id="loading-state" class="state-screen">
+          <div class="spinner"></div>
+          <div class="state-text">Ma'lumotlar yuklanmoqda...</div>
+        </div>
+
+        <!-- Error -->
+        <div id="error-state" class="state-screen hidden">
+          <div class="empty-icon" style="width:56px;height:56px;">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="empty-title">Xatolik yuz berdi</div>
+          <div class="state-text" id="error-msg">Ma'lumot yuklanmadi</div>
+          <button class="retry-btn" onclick="fetchDiscounts()">Qayta urinish</button>
+        </div>
+
+        <!-- Content -->
+        <div id="content" class="hidden">
+          <div class="summary-card">
+            <div>
+              <div class="summary-label">Jami chegirmalar</div>
+              <div class="summary-total" id="total-count">0</div>
+            </div>
+            <div style="width:48px;height:48px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;color:var(--accent);">
+              <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <div class="section-title">Chegirmalar ro'yxati</div>
+            <div class="section-badge" id="page-badge">—</div>
+          </div>
+
+          <div id="discount-list"></div>
+
+          <div class="page-info" id="page-info"></div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </main>
+
+      <!-- PASTIKI NAV -->
+      <nav class="bottom-nav">
+        <a class="nav-item" href="teacher_home.html">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="nav-label">Bosh sahifa</span>
+        </a>
+        <a class="nav-item" href="payments.html">
+          <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span class="nav-label">To'lovlar</span>
+        </a>
+        <a class="nav-item" href="my_groups.html">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span class="nav-label">Guruhlarim</span>
+        </a>
+        <a class="nav-item" href="my_students.html">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+          <span class="nav-label">O'quvchilarim</span>
+        </a>
+        <a class="nav-item active" href="discount.html">
+          <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          <span class="nav-label">Chegirma</span>
+        </a>
+        <a class="nav-item" href="account.html">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="nav-label">Hisob</span>
+        </a>
+      </nav>
+
+      <!-- MODAL (OVERLAY) -->
+      <div class="modal-overlay" id="discount-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title" id="modal-title">Yangi chegirma</div>
+            <button class="close-btn" onclick="closeModal()">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <!-- O'quvchi qidirish qismi (faqat yaratishda ko'rinadi) -->
+          <div class="form-group" id="student-search-group">
+            <label class="form-label">O'quvchini qidirish</label>
+            <input type="text" class="form-input" id="search-input" placeholder="Ism, familiya yoki guruh..." autocomplete="off" oninput="handleSearchInput(this.value)">
+            <div class="autocomplete-list" id="autocomplete-list"></div>
+          </div>
+
+          <!-- Tanlangan o'quvchi ko'rinishi -->
+          <div class="selected-student-card" id="selected-student-card">
+            <div class="ss-info">
+              <div class="ss-name" id="ss-name">O'quvchi Ismi</div>
+              <div class="ss-group" id="ss-group">Guruh nomi</div>
+            </div>
+            <button class="ss-clear" id="ss-clear-btn" onclick="clearSelectedStudent()">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Chegirma miqdori (%)</label>
+            <input type="number" class="form-input" id="discount-amount" placeholder="0-100 oralig'ida kiriting" min="0" max="100">
+            <span class="help-text">0 kiritib saqlash - chegirmaga ega o'quvchidan chegirmasini o'chiradi.</span>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn btn-cancel" onclick="closeModal()">Bekor qilish</button>
+            <button class="btn btn-save" id="save-btn" onclick="saveDiscount()">Saqlash</button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="side-panel"></div>
+  <!-- TO'LIQ EKRAN YUKLANISH OYNASI -->
+  <div class="global-loader hidden" id="global-loader">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://10.13.155.23:8000/api/v1';
+    const LOGIN_PAGE = '../index.html';
+    const LIMIT = 20;
+
+    let allDiscounts = [];
+    let currentPage = 1;
+    
+    // O'quvchilar ma'lumotlari modal uchun
+    let allStudentsFlat = []; 
+    let selectedStudent = null; 
+    
+    // Modal holati
+    let isEditMode = false;
+
+    // ── AVTORIZATSIYA ────────────────────────────────────────────────
+    function getToken() { return localStorage.getItem('access_token'); }
+    function goLogin() { window.location.href = LOGIN_PAGE; }
+    async function authFetch(url, options = {}) {
+      let token = getToken();
+      if (!token) { goLogin(); throw new Error('Token yoq'); }
+      
+      let headers = { 'Authorization': `Bearer ${token}` };
+      if (!(options.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+      }
+      options.headers = { ...options.headers, ...headers };
+      
+      let res = await fetch(url, options);
+      if (res.status === 401) {
+        // Refresh token mantig'i shu yerga yozilishi mumkin
+        goLogin(); 
+        throw new Error('Unauthorized');
+      }
+      return res;
+    }
+
+    // ── UI YORDAMCHILARI ─────────────────────────────────────────────
+    function showLoading() {
+      document.getElementById('loading-state').classList.remove('hidden');
+      document.getElementById('error-state').classList.add('hidden');
+      document.getElementById('content').classList.add('hidden');
+    }
+    function showError(msg) {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('error-state').classList.remove('hidden');
+      document.getElementById('content').classList.add('hidden');
+      document.getElementById('error-msg').textContent = msg || 'Xatolik yuz berdi';
+    }
+    function showContent() {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('error-state').classList.add('hidden');
+      document.getElementById('content').classList.remove('hidden');
+    }
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── CHEGIRMALARNI YUKLASH VA CHIZISH ─────────────────────────────
+    async function fetchDiscounts() {
+      showLoading();
+      try {
+        const resp = await authFetch(`${API_BASE}/teacher/teacher_discounts`);
+        if (!resp.ok) throw new Error(`Status: ${resp.status}`);
+        const data = await resp.json();
+        
+        allDiscounts = data.discounts || [];
+        document.getElementById('total-count').textContent = data.discounts_num || allDiscounts.length;
+        
+        // Bir yo'la o'quvchilarni ham fonda yuklab qo'yamiz (modal uchun kerak)
+        fetchStudentsForModal();
+        
+        currentPage = 1;
+        renderPage();
+        showContent();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    function renderPage() {
+      const totalPages = Math.ceil(allDiscounts.length / LIMIT) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      const from = (currentPage - 1) * LIMIT;
+      const to = from + LIMIT;
+      const pageData = allDiscounts.slice(from, to);
+
+      document.getElementById('page-badge').textContent = `${currentPage} / ${totalPages} sahifa`;
+      const fromLabel = allDiscounts.length === 0 ? 0 : from + 1;
+      const toLabel = Math.min(to, allDiscounts.length);
+      document.getElementById('page-info').textContent = allDiscounts.length > 0 ? `${fromLabel}–${toLabel} / ${allDiscounts.length} ta` : '';
+
+      const list = document.getElementById('discount-list');
+      list.innerHTML = '';
+
+      if (allDiscounts.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+            <div class="empty-title">Chegirmalar yo'q</div>
+            <div class="empty-sub">Hozircha hech qanday chegirma belgilanmagan</div>
+          </div>`;
+        renderPagination(0);
+        return;
+      }
+
+      pageData.forEach((d, i) => {
+        const card = document.createElement('div');
+        card.className = 'discount-card';
+        card.style.animationDelay = `${i * 40}ms`;
+        
+        const sName = `${escapeHtml(d.student?.first_name)} ${escapeHtml(d.student?.last_name)}`;
+        const gName = escapeHtml(d.group?.name);
+        
+        card.innerHTML = `
+          <div class="discount-amount">${d.discount_amount}<span>%</span></div>
+          <div class="discount-info">
+            <div class="discount-name">${sName}</div>
+            <div class="discount-group">${gName}</div>
+          </div>
+          <button class="edit-btn" onclick="openEditModal(${d.student.student_id}, ${d.group.group_id}, ${d.discount_amount}, '${escapeHtml(d.student?.first_name)}', '${escapeHtml(d.student?.last_name)}', '${gName}')">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+        `;
+        list.appendChild(card);
+      });
+
+      renderPagination(totalPages);
+    }
+
+    // Sahifalash mantiqlari
+    function renderPagination(totalPages) {
+      const container = document.getElementById('pagination');
+      container.innerHTML = '';
+      if (totalPages <= 1) return;
+
+      container.appendChild(makePagBtn('‹', currentPage === 1, () => goPage(currentPage - 1)));
+      
+      const nums = getPageNumbers(currentPage, totalPages);
+      nums.forEach(p => {
+        if (p === '...') {
+          const dots = document.createElement('div');
+          dots.className = 'page-btn'; dots.style.cursor = 'default'; dots.textContent = '…';
+          container.appendChild(dots);
+        } else {
+          const btn = makePagBtn(p, false, () => goPage(p));
+          if (p === currentPage) btn.classList.add('active');
+          container.appendChild(btn);
+        }
+      });
+      container.appendChild(makePagBtn('›', currentPage === totalPages, () => goPage(currentPage + 1)));
+    }
+    function goPage(p) {
+      currentPage = p;
+      renderPage();
+      document.getElementById('main-scroll').scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function makePagBtn(label, disabled, onClick) {
+      const btn = document.createElement('button');
+      btn.className = 'page-btn'; btn.textContent = label;
+      btn.disabled = disabled;
+      if (!disabled) btn.addEventListener('click', onClick);
+      return btn;
+    }
+    function getPageNumbers(c, t) {
+      if (t <= 5) return Array.from({length: t}, (_, i) => i + 1);
+      if (c <= 3) return [1, 2, 3, 4, '...', t];
+      if (c >= t - 2) return [1, '...', t - 3, t - 2, t - 1, t];
+      return [1, '...', c - 1, c, c + 1, '...', t];
+    }
+
+    // ── MODAL VA O'QUVCHILARNI QIDIRISH ──────────────────────────────
+// ── O'QUVCHILARNI YUKLASH VA XATOLIKNI USHLASH ──
+    async function fetchStudentsForModal() {
+      try {
+        const resp = await authFetch(`${API_BASE}/teacher/teacher_students`);
+        if (!resp.ok) throw new Error("O'quvchilarni yuklab bo'lmadi");
+        
+        const data = await resp.json();
+        allStudentsFlat = [];
+        (data.groups || []).forEach(g => {
+          (g.students || []).forEach(s => {
+            allStudentsFlat.push({
+              student_id: s.student_id,
+              first_name: s.first_name,
+              last_name: s.last_name,
+              group_id: g.group_id,
+              group_name: g.name
+            });
+          });
+        });
+      } catch (e) { 
+        console.error('Student fetch error', e); 
+        alert("O'quvchilarni yuklashda xatolik yuz berdi. Iltimos qayta urinib ko'ring.");
+        throw e; // Xatolikni keyingi funksiyaga uzatish
+      }
+    }
+
+    // ── QO'SHISH TUGMASI BOSILGANDA ISHLAYDIGAN FUNKSIYA ──
+    async function openCreateModal() {
+      // 1. Ekrandagi barcha harakatlarni to'xtatuvchi loaderni yoqish
+      const globalLoader = document.getElementById('global-loader');
+      globalLoader.classList.remove('hidden');
+      
+      try {
+        // 2. O'quvchilarni serverdan to'liq yuklab kelishni kutish
+        await fetchStudentsForModal();
+      } catch (error) {
+        // Agar xatolik bo'lsa, loaderni yopamiz va modalni ochmaymiz
+        globalLoader.classList.add('hidden');
+        return; 
+      }
+      
+      // 3. Yuklanish tugadi, loaderni yopamiz
+      globalLoader.classList.add('hidden');
+
+      // 4. Modalni ochish mantiqlari
+      isEditMode = false;
+      document.getElementById('modal-title').textContent = 'Yangi chegirma';
+      document.getElementById('student-search-group').classList.remove('hidden');
+      document.getElementById('ss-clear-btn').classList.remove('hidden');
+      
+      clearSelectedStudent();
+      document.getElementById('discount-amount').value = '';
+      
+      document.getElementById('discount-modal').classList.add('open');
+    }
+
+
+    function openEditModal(s_id, g_id, currentAmount, fName, lName, gName) {
+      isEditMode = true;
+      document.getElementById('modal-title').textContent = 'Chegirmani tahrirlash';
+      
+      // Tahrirlashda qidiruv yashiriladi va faqat tanlangan o'quvchi ko'rsatiladi
+      document.getElementById('student-search-group').classList.add('hidden');
+      
+      selectedStudent = { student_id: s_id, group_id: g_id };
+      document.getElementById('ss-name').textContent = `${fName} ${lName}`;
+      document.getElementById('ss-group').textContent = gName;
+      document.getElementById('selected-student-card').classList.add('active');
+      document.getElementById('ss-clear-btn').classList.add('hidden'); // tahrirlashda o'chirib bo'lmaydi
+      
+      document.getElementById('discount-amount').value = currentAmount;
+      
+      document.getElementById('discount-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('discount-modal').classList.remove('open');
+      document.getElementById('autocomplete-list').classList.remove('open');
+    }
+
+    function handleSearchInput(val) {
+      const q = val.toLowerCase().trim();
+      const list = document.getElementById('autocomplete-list');
+      list.innerHTML = '';
+      
+      if (!q) {
+        list.classList.remove('open');
+        return;
+      }
+      
+      // Qidiruv va mavjud chegirmalarni filtrlash
+      const matched = allStudentsFlat.filter(s => {
+        // Agar bu o'quvchi-guruh juftligiga allaqachon chegirma bo'lsa, ro'yxatda chiqarmaymiz
+        const hasDiscount = allDiscounts.some(d => d.student.student_id === s.student_id && d.group.group_id === s.group_id);
+        if (hasDiscount) return false;
+
+        const f = (s.first_name || '').toLowerCase();
+        const l = (s.last_name || '').toLowerCase();
+        const g = (s.group_name || '').toLowerCase();
+        const full1 = f + ' ' + l;
+        const full2 = l + ' ' + f;
+        
+        return f.includes(q) || l.includes(q) || full1.includes(q) || full2.includes(q) || g.includes(q);
+      }).slice(0, 10); // Maksimal 10 ta natija
+
+      if (matched.length > 0) {
+        matched.forEach(s => {
+          const item = document.createElement('div');
+          item.className = 'auto-item';
+          item.innerHTML = `
+            <div class="auto-name">${escapeHtml(s.first_name)} ${escapeHtml(s.last_name)}</div>
+            <div class="auto-group">${escapeHtml(s.group_name)}</div>
+          `;
+          item.onclick = () => selectStudent(s);
+          list.appendChild(item);
+        });
+        list.classList.add('open');
+      } else {
+        list.classList.remove('open');
+      }
+    }
+
+    function selectStudent(s) {
+      selectedStudent = s;
+      
+      // UI o'zgarishlari
+      document.getElementById('search-input').value = '';
+      document.getElementById('autocomplete-list').classList.remove('open');
+      document.getElementById('student-search-group').classList.add('hidden');
+      
+      document.getElementById('ss-name').textContent = `${s.first_name} ${s.last_name}`;
+      document.getElementById('ss-group').textContent = s.group_name;
+      document.getElementById('selected-student-card').classList.add('active');
+    }
+
+    function clearSelectedStudent() {
+      selectedStudent = null;
+      document.getElementById('selected-student-card').classList.remove('active');
+      document.getElementById('student-search-group').classList.remove('hidden');
+      document.getElementById('search-input').focus();
+    }
+
+    // ── SAQLASH (YARATISH / TAHRIRLASH / O'CHIRISH) ────────────────
+    async function saveDiscount() {
+      if (!selectedStudent) {
+        alert("O'quvchini tanlang!");
+        return;
+      }
+      
+      const amountVal = document.getElementById('discount-amount').value;
+      if (amountVal === '' || isNaN(amountVal) || amountVal < 0 || amountVal > 100) {
+        alert("Chegirma miqdorini 0 va 100 oralig'ida to'g'ri kiriting!");
+        return;
+      }
+
+      const amount = parseInt(amountVal, 10);
+      const sid = selectedStudent.student_id;
+      const gid = selectedStudent.group_id;
+
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true;
+      btn.textContent = 'Kuting...';
+      
+      const globalLoader = document.getElementById('global-loader');
+      globalLoader.classList.remove('hidden');
+
+      try {
+        let endpoint = '';
+        let method = '';
+
+        if (isEditMode) {
+          endpoint = `${API_BASE}/teacher/update_teacher_discount?student_id=${sid}&group_id=${gid}&discount_amount=${amount}`;
+          method = 'PUT';
+        } else {
+          endpoint = `${API_BASE}/teacher/create_teacher_discount?student_id=${sid}&group_id=${gid}&discount_amount=${amount}`;
+          method = 'POST';
+        }
+
+        const resp = await authFetch(endpoint, { method: method });
+        if (!resp.ok) {
+          if (resp.status === 422) throw new Error("Kiritilgan ma'lumotlar xato (0 kiritish mumkin emas bo'lishi mumkin)");
+          throw new Error("Server xatosi: " + resp.status);
+        }
+
+        // Muvaffaqiyatli - modalni yopib, ro'yxatni yangilaymiz
+        closeModal();
+        await fetchDiscounts();
+        
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        globalLoader.classList.add('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Saqlash';
+      }
+    }
+
+    // ── Boshlash ──────────────────────────────────────────────────
+    fetchDiscounts();
+
+  </script>
+</body>
+</html>

@@ -14,3 +14,17 @@ class ResponseAdmin(BaseModel):
     user_id: int
     first_name: str
     last_name: str
+
+
+class ResponseSuperAdmin(BaseModel):
+    superadmin_id: int
+    user_id: int
+    first_name: str
+    last_name: str
+
+
+class ResponseSuperadminHome(BaseModel):
+    class Admin(BaseModel):
+        admin_id: int
+        first_name: str
+        last_name: str

@@ -383,12 +383,12 @@
 <script>
   // ─── Config ────────────────────────────────────────────────────────────────
   // ─── Config ────────────────────────────────────────────────────────────────
-const API_BASE = 'http://127.0.0.1:8000/api/v1/auth';
+const API_BASE = 'http://10.13.155.23:8000/api/v1/auth';
 
 const ROLE_ROUTES = {
-  superadmin: '/superadmin/dashboard',
+  superadmin: '/superadmin/superadmin_home.html',
   admin: '/admin/dashboard.html',
-  teacher: '/teacher/dashboard',
+  teacher: '/teacher/teacher_home.html',
 };
 
 const ROLE_ME_URLS = {
@@ -459,14 +459,17 @@ document.getElementById('eyeBtn').addEventListener('click', () => {
 // ─── Token verification ──────────────────────────────────────────────────────
 async function verifyToken(accessToken, role) {
   const url = ROLE_ME_URLS[role];
-  if (!url) return false;
+  if (!url) return { valid: false, error_code: null };
   try {
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    return res.ok;
+    if (res.ok) return { valid: true };
+    
+    const data = await res.json().catch(() => ({}));
+    return { valid: false, error_code: data.error_code || null };
   } catch {
-    return false;
+    return { valid: false, error_code: null };
   }
 }
 
@@ -496,15 +499,27 @@ async function checkExistingSession() {
   const accessToken = localStorage.getItem('access_token');
   const role = localStorage.getItem('role');
 
-  if (accessToken && role) {
-    const valid = await verifyToken(accessToken, role);
-    if (valid) {
-      redirect(role);
-      return;
-    }
+  // 1. Agar access token topilmasa, refresh qilishga urinmaymiz
+  if (!accessToken || !role) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('role');
+    return;
   }
 
-  // Access token yo'q yoki eskirgan — refresh urinib ko'ramiz
+  const tokenStatus = await verifyToken(accessToken, role);
+  if (tokenStatus.valid) {
+    redirect(role);
+    return;
+  }
+
+  // 2. Agar token yaroqsiz bo'lsa (TOKEN_INVALID), refresh qilishga urinmaymiz
+  if (tokenStatus.error_code === 'TOKEN_INVALID') {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('role');
+    return;
+  }
+
+  // 3. Faqatgina token muddati tugagan bo'lsagina refresh_token bilan yangilashga urinamiz
   // ✅ refresh_token HttpOnly cookie avtomatik yuboriladi
   const refreshed = await tryRefresh();
 

@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bosh sahifa — Superadmin</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F5F4F0;
+      --surface: #FFFFFF;
+      --surface2: #EFEDE8;
+      --border: #E2E0DA;
+      --text: #1A1917;
+      --muted: #7A786F;
+      --accent: #2D6A4F;
+      --accent-bg: #EAF4EE;
+      --accent2: #B7410E;
+      --accent2-bg: #FDF0EB;
+      --warn: #C8850A;
+      --warn-bg: #FEF6E4;
+      --nav-h: 64px;
+      --font: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
+      --panel-bg: #1e3d2f;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      background: var(--bg);
+      font-family: var(--font);
+      color: var(--text);
+      overflow: hidden;
+      position: fixed; /* Butun ekran bo'ylab qotirib qo'yadi va ortiqcha siljishni yo'qotadi */
+      inset: 0;
+    }
+
+    /* ═══════════════ DESKTOP LAYOUT ═══════════════ */
+    @media (min-width: 900px) {
+      body {
+        background: var(--panel-bg);
+        display: flex;
+        align-items: stretch;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+      .side-panel {
+        flex: 1;
+        background: var(--panel-bg);
+        position: relative;
+        overflow: hidden;
+      }
+      .side-panel::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse at 50% 0%, rgba(45,106,79,.35) 0%, transparent 70%),
+          radial-gradient(ellipse at 80% 100%, rgba(45,106,79,.2) 0%, transparent 60%);
+        pointer-events: none;
+      }
+      .side-panel::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      .phone-shell {
+        width: 840px;
+        flex-shrink: 0;
+        height: 100vh;
+        background: var(--bg);
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 0 0 1px rgba(0,0,0,.25),
+          0 32px 80px rgba(0,0,0,.5),
+          inset 0 1px 0 rgba(255,255,255,.15);
+      }
+      .phone-shell::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+        z-index: 999;
+        pointer-events: none;
+      }
+    }
+
+    @media (max-width: 899px) {
+      .side-panel { display: none; }
+      .phone-shell {
+        width: 100%;
+        height: 100%; /* min-height: 100vh o'rniga 100% yozing */
+        position: relative;
+        overflow: hidden;
+      }
+    }
+
+    /* ── HEADER ── */
+    .top-header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    .header-brand { display: flex; align-items: center; gap: 10px; }
+    .header-logo {
+      width: 34px; height: 34px;
+      border-radius: 9px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .header-logo svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+    .header-name { font-size: 15px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+    .header-sub { font-size: 11px; color: var(--muted); }
+
+    .header-badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: .02em;
+    }
+
+    /* ── MAIN ── */
+    .phone-inner { position: absolute; inset: 0; overflow: hidden; }
+    .main {
+      height: 100%;
+      overflow-y: auto;
+      padding-top: calc(56px + 16px);
+      padding-bottom: calc(var(--nav-h) + 16px);
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    /* ── SUMMARY ROW ── */
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .summary-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .summary-tile.full { grid-column: 1 / -1; }
+    .tile-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+    .tile-value {
+      font-size: 22px;
+      font-weight: 700;
+      font-family: var(--mono);
+      color: var(--accent);
+      letter-spacing: -.02em;
+    }
+    .tile-value.warn { color: var(--warn); }
+    .tile-value.danger { color: var(--accent2); }
+    .tile-sub { font-size: 11px; color: var(--muted); }
+
+    /* ── SECTION ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      margin-top: 4px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .section-badge {
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--mono);
+      background: var(--accent-bg);
+      color: var(--accent);
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    /* ── ADMIN CARD ── */
+    .admin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow);
+      animation: slideUp .25s both ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .admin-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .admin-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--accent-bg);
+      border: 1.5px solid rgba(45,106,79,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+      letter-spacing: -.02em;
+    }
+    .admin-meta { flex: 1; min-width: 0; }
+    .admin-name {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-id { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+    /* Konflikt badge */
+    .conflict-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--mono);
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: var(--warn-bg);
+      color: var(--warn);
+      border: 1px solid rgba(200,133,10,.2);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .conflict-badge.ok {
+      background: var(--accent-bg);
+      color: var(--accent);
+      border-color: rgba(45,106,79,.2);
+    }
+    .conflict-badge svg {
+      width: 13px; height: 13px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      fill: none;
+      stroke-linecap: round;
+    }
+
+    /* Stats grid */
+    .admin-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .stat-box {
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .stat-icon {
+      width: 24px; height: 24px;
+      margin: 0 auto 4px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stat-icon svg {
+      width: 14px; height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+    }
+    .stat-icon.green { background: var(--accent-bg); color: var(--accent); }
+    .stat-icon.red   { background: var(--accent2-bg); color: var(--accent2); }
+    .stat-icon.gold  { background: var(--warn-bg); color: var(--warn); }
+
+    .stat-val {
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--mono);
+      letter-spacing: -.02em;
+      margin-bottom: 2px;
+    }
+    .stat-val.green { color: var(--accent); }
+    .stat-val.red   { color: var(--accent2); }
+    .stat-val.gold  { color: var(--warn); }
+    .stat-lbl { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+    /* Divider */
+    .card-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 12px 0;
+    }
+
+    /* Conflict row */
+    .conflict-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .conflict-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .conflict-amount {
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--mono);
+      letter-spacing: -.02em;
+    }
+    .conflict-amount.warn   { color: var(--warn); }
+    .conflict-amount.green  { color: var(--accent); }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 200;
+      height: var(--nav-h);
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      /* 4 ta menyu uchun markazga joylashtirish */
+      justify-content: center;
+    }
+    .nav-inner {
+      display: flex;
+      /* Har ikki yondan 40px joy qolsin */
+      width: calc(100% - 80px);
+      max-width: 500px;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--muted);
+      transition: color .15s;
+      padding: 8px 4px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-item.active { color: var(--accent); }
+    .nav-item svg {
+      width: 22px; height: 22px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .nav-item.active svg { stroke-width: 2.2; }
+    .nav-label { font-size: 10px; font-weight: 500; }
+    .nav-item.active .nav-label { font-weight: 600; }
+
+    /* ── HOLAT EKRANLARI ── */
+    .state-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 12px;
+      text-align: center;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-text { font-size: 14px; color: var(--muted); }
+
+    .empty-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--surface2);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .empty-icon svg { width: 24px; height: 24px; stroke: var(--muted); stroke-width: 1.5; fill: none; }
+    .empty-title { font-size: 15px; font-weight: 500; }
+
+    .btn-retry {
+      margin-top: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── DATE PILL ── */
+    .date-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--mono);
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 5px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .date-pill svg {
+      width: 13px; height: 13px;
+      stroke: var(--muted);
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="side-panel"></div>
+
+  <div class="phone-shell">
+    <div class="phone-inner">
+
+      <!-- HEADER -->
+      <header class="top-header">
+        <div class="header-brand">
+          <div class="header-logo">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div>
+            <div class="header-name">O'quv Markazi</div>
+            <div class="header-sub">Bosh sahifa</div>
+          </div>
+        </div>
+        <div class="header-badge">Superadmin</div>
+      </header>
+
+      <!-- MAIN -->
+      <main class="main" id="main-scroll">
+
+        <!-- Loading -->
+        <div id="loading-state" class="state-screen">
+          <div class="spinner"></div>
+          <div class="state-text">Ma'lumotlar yuklanmoqda...</div>
+        </div>
+
+        <!-- Error -->
+        <div id="error-state" class="state-screen hidden">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="empty-title">Xatolik yuz berdi</div>
+          <div class="state-text" id="error-msg">Ma'lumot yuklanmadi</div>
+          <button class="btn-retry" onclick="fetchData()">Qayta urinish</button>
+        </div>
+
+        <!-- Content -->
+        <div id="content" class="hidden">
+
+          <!-- Sana -->
+          <div class="date-pill" id="date-pill">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="today-label">—</span>
+          </div>
+
+          <!-- Umumiy statistika -->
+          <div class="summary-row" id="summary-row">
+            <!-- JS to'ldiradi -->
+          </div>
+
+          <!-- Adminlar ro'yxati -->
+          <div class="section-header">
+            <div class="section-title">Adminlar</div>
+            <div class="section-badge" id="admin-count-badge">—</div>
+          </div>
+
+          <div id="admin-list"></div>
+
+        </div>
+      </main>
+
+      <!-- BOTTOM NAV (4 ta menyu, markazda) -->
+      <nav class="bottom-nav">
+        <div class="nav-inner">
+          <a class="nav-item active" href="superadmin_home.html">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-label">Bosh sahifa</span>
+          </a>
+          <a class="nav-item" href="superadmin_admins.html">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="nav-label">Adminlar</span>
+          </a>
+          <a class="nav-item" href="superadmin_transactions.html">
+            <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span class="nav-label">Tranzaksiyalar</span>
+          </a>
+          <a class="nav-item" href="superadmin_account.html">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <span class="nav-label">Hisob</span>
+          </a>
+        </div>
+      </nav>
+
+    </div>
+  </div>
+
+  <div class="side-panel"></div>
+
+  <script>
+    const API_BASE = 'http://10.13.155.23:8000/api/v1';
+    const LOGIN_PAGE = '../index.html';
+
+    // ── AVTORIZATSIYA ─────────────────────────────────────────────────
+    function getToken() { return localStorage.getItem('access_token'); }
+    function goLogin() { window.location.href = LOGIN_PAGE; }
+
+    async function authFetch(url, options = {}) {
+      let token = getToken();
+      if (!token) { goLogin(); throw new Error('Token yoq'); }
+
+      let headers = { 'Authorization': `Bearer ${token}` };
+      if (!(options.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+      }
+      options.headers = { ...options.headers, ...headers };
+
+      let res = await fetch(url, options);
+      if (res.status === 401) {
+        goLogin();
+        throw new Error('Unauthorized');
+      }
+      return res;
+    }
+
+    // ── UI HOLATLARI ──────────────────────────────────────────────────
+    function showLoading() {
+      document.getElementById('loading-state').classList.remove('hidden');
+      document.getElementById('error-state').classList.add('hidden');
+      document.getElementById('content').classList.add('hidden');
+    }
+    function showError(msg) {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('error-state').classList.remove('hidden');
+      document.getElementById('content').classList.add('hidden');
+      document.getElementById('error-msg').textContent = msg || 'Xatolik yuz berdi';
+    }
+    function showContent() {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('error-state').classList.add('hidden');
+      document.getElementById('content').classList.remove('hidden');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ── SONNI FORMATLASH ──────────────────────────────────────────────
+    // Masalan: 1250000 → "1 250 000"
+    function fmt(num) {
+      if (num === null || num === undefined) return '0';
+      return Number(num).toLocaleString('uz-UZ');
+    }
+
+    // ── BUGUNGI SANANI KO'RSATISH ─────────────────────────────────────
+    function setTodayLabel() {
+      const now = new Date();
+      const opts = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+      document.getElementById('today-label').textContent = now.toLocaleDateString('uz-UZ', opts);
+    }
+
+    // ── ASOSIY YUKLASH ────────────────────────────────────────────────
+    async function fetchData() {
+      showLoading();
+      try {
+        const resp = await authFetch(`${API_BASE}/admin/superadmin_home`);
+        if (!resp.ok) throw new Error('Server xatosi: ' + resp.status);
+        const admins = await resp.json();
+
+        setTodayLabel();
+        renderSummary(admins);
+        renderAdmins(admins);
+        showContent();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    // ── UMUMIY STATISTIKA (yuqori kichik kartochkalar) ────────────────
+    function renderSummary(admins) {
+      // Barcha adminlar bo'yicha jami hisoblash
+      let totalStudent = 0, totalTeacher = 0, totalAdmin = 0, totalConflict = 0;
+      admins.forEach(a => {
+        totalStudent  += (a.sum_student  || 0);
+        totalTeacher  += (a.sum_teacher  || 0);
+        totalAdmin    += (a.sum_admin    || 0);
+        // Konflikt = talabalardan olingan - (o'qituvchiga + superadminga berilgan)
+        const c = (a.sum_student || 0) - (a.sum_teacher || 0) - (a.sum_admin || 0);
+        if (c > 0) totalConflict += c;
+      });
+
+      const row = document.getElementById('summary-row');
+      row.innerHTML = `
+        <div class="summary-tile">
+          <div class="tile-label">Talabalardan</div>
+          <div class="tile-value">${fmt(totalStudent)}</div>
+          <div class="tile-sub">so'm · bugun jami</div>
+        </div>
+        <div class="summary-tile">
+          <div class="tile-label">O'qituvchilarga</div>
+          <div class="tile-value danger">${fmt(totalTeacher)}</div>
+          <div class="tile-sub">so'm · bugun jami</div>
+        </div>
+        <div class="summary-tile">
+          <div class="tile-label">Superadminga</div>
+          <div class="tile-value">${fmt(totalAdmin)}</div>
+          <div class="tile-sub">so'm · bugun jami</div>
+        </div>
+        <div class="summary-tile">
+          <div class="tile-label">Topshirilmagan (konflikt)</div>
+          <div class="tile-value warn">${fmt(totalConflict)}</div>
+          <div class="tile-sub">so'm · barcha adminlar</div>
+        </div>
+      `;
+    }
+
+    // ── ADMINLAR RO'YXATI ─────────────────────────────────────────────
+    function renderAdmins(admins) {
+      document.getElementById('admin-count-badge').textContent = admins.length + ' ta admin';
+
+      const list = document.getElementById('admin-list');
+      list.innerHTML = '';
+
+      if (admins.length === 0) {
+        list.innerHTML = `
+          <div style="text-align:center;padding:40px 20px;background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius);">
+            <div class="empty-icon" style="margin-bottom:12px;">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div class="empty-title">Adminlar yo'q</div>
+          </div>`;
+        return;
+      }
+
+      admins.forEach((admin, i) => {
+        // Konflikt hisoblash: talabalardan olingan MINUS (o'qituvchilarga + superadminga berilgan)
+        // Mantiq: admin bugun qancha yig'di, shundan qancha xarajat qildi.
+        // Qolgan summa — topshirilmagan (yoki artiqcha qolib ketgan) summa.
+        const conflict = (admin.sum_student || 0) - (admin.sum_teacher || 0) - (admin.sum_admin || 0);
+        const hasConflict = conflict > 0;
+
+        // Avatar uchun bosh harflar
+        const initials = (
+          (admin.first_name?.[0] || '') + (admin.last_name?.[0] || '')
+        ).toUpperCase() || '?';
+
+        const card = document.createElement('div');
+        card.className = 'admin-card';
+        card.style.animationDelay = `${i * 50}ms`;
+
+        card.innerHTML = `
+          <div class="admin-card-header">
+            <div class="admin-avatar">${escapeHtml(initials)}</div>
+            <div class="admin-meta">
+              <div class="admin-name">${escapeHtml(admin.first_name)} ${escapeHtml(admin.last_name)}</div>
+              <div class="admin-id">#${admin.admin_id}</div>
+            </div>
+            ${hasConflict
+              ? `<div class="conflict-badge">
+                   <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                   Konflikt
+                 </div>`
+              : `<div class="conflict-badge ok">
+                   <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                   Tozа
+                 </div>`
+            }
+          </div>
+
+          <div class="admin-stats">
+            <div class="stat-box">
+              <div class="stat-icon green">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l3 3 5-5"/></svg>
+              </div>
+              <div class="stat-val green">${fmt(admin.sum_student)}</div>
+              <div class="stat-lbl">Talabalardan</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon red">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div class="stat-val red">${fmt(admin.sum_teacher)}</div>
+              <div class="stat-lbl">O'qituvchilarga</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon gold">
+                <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              </div>
+              <div class="stat-val gold">${fmt(admin.sum_admin)}</div>
+              <div class="stat-lbl">Superadminga</div>
+            </div>
+          </div>
+
+          <hr class="card-divider">
+
+          <div class="conflict-row">
+            <div class="conflict-label">
+              ${hasConflict ? '⚠ Topshirilmagan summa' : '✓ Balansi tozа'}
+            </div>
+            <div class="conflict-amount ${hasConflict ? 'warn' : 'green'}">
+              ${hasConflict ? fmt(conflict) + ' so\'m' : '0 so\'m'}
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+      });
+    }
+
+    // ── Boshlash ──────────────────────────────────────────────────────
+    fetchData();
+  </script>
+</body>
+</html>

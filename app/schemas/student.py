@@ -8,8 +8,8 @@ from .group import ResponseGroup
 
 
 class RegisterStudent(BaseModel):
-    first_name: Annotated[str, Field(min_length=3, max_length=50)]
-    last_name: Annotated[str, Field(min_length=3, max_length=50)]
+    first_name: Annotated[str, Field(min_length=1, max_length=50)]
+    last_name: Annotated[str, Field(min_length=1, max_length=50)]
     group_id: Annotated[int, Field(ge=1)]
     student_number: Annotated[str, Field(min_length=1, max_length=20)]
     student_parent_number: Annotated[str, Field(min_length=1, max_length=20)]
@@ -21,11 +21,32 @@ class RegisterStudent(BaseModel):
     ] = None
 
 
-class ResponseStudent(BaseModel):
+class ResponseAllStudent(BaseModel):
     student_id: int
     first_name: str
     last_name: str
+    model_config = ConfigDict(from_attributes=True)
 
+
+class ResponseStudent(ResponseAllStudent):
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class StudentsResponse(BaseModel):
+    class StudentAndGroup(BaseModel):
+        class ResponseGroups(BaseModel):
+            group_id: int
+            name: str
+            model_config = ConfigDict(from_attributes=True)
+
+        student: ResponseStudent
+        groups: list[ResponseGroups]
+        model_config = ConfigDict(from_attributes=True)
+
+    student_num: int
+    response: list[StudentAndGroup]
     model_config = ConfigDict(from_attributes=True)
 
 

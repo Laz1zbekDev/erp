@@ -1,0 +1,1092 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Davomat</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap");
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f5f4f0;
+        --surface: #ffffff;
+        --surface2: #efede8;
+        --border: #e2e0da;
+        --text: #1a1917;
+        --muted: #7a786f;
+        --accent: #2d6a4f;
+        --accent-bg: #eaf4ee;
+        --accent2: #b7410e;
+        --accent2-bg: #fdf0eb;
+        --nav-h: 64px;
+        --font: "DM Sans", sans-serif;
+        --mono: "DM Mono", monospace;
+        --radius: 14px;
+        --radius-sm: 8px;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 4px 16px rgba(0, 0, 0, 0.05);
+        --panel-bg: #1e3d2f;
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        font-family: var(--font);
+        color: var(--text);
+        overflow: hidden;
+      }
+
+      /* ── DESKTOP WRAPPER ── */
+      @media (min-width: 900px) {
+        body {
+          background: var(--panel-bg);
+          display: flex;
+          align-items: stretch;
+          min-height: 100vh;
+          overflow: hidden;
+        }
+        .side-panel {
+          flex: 1;
+          background: var(--panel-bg);
+          position: relative;
+          overflow: hidden;
+        }
+        .side-panel::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(
+              ellipse 60% 50% at 50% 0%,
+              rgba(45, 106, 79, 0.35) 0%,
+              transparent 70%
+            ),
+            radial-gradient(
+              ellipse 40% 60% at 80% 100%,
+              rgba(45, 106, 79, 0.2) 0%,
+              transparent 60%
+            );
+          pointer-events: none;
+        }
+        .side-panel::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.04) 1px,
+              transparent 1px
+            );
+          background-size: 40px 40px;
+          pointer-events: none;
+        }
+        .phone-shell {
+          width: 840px;
+          flex-shrink: 0;
+          height: 100vh;
+          background: var(--bg);
+          position: relative;
+          overflow: hidden;
+          box-shadow:
+            0 0 0 1px rgba(0, 0, 0, 0.25),
+            0 32px 80px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+        .phone-shell::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+          );
+          z-index: 999;
+          pointer-events: none;
+        }
+      }
+
+      @media (max-width: 899px) {
+        .side-panel {
+          display: none;
+        }
+        .phone-shell {
+          width: 100%;
+          height: 100vh;
+          overflow: hidden;
+        }
+      }
+
+      /* ── TOP HEADER ── */
+      .top-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        height: 56px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+      }
+      .header-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .header-logo svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: #fff;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+      .header-name {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .header-sub {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: transparent;
+        cursor: pointer;
+        font-family: var(--font);
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: none;
+        transition:
+          background 0.15s,
+          color 0.15s,
+          border-color 0.15s;
+      }
+      .back-btn:hover {
+        background: var(--accent-bg);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .back-btn svg {
+        width: 15px;
+        height: 15px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+      }
+
+      /* ── PHONE INNER ── */
+      .phone-inner {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      .main {
+        height: 100%;
+        overflow-y: auto;
+        padding-top: calc(56px + 16px);
+        padding-bottom: calc(var(--nav-h) + 16px);
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      /* ── ALREADY DONE BANNER ── */
+      .done-banner {
+        background: var(--accent-bg);
+        border: 1px solid rgba(45, 106, 79, 0.25);
+        border-radius: var(--radius);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+        animation: slideUp 0.35s ease both;
+      }
+      .done-banner-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .done-banner-icon svg {
+        width: 22px;
+        height: 22px;
+        stroke: #fff;
+        stroke-width: 2.5;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .done-banner-text {
+        flex: 1;
+      }
+      .done-banner-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+      .done-banner-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      /* ── GROUP TITLE CARD ── */
+      .group-title-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideUp 0.3s ease both;
+      }
+      .group-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--accent-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .group-icon svg {
+        width: 20px;
+        height: 20px;
+        stroke: var(--accent);
+        stroke-width: 1.8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .group-title-name {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .group-title-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      /* ── SECTION HEADER ── */
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .section-badge {
+        font-size: 11px;
+        font-weight: 500;
+        font-family: var(--mono);
+        background: var(--accent-bg);
+        color: var(--accent);
+        padding: 3px 9px;
+        border-radius: 20px;
+      }
+
+      /* ── STUDENT ROW ── */
+      .student-row {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: var(--shadow);
+        transition: border-color 0.15s;
+        animation: slideUp 0.3s ease both;
+      }
+      .student-row.absent {
+        border-color: rgba(183, 65, 14, 0.3);
+        background: #fffaf8;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .student-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--accent-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: -0.01em;
+      }
+      .student-row.absent .student-avatar {
+        background: var(--accent2-bg);
+        color: var(--accent2);
+      }
+
+      .student-name {
+        flex: 1;
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+      }
+      .student-status {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+      .student-row.absent .student-status {
+        color: var(--accent2);
+      }
+
+      /* ── TOGGLE SWITCH ── */
+      .toggle-wrap {
+        flex-shrink: 0;
+      }
+      .toggle {
+        position: relative;
+        width: 52px;
+        height: 28px;
+        display: inline-block;
+        cursor: pointer;
+      }
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-track {
+        position: absolute;
+        inset: 0;
+        border-radius: 28px;
+        background: var(--accent);
+        transition: background 0.2s;
+      }
+      .toggle input:not(:checked) ~ .toggle-track {
+        background: #d94f2a;
+      }
+      .toggle-thumb {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .toggle input:checked ~ .toggle-track ~ .toggle-thumb,
+      .toggle input:checked + .toggle-track + .toggle-thumb {
+        transform: translateX(24px);
+      }
+
+      /* ── SAVE BUTTON ── */
+      .save-wrap {
+        margin-top: 20px;
+        padding-bottom: 4px;
+      }
+      .save-btn {
+        width: 100%;
+        padding: 15px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition:
+          opacity 0.15s,
+          transform 0.1s;
+        box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3);
+      }
+      .save-btn:hover {
+        opacity: 0.9;
+      }
+      .save-btn:active {
+        transform: scale(0.98);
+      }
+      .save-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .save-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke: #fff;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* spinner ichki */
+      .btn-spinner {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-top-color: #fff;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ── SUCCESS STATE (saqlangandan keyin) ── */
+      .success-banner {
+        background: var(--accent-bg);
+        border: 1px solid rgba(45, 106, 79, 0.25);
+        border-radius: var(--radius);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 16px;
+        animation: slideUp 0.35s ease both;
+      }
+      .success-banner-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .success-banner-icon svg {
+        width: 22px;
+        height: 22px;
+        stroke: #fff;
+        stroke-width: 2.5;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .success-banner-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+      .success-banner-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      /* ── LOADING / ERROR ── */
+      .state-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        gap: 12px;
+        text-align: center;
+      }
+      .spinner {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        animation: spin 0.8s linear infinite;
+      }
+      .state-text {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .retry-btn {
+        margin-top: 8px;
+        padding: 9px 20px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .retry-btn:hover {
+        opacity: 0.85;
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      /* ── BOTTOM NAV ── */
+      .bottom-nav {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        height: var(--nav-h);
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        display: flex;
+      }
+      .nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--muted);
+        transition: color 0.15s;
+        padding: 8px 4px;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .nav-item.active {
+        color: var(--accent);
+      }
+      .nav-item svg {
+        width: 22px;
+        height: 22px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .nav-item.active svg {
+        stroke-width: 2.2;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 500;
+      }
+      .nav-item.active .nav-label {
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="side-panel"></div>
+
+    <div class="phone-shell">
+      <div class="phone-inner">
+        <!-- TOP HEADER -->
+        <header class="top-header">
+          <div class="header-brand">
+            <div class="header-logo">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div>
+              <div class="header-name">O'quv Markazi</div>
+              <div class="header-sub">Davomat</div>
+            </div>
+          </div>
+          <a class="back-btn" href="teacher_home.html">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
+            Orqaga
+          </a>
+        </header>
+
+        <!-- MAIN -->
+        <main class="main">
+          <!-- Loading -->
+          <div id="loading-state" class="state-screen">
+            <div class="spinner"></div>
+            <div class="state-text">Ma'lumotlar yuklanmoqda…</div>
+          </div>
+
+          <!-- Error -->
+          <div id="error-state" class="state-screen hidden">
+            <div
+              style="
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background: var(--surface2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 8px;
+              "
+            >
+              <svg
+                viewBox="0 0 24 24"
+                style="
+                  width: 24px;
+                  height: 24px;
+                  stroke: var(--muted);
+                  stroke-width: 1.5;
+                  fill: none;
+                "
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <div style="font-size: 15px; font-weight: 500">
+              Xatolik yuz berdi
+            </div>
+            <div class="state-text" id="error-msg">
+              Ma'lumot yuklab bo'lmadi
+            </div>
+            <button class="retry-btn" onclick="loadData()">
+              Qayta urinish
+            </button>
+          </div>
+
+          <!-- Content: ALREADY DONE -->
+          <div id="already-done" class="hidden">
+            <div class="done-banner">
+              <div class="done-banner-icon">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <div class="done-banner-text">
+                <div class="done-banner-title">Davomat allaqachon olingan</div>
+                <div class="done-banner-sub" id="done-group-name">
+                  Bugungi davomat qayd etilgan
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content: ATTENDANCE FORM -->
+          <div id="attendance-form" class="hidden">
+            <!-- Guruh nomi -->
+            <div class="group-title-card">
+              <div class="group-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <div>
+                <div class="group-title-name" id="group-name-display">—</div>
+                <div class="group-title-sub">Bugungi davomat</div>
+              </div>
+            </div>
+
+            <!-- O'quvchilar ro'yxati -->
+            <div class="section-header">
+              <div class="section-title">O'quvchilar</div>
+              <div class="section-badge" id="student-count">0 ta</div>
+            </div>
+
+            <div id="students-list"></div>
+
+            <!-- Saqlash tugmasi -->
+            <div class="save-wrap">
+              <button class="save-btn" id="save-btn" onclick="saveAttendance()">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Davomatni saqlash
+              </button>
+            </div>
+
+            <!-- Saqlangandan keyin success banner -->
+            <div id="success-banner" class="success-banner hidden">
+              <div class="success-banner-icon">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <div>
+                <div class="success-banner-title">
+                  Davomat muvaffaqiyatli saqlandi!
+                </div>
+                <div class="success-banner-sub">
+                  Bugungi davomat qayd etildi
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /attendance-form -->
+        </main>
+
+        <!-- BOTTOM NAV -->
+        <nav class="bottom-nav">
+          <a class="nav-item" href="teacher_home.html">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <span class="nav-label">Bosh sahifa</span>
+          </a>
+          <a class="nav-item" href="payments.html">
+            <svg viewBox="0 0 24 24">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+              <line x1="1" y1="10" x2="23" y2="10" />
+            </svg>
+            <span class="nav-label">To'lovlar</span>
+          </a>
+          <a class="nav-item" href="my_groups.html">
+            <svg viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span class="nav-label">Guruhlarim</span>
+          </a>
+          <a class="nav-item" href="my_students.html">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
+              />
+              <path d="M12 6v6l4 2" />
+            </svg>
+            <span class="nav-label">O'quvchilarim</span>
+          </a>
+          <a class="nav-item" href="discount.html">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
+              />
+              <line x1="7" y1="7" x2="7.01" y2="7" />
+            </svg>
+            <span class="nav-label">Chegirma</span>
+          </a>
+          <a class="nav-item" href="account.html">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+            <span class="nav-label">Account</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="side-panel"></div>
+
+    <script>
+      const API_BASE = "http://10.13.155.23:8000/api/v1";
+      const STUDENTS_API = `${API_BASE}/teacher/group_students`;
+      const SEND_SMS_API = `${API_BASE}/send_sms`;
+      const REFRESH_API = `${API_BASE}/auth/refresh`;
+      const LOGIN_PAGE = "../index.html";
+
+      // URL dan group_id olish
+      const params = new URLSearchParams(window.location.search);
+      const groupId = parseInt(params.get("group_id"));
+
+      // Agar group_id yo'q bo'lsa bosh sahifaga qaytamiz
+      if (!groupId) window.location.href = "teacher_home.html";
+
+      // O'quvchilar holati: { student_id: true/false }
+      // true = keldi, false = kelmadi
+      const attendanceMap = {};
+
+      /* ── Token yordamchi funksiyalar ── */
+      function getToken() {
+        return localStorage.getItem("access_token");
+      }
+      function setToken(t) {
+        localStorage.setItem("access_token", t);
+      }
+      function goLogin() {
+        window.location.href = LOGIN_PAGE;
+      }
+
+      async function refreshToken() {
+        const resp = await fetch(REFRESH_API, {
+          method: "POST",
+          credentials: "include",
+        });
+        if (!resp.ok) throw new Error("Refresh failed");
+        const data = await resp.json();
+        if (!data.access_token) throw new Error("Token not in response");
+        setToken(data.access_token);
+        return data.access_token;
+      }
+
+      /* ── So'rov yuboruvchi yordamchi: token muddati o'tsa yangilaydi ── */
+      async function apiFetch(url, options = {}) {
+        let token = getToken();
+        if (!token) {
+          goLogin();
+          throw new Error("no token");
+        }
+
+        options.headers = {
+          ...options.headers,
+          Authorization: `Bearer ${token}`,
+        };
+
+        let resp = await fetch(url, options);
+
+        if (resp.status === 401) {
+          try {
+            token = await refreshToken();
+          } catch {
+            goLogin();
+            throw new Error("refresh failed");
+          }
+          options.headers.Authorization = `Bearer ${token}`;
+          resp = await fetch(url, options);
+        }
+
+        return resp;
+      }
+
+      /* ── UI holatlarini boshqarish ── */
+      function showLoading() {
+        document.getElementById("loading-state").classList.remove("hidden");
+        document.getElementById("error-state").classList.add("hidden");
+        document.getElementById("already-done").classList.add("hidden");
+        document.getElementById("attendance-form").classList.add("hidden");
+      }
+      function showError(msg) {
+        document.getElementById("loading-state").classList.add("hidden");
+        document.getElementById("error-state").classList.remove("hidden");
+        document.getElementById("already-done").classList.add("hidden");
+        document.getElementById("attendance-form").classList.add("hidden");
+        document.getElementById("error-msg").textContent = msg || "Xatolik";
+      }
+      function showAlreadyDone(groupName) {
+        document.getElementById("loading-state").classList.add("hidden");
+        document.getElementById("error-state").classList.add("hidden");
+        document.getElementById("already-done").classList.remove("hidden");
+        document.getElementById("attendance-form").classList.add("hidden");
+        document.getElementById("done-group-name").textContent = groupName
+          ? `"${groupName}" guruhining bugungi davomati`
+          : "Bugungi davomat qayd etilgan";
+      }
+      function showForm() {
+        document.getElementById("loading-state").classList.add("hidden");
+        document.getElementById("error-state").classList.add("hidden");
+        document.getElementById("already-done").classList.add("hidden");
+        document.getElementById("attendance-form").classList.remove("hidden");
+      }
+
+      /* ── Sahifani render qilish ── */
+      function renderForm(data) {
+        const group = data.group;
+        const students = data.students || [];
+
+        document.getElementById("group-name-display").textContent = group.name;
+        document.getElementById("student-count").textContent =
+          `${students.length} ta`;
+
+        const list = document.getElementById("students-list");
+        list.innerHTML = "";
+
+        students.forEach((s, i) => {
+          // Barchani default "keldi" (true) qilib belgilaymiz
+          attendanceMap[s.student_id] = true;
+
+          // Initials — ism va familiyaning birinchi harflari
+          const initials = (s.first_name[0] + s.last_name[0]).toUpperCase();
+
+          const row = document.createElement("div");
+          row.className = "student-row";
+          row.id = `row-${s.student_id}`;
+          row.style.animationDelay = `${i * 50}ms`;
+
+          // Toggle input id: toggle-{student_id}
+          row.innerHTML = `
+            <div class="student-avatar" id="avatar-${s.student_id}">${initials}</div>
+            <div style="flex:1;min-width:0">
+              <div class="student-name">${s.first_name} ${s.last_name}</div>
+              <div class="student-status" id="status-${s.student_id}">✓ Keldi</div>
+            </div>
+            <div class="toggle-wrap">
+              <label class="toggle">
+                <input
+                  type="checkbox"
+                  id="toggle-${s.student_id}"
+                  checked
+                  onchange="toggleStudent(${s.student_id}, this.checked)"
+                />
+                <div class="toggle-track">
+                </div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>`;
+
+          list.appendChild(row);
+        });
+
+        showForm();
+      }
+
+      /* ── Toggle bosilganda ── */
+      function toggleStudent(studentId, isPresent) {
+        attendanceMap[studentId] = isPresent;
+
+        const row = document.getElementById(`row-${studentId}`);
+        const status = document.getElementById(`status-${studentId}`);
+
+        if (isPresent) {
+          row.classList.remove("absent");
+          status.textContent = "✓ Keldi";
+        } else {
+          row.classList.add("absent");
+          status.textContent = "✗ Kelmadi";
+        }
+      }
+
+      /* ── Davomatni saqlash ── */
+      async function saveAttendance() {
+        const btn = document.getElementById("save-btn");
+
+        // Kelmagan o'quvchilar ro'yxati
+        const absentIds = Object.entries(attendanceMap)
+          .filter(([, present]) => !present)
+          .map(([id]) => parseInt(id));
+
+        // Tugmani loading holatiga o'tkazamiz
+        btn.disabled = true;
+        btn.innerHTML = `<div class="btn-spinner"></div> Saqlanmoqda…`;
+
+        const body = {
+          group_id: groupId,
+          student_ids: absentIds, // faqat kelmaganlar
+        };
+
+        try {
+          const resp = await apiFetch(SEND_SMS_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+
+          if (resp.status === 201) {
+            // Muvaffaqiyat: tugmani yashiramiz, success banner ko'rsatamiz
+            btn.classList.add("hidden");
+            document
+              .getElementById("success-banner")
+              .classList.remove("hidden");
+
+            // O'quvchi qatorlarini ham o'chirib bo'lmaydi qilamiz
+            document
+              .querySelectorAll(".toggle input")
+              .forEach((inp) => (inp.disabled = true));
+          } else {
+            btn.disabled = false;
+            btn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Davomatni saqlash`;
+            alert("Xatolik yuz berdi. Qayta urinib ko'ring.");
+          }
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Davomatni saqlash`;
+          alert("Internet bilan bog'liq muammo.");
+        }
+      }
+
+      /* ── Asosiy ma'lumot yuklash ── */
+      async function loadData() {
+        showLoading();
+
+        try {
+          const resp = await apiFetch(`${STUDENTS_API}?group_id=${groupId}`);
+
+          if (!resp.ok) {
+            showError(`Server xatosi: ${resp.status}`);
+            return;
+          }
+
+          const data = await resp.json();
+
+          // Backend "message: ok" qaytarsa — bugun davomat allaqachon olingan
+          if (data.message === "ok") {
+            // Guruh nomini ko'rsatish uchun alohida so'rov yuborishimiz shart emas,
+            // shunchaki "already done" bannerni ko'rsatamiz
+            showAlreadyDone(null);
+            return;
+          }
+
+          renderForm(data);
+        } catch (err) {
+          showError("Internet bilan bog'liq muammo. Qayta urinib ko'ring.");
+        }
+      }
+
+      loadData();
+    </script>
+  </body>
+</html>

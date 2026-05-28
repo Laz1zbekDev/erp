@@ -21,15 +21,16 @@ class CreateGroup(BaseModel):
 
 
 class UpdateGroup(BaseModel):
-    science_name: Annotated[str | None, Field(min_length=1, max_length=100)] =None
+    science_name: Annotated[str | None, Field(min_length=1, max_length=100)] = None
     name: Annotated[str | None, Field(min_length=1, max_length=100)] = None
     price: Annotated[int | None, Field(ge=1, le=99999999)] = None
     class_day: Annotated[str, Field(min_length=4, max_length=100)] = None
+    teacher_percent: Annotated[int | None, Field(ge=0, le=100)] = None
     class_date: time | None = None
+
 
 class UpdateTeacherGroup(BaseModel):
     teacher_id: Optional[Annotated[int | None, Field(ge=1)]] = None
-    teacher_percent: Annotated[int | None, Field(ge=0, le=100)] = None
 
 
 class ResponseGroup(BaseModel):
@@ -52,6 +53,32 @@ class ResponseAllGroup(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ResponseSearchGroup(BaseModel):
+    class GroupResponse(BaseModel):
+        class Teacher(BaseModel):
+            teacher_id: int
+            first_name: str
+            last_name: str
+            model_config = ConfigDict(from_attributes=True)
+
+        class Group(BaseModel):
+            group_id: int
+            science_name: str
+            name: str
+            price: int
+            class_day: str
+            class_date: time
+            model_config = ConfigDict(from_attributes=True)
+
+        group: Group
+        teacher: Teacher
+        model_config = ConfigDict(from_attributes=True)
+
+    group_num: int
+    groups: list[GroupResponse]
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ResponseGroupInfo(BaseModel):
     class Student(BaseModel):
         student_id: int
@@ -66,7 +93,7 @@ class ResponseGroupInfo(BaseModel):
         pending_deadline: date
 
         model_config = ConfigDict(from_attributes=True)
-    
+
     class Teacher(BaseModel):
         teacher_id: int
         first_name: str

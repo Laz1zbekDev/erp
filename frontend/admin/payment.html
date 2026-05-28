@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To'lovlar — O'quv Markaz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0f1117;
+        --surface: #171b26;
+        --surface2: #1e2333;
+        --surface3: #242840;
+        --border: #ffffff0f;
+        --border2: #ffffff18;
+        --border3: #ffffff25;
+        --accent: #6c8ef5;
+        --accent2: #a78bfa;
+        --accent-glow: #6c8ef530;
+        --text: #e8eaf0;
+        --text-muted: #6b7280;
+        --text-dim: #9ca3af;
+        --success: #34d399;
+        --warning: #fbbf24;
+        --danger: #f87171;
+        --sidebar-w: 240px;
+        --topbar-h: 60px;
+        --radius: 10px;
+        --radius-sm: 6px;
+        --radius-xs: 4px;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Outfit", sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 14px;
+      }
+      .layout {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        overflow-y: auto;
+        scrollbar-width: none;
+        position: relative;
+        z-index: 10;
+      }
+      .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+      .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+      }
+      .logo-area {
+        padding: 22px 20px 18px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logo-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 10px;
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+      .logo-name {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .logo-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+        letter-spacing: 0.3px;
+      }
+      .nav-section {
+        flex: 1;
+        padding: 10px 12px;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--text-muted);
+        padding: 14px 8px 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 13.5px;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        position: relative;
+      }
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--accent-glow);
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 25%;
+        bottom: 25%;
+        width: 3px;
+        border-radius: 2px;
+        background: var(--accent);
+      }
+      .logout-area {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 13.5px;
+        font-family: var(--sans);
+        transition:
+          background 0.15s,
+          color 0.15s;
+      }
+      .logout-btn:hover {
+        background: #f8717118;
+        color: var(--danger);
+      }
+
+      /* MAIN */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .topbar {
+        height: var(--topbar-h);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        flex-shrink: 0;
+      }
+      .page-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .create-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        font-size: 13.5px;
+        font-weight: 600;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: background 0.15s;
+        text-decoration: none;
+      }
+      .create-btn:hover {
+        background: #5a7de8;
+      }
+      .admin-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-left: 16px;
+        border-left: 1px solid var(--border2);
+      }
+      .admin-label {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      #content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border2) transparent;
+      }
+
+      /* STATS GRID */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .stat-title {
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+      .stat-val {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text);
+        font-family: var(--mono);
+      }
+
+      /* FILTERS */
+      .filters-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .date-input {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        padding: 9px 14px;
+        border-radius: var(--radius-sm);
+        font-family: var(--sans);
+        font-size: 13.5px;
+        outline: none;
+      }
+      .date-input:focus {
+        border-color: var(--accent);
+      }
+      .date-input::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 0.5;
+        cursor: pointer;
+      }
+      .filter-btn {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        padding: 9px 16px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .filter-btn:hover {
+        background: var(--surface3);
+        border-color: var(--border3);
+      }
+      .clear-filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 14px;
+        border-radius: var(--radius-sm);
+        background: #f8717112;
+        border: 1px solid #f8717130;
+        color: var(--danger);
+        font-size: 13.5px;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .clear-filter-btn:hover {
+        background: #f8717122;
+        border-color: var(--danger);
+      }
+
+      /* TABLE */
+      .table-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      thead th {
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 0.12s;
+      }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+      tbody tr:hover {
+        background: var(--surface2);
+      }
+      td {
+        padding: 14px 16px;
+        vertical-align: middle;
+      }
+      .mono-cell {
+        font-family: var(--mono);
+      }
+      .desc-cell {
+        color: var(--text-dim);
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .empty-row td {
+        text-align: center;
+        padding: 48px;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* PAGINATION */
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        padding: 14px 16px;
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+      }
+      .page-info {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-right: auto;
+      }
+      .page-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 13px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .page-btn:hover:not(:disabled) {
+        background: var(--accent-glow);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .page-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .page-nums {
+        display: flex;
+        gap: 4px;
+      }
+      .page-num {
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        font-size: 13px;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .page-num.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .page-num:hover:not(.active) {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 17, 23, 0.7);
+        backdrop-filter: blur(3px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.2s;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        width: 100%;
+        max-width: 420px;
+        padding: 24px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        transform: translateY(20px);
+        transition: transform 0.2s;
+      }
+      .modal-overlay.active .modal-box {
+        transform: translateY(0);
+      }
+      .modal-header {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: var(--text);
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+      }
+      .form-control {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        font-family: var(--sans);
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .form-control:focus {
+        border-color: var(--accent);
+      }
+
+      /* VALIDATION CLASSES */
+      .form-control.input-warning {
+        border-color: var(--warning);
+      }
+      .form-control.input-warning:focus {
+        border-color: var(--warning);
+        box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
+      }
+      .form-control.input-error {
+        border-color: var(--danger);
+      }
+      .form-control.input-error:focus {
+        border-color: var(--danger);
+        box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2);
+      }
+      .feedback-text {
+        font-size: 12px;
+        margin-top: 6px;
+        display: none;
+      }
+      .feedback-text.show-warning {
+        color: var(--warning);
+        display: block;
+      }
+      .feedback-text.show-error {
+        color: var(--danger);
+        display: block;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .btn-cancel {
+        background: transparent;
+        border: 1px solid var(--border2);
+        color: var(--text);
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: 0.2s;
+        font-family: var(--sans);
+      }
+      .btn-cancel:hover {
+        background: var(--surface2);
+      }
+      .btn-submit {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: 500;
+        font-family: var(--sans);
+      }
+      .btn-submit:hover {
+        background: #5a7de8;
+      }
+
+      /* TOAST & LOADER */
+      #toast-container {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+      .toast {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        font-size: 13px;
+        color: var(--text);
+        max-width: 340px;
+        animation: toastIn 0.2s ease;
+        pointer-events: all;
+        box-shadow: 0 8px 32px #0008;
+      }
+      .toast.error {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .toast.success {
+        border-color: var(--success);
+        color: var(--success);
+      }
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .global-loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 17, 23, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .global-loader-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .global-spinner {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid var(--border2);
+        border-top-color: var(--accent);
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="global-loader-overlay" id="global-loader">
+      <div class="global-spinner"></div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="tx-modal">
+      <div class="modal-box">
+        <div class="modal-header">Transaksiya yaratish</div>
+        <div class="form-group">
+          <label for="tx-amount">Summa (1 - 100,000,000 gacha) *</label>
+          <input
+            type="number"
+            id="tx-amount"
+            class="form-control"
+            min="1"
+            max="100000000"
+            placeholder="Masalan: 150000"
+            oninput="checkTxAmount()"
+          />
+          <div id="tx-amount-feedback" class="feedback-text"></div>
+        </div>
+        <div class="form-group">
+          <label for="tx-desc">Izoh (ixtiyoriy)</label>
+          <input
+            type="text"
+            id="tx-desc"
+            class="form-control"
+            maxlength="555"
+            placeholder="Qisqacha izoh yozing..."
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal()">
+            Bekor qilish
+          </button>
+          <button class="btn-submit" onclick="submitTransaction()">
+            Saqlash
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="logo-area">
+          <div class="logo-circle">OC</div>
+          <div class="logo-name">O'quv Markaz</div>
+          <div class="logo-sub">Admin Panel</div>
+        </div>
+        <nav class="nav-section">
+          <div class="nav-label">Asosiy</div>
+          <a class="nav-item" href="dashboard.html">Dashboard</a>
+          <div class="nav-label">O'quv jarayoni</div>
+          <a class="nav-item" href="students.html">O'quvchilar</a>
+          <a class="nav-item" href="group.html">Guruhlar</a>
+          <a class="nav-item" href="teacher.html">O'qituvchilar</a>
+          <div class="nav-label">Moliya</div>
+          <a class="nav-item active" href="payment.html">To'lovlar</a>
+          <a class="nav-item" href="student_transaction.html"
+            >O'quvchi transaksiya</a
+          >
+          <a class="nav-item" href="teacher_transaction.html"
+            >O'qituvchi transaksiya</a
+          >
+          <div class="nav-label">Sozlamalar</div>
+          <a class="nav-item" href="account.html">Shaxsiy hisob</a>
+        </nav>
+        <div class="logout-area">
+          <button class="logout-btn" onclick="authLogout()">Chiqish</button>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="main-content">
+        <div class="topbar">
+          <span class="page-title">To'lovlar (Admin)</span>
+          <div class="topbar-right">
+            <button class="create-btn" onclick="openModal()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 3v10M3 8h10"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              Transaksiya yaratish
+            </button>
+            <div class="admin-info">
+              <span class="admin-label" id="admin-name">Admin</span>
+              <div class="avatar" id="admin-avatar">AD</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="content-area">
+          <!-- STATS -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-title">Umumiy tushum (Studentlar)</div>
+              <div class="stat-val" id="stat-student">0 UZS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">O'qituvchilarga berilgan</div>
+              <div class="stat-val" id="stat-teacher">0 UZS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Admin chiqargan</div>
+              <div class="stat-val" id="stat-admin">0 UZS</div>
+            </div>
+          </div>
+
+          <!-- FILTERS -->
+          <div class="filters-row">
+            <input type="date" id="filter-start" class="date-input" />
+            <span style="color: var(--text-dim)">-</span>
+            <input type="date" id="filter-end" class="date-input" />
+            <button class="filter-btn" onclick="applyFilters()">
+              Filtrlash
+            </button>
+            <button class="clear-filter-btn" onclick="clearFilters()">
+              Tozalash
+            </button>
+          </div>
+
+          <!-- TABLE AREA -->
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Summa (UZS)</th>
+                  <th>Izoh</th>
+                  <th>Sana</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <!-- JS renders rows here -->
+              </tbody>
+            </table>
+            <div class="pagination" id="pagination-area">
+              <!-- JS renders pagination here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const BASE = "http://10.13.155.23:8000/api/v1";
+      const LIMIT = 20;
+
+      let currentPage = 1;
+      let totalCount = 0;
+      let currentConflict = 0; // Konflikt qiymatini saqlash uchun
+
+      // AUTH CHECK
+      if (!localStorage.getItem("access_token")) {
+        window.location.replace("../index.html");
+      }
+
+      const getToken = () => localStorage.getItem("access_token");
+      const saveToken = (t) => localStorage.setItem("access_token", t);
+
+      function authLogout() {
+        const token = getToken();
+        localStorage.clear();
+        sessionStorage.clear();
+        if (token) {
+          fetch(`${BASE}/auth/logout`, {
+            method: "POST",
+            credentials: "include",
+            headers: { Authorization: `Bearer ${token}` },
+          }).catch(() => {});
+        }
+        window.location.replace("../index.html");
+      }
+
+      async function tryRefresh() {
+        try {
+          const r = await fetch(`${BASE}/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+          });
+          if (!r.ok) throw 0;
+          const d = await r.json();
+          if (d.access_token) {
+            saveToken(d.access_token);
+            return d.access_token;
+          }
+          throw 0;
+        } catch {
+          authLogout();
+          return null;
+        }
+      }
+
+      async function apiFetch(url, opts = {}) {
+        const token = getToken();
+        const headers = {
+          "Content-Type": "application/json",
+          ...(opts.headers || {}),
+        };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const go = (tok) => {
+          const h = { ...headers };
+          if (tok) h["Authorization"] = `Bearer ${tok}`;
+          return fetch(url, { ...opts, credentials: "include", headers: h });
+        };
+
+        let res;
+        try {
+          res = await go(token);
+        } catch (e) {
+          toast(`Tarmoq xatoligi: ${e.message}`, "error");
+          return null;
+        }
+
+        if (res.status === 401 || res.status === 403) {
+          const nt = await tryRefresh();
+          if (!nt) return null;
+          try {
+            res = await go(nt);
+          } catch (e) {
+            return null;
+          }
+          if (res.status === 401 || res.status === 403) {
+            authLogout();
+            return null;
+          }
+        }
+        return res;
+      }
+
+      // UI HELPERS
+      function showLoader() {
+        document.getElementById("global-loader").classList.add("active");
+      }
+      function hideLoader() {
+        document.getElementById("global-loader").classList.remove("active");
+      }
+
+      function toast(msg, type = "error") {
+        const c = document.getElementById("toast-container");
+        const el = document.createElement("div");
+        el.className = `toast ${type}`;
+        el.textContent = msg;
+        c.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = "0";
+          setTimeout(() => el.remove(), 300);
+        }, 3800);
+      }
+
+      function esc(s) {
+        return s == null
+          ? "—"
+          : String(s)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+      }
+
+      function formatMoney(num) {
+        if (!num && num !== 0) return "0";
+        return Number(num).toLocaleString("ru-RU");
+      }
+
+      function formatDateTime(str) {
+        if (!str) return "—";
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str;
+        return d.toLocaleString("ru-RU", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      // VALIDATION LOGIC
+      function checkTxAmount() {
+        const input = document.getElementById("tx-amount");
+        const feedback = document.getElementById("tx-amount-feedback");
+        const val = parseFloat(input.value);
+
+        // Reset
+        input.classList.remove("input-warning", "input-error");
+        feedback.className = "feedback-text";
+        feedback.textContent = "";
+
+        if (isNaN(val) || input.value.trim() === "") return;
+
+        // Agar kiritilgan summa mavjud konfliktdan ko'p bo'lsa, ogohlantirish (sariq rang)
+        if (val > currentConflict) {
+          input.classList.add("input-warning");
+          feedback.classList.add("show-warning");
+          feedback.textContent = `Ogohlantirish: Kiritilgan summa joriy qoldiqdan (${formatMoney(currentConflict)} UZS) ko'p!`;
+        }
+      }
+
+      // MODAL LOGIC
+      function openModal() {
+        const input = document.getElementById("tx-amount");
+        const feedback = document.getElementById("tx-amount-feedback");
+        
+        input.value = "";
+        input.classList.remove("input-warning", "input-error");
+        feedback.className = "feedback-text";
+        feedback.textContent = "";
+
+        document.getElementById("tx-desc").value = "";
+        document.getElementById("tx-modal").classList.add("active");
+      }
+
+      function closeModal() {
+        document.getElementById("tx-modal").classList.remove("active");
+      }
+
+      async function submitTransaction() {
+        const input = document.getElementById("tx-amount");
+        const feedback = document.getElementById("tx-amount-feedback");
+        const amountInput = input.value.trim();
+        const descInput = document.getElementById("tx-desc").value.trim();
+
+        // Kiritish maydoni bo'sh bo'lsa tekshiruv (qizil rang va xatolik)
+        if (amountInput === "") {
+          input.classList.remove("input-warning");
+          input.classList.add("input-error");
+          feedback.className = "feedback-text show-error";
+          feedback.textContent = "Iltimos, summani kiriting!";
+          return;
+        }
+
+        const amount = parseInt(amountInput, 10);
+
+        if (isNaN(amount) || amount < 1 || amount > 100000000) {
+          input.classList.remove("input-warning");
+          input.classList.add("input-error");
+          feedback.className = "feedback-text show-error";
+          feedback.textContent = "Summa 1 dan 100,000,000 UZS gacha bo'lishi kerak";
+          return;
+        }
+
+        if (descInput.length > 555) {
+          toast("Izoh maksimal 555 belgidan iborat bo'lishi mumkin", "error");
+          return;
+        }
+
+        let url = `${BASE}/transaction/admin/?amount=${amount}`;
+        if (descInput) {
+          url += `&description=${encodeURIComponent(descInput)}`;
+        }
+
+        showLoader();
+        const r = await apiFetch(url, { method: "POST" });
+        hideLoader();
+
+        if (!r) return;
+        if (!r.ok) {
+          try {
+            const err = await r.json();
+            toast(err.detail || "Xatolik yuz berdi");
+          } catch {
+            toast(`Server xatoligi: ${r.status}`);
+          }
+          return;
+        }
+
+        toast("Transaksiya yaratildi!", "success");
+        closeModal();
+
+        // Sahifani yangilash
+        setTimeout(() => {
+          window.location.reload();
+        }, 800);
+      }
+
+      // FETCH & RENDER DATA
+      function applyFilters() {
+        currentPage = 1;
+        fetchData();
+      }
+
+      function clearFilters() {
+        document.getElementById("filter-start").value = "";
+        document.getElementById("filter-end").value = "";
+        currentPage = 1;
+        fetchData();
+      }
+
+      async function fetchData() {
+        const offset = (currentPage - 1) * LIMIT;
+        let url = `${BASE}/transaction/admin/filter/?limit=${LIMIT}&offset=${offset}`;
+
+        const start = document.getElementById("filter-start").value;
+        const end = document.getElementById("filter-end").value;
+
+        if (start) url += `&start=${start}T00:00:00`;
+        if (end) url += `&end=${end}T23:59:59`;
+
+        showLoader();
+        const r = await apiFetch(url);
+        hideLoader();
+
+        if (!r) return;
+        if (!r.ok) {
+          try {
+            const err = await r.json();
+            toast(err.detail || "Ma'lumotni yuklashda xatolik");
+          } catch {
+            toast("Server xatoligi");
+          }
+          return;
+        }
+
+        const data = await r.json();
+        totalCount = data.total_count || 0;
+        currentConflict = data.conflict || 0;
+
+        // Update Cards
+        document.getElementById("stat-student").textContent =
+          formatMoney(data.sum_student) + " UZS";
+        document.getElementById("stat-teacher").textContent =
+          formatMoney(data.sum_teacher) + " UZS";
+        document.getElementById("stat-admin").textContent =
+          formatMoney(data.sum_amount) + " UZS";
+
+        renderTable(data.transactions || []);
+        renderPagination();
+      }
+
+      function renderTable(arr) {
+        const tbody = document.getElementById("table-body");
+        if (!arr || arr.length === 0) {
+          tbody.innerHTML = `<tr class="empty-row"><td colspan="4">Hech qanday to'lov topilmadi</td></tr>`;
+          return;
+        }
+
+        let html = "";
+        arr.forEach((tx) => {
+          html += `
+            <tr>
+              <td class="mono-cell">#${tx.tr_id}</td>
+              <td class="mono-cell" style="color: var(--accent); font-weight: 500;">
+                ${formatMoney(tx.amount)}
+              </td>
+              <td class="desc-cell" title="${esc(tx.description)}">${esc(tx.description)}</td>
+              <td class="mono-cell" style="color: var(--text-dim);">${formatDateTime(tx.created_at)}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+
+      function renderPagination() {
+        const totalPages = Math.max(1, Math.ceil(totalCount / LIMIT));
+        const area = document.getElementById("pagination-area");
+
+        const start = totalCount > 0 ? (currentPage - 1) * LIMIT + 1 : 0;
+        const end = Math.min(currentPage * LIMIT, totalCount);
+
+        let nums = "";
+        for (
+          let i = Math.max(1, currentPage - 2);
+          i <= Math.min(totalPages, currentPage + 2);
+          i++
+        ) {
+          nums += `<button class="page-num ${i === currentPage ? "active" : ""}" onclick="goPage(${i})">${i}</button>`;
+        }
+
+        area.innerHTML = `
+          <span class="page-info">${start}–${end} / ${totalCount} ta</span>
+          <button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage <= 1 ? "disabled" : ""}>← Oldingi</button>
+          <div class="page-nums">${nums}</div>
+          <button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage >= totalPages ? "disabled" : ""}>Keyingi →</button>
+        `;
+      }
+
+      function goPage(page) {
+        const totalPages = Math.max(1, Math.ceil(totalCount / LIMIT));
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        fetchData();
+      }
+
+      // Initialize
+      (async () => {
+        await fetchData();
+      })();
+    </script>
+  </body>
+</html>

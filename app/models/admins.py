@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, SmallInteger, ForeignKey, Boolean
 
+from app.models.transaction import TeacherTransaction
+
 from ..db.base import Base, TimeMixin
 
 
@@ -19,6 +21,15 @@ class Admin(Base, TimeMixin):
     status: Mapped[bool] = mapped_column(Boolean, default=True)
 
     user: Mapped["User"] = relationship("User", back_populates="admin")
+    student_transactions: Mapped[list["StudentTransaction"]] = relationship(
+        "StudentTransaction", back_populates="admin"
+    )
+    teacher_transactions: Mapped[list["TeacherTransaction"]] = relationship(
+        "TeacherTransaction", back_populates="admin"
+    )
+    admin_transactions: Mapped[list["AdminTransaction"]] = relationship(
+        "AdminTransaction", back_populates="admin"
+    )
 
 
 class SuperAdmin(Base, TimeMixin):

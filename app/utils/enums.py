@@ -13,7 +13,5 @@ class DiscountType(Enum):
     BOTH = "umumiy"
 
 
-class GroupStatus(Enum):
-    NOT_STARTED = "not_started"
-    IN_PROGRESS = "in_progress"
-    ARCHIVED = "archived"
+class SmsStatus(Enum):
+    pass

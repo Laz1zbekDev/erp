@@ -18,7 +18,7 @@ class StudentDiscount(Base, TimeMixin):
     teacher_id: Mapped[int] = mapped_column(
         SmallInteger,
         ForeignKey("teachers.teacher_id"),
-        nullable=False,
+        nullable=True,
         index=True,
     )
     group_id: Mapped[int] = mapped_column(
@@ -39,3 +39,4 @@ class StudentDiscount(Base, TimeMixin):
     student: Mapped["Student"] = relationship(
         "Student", back_populates="student_discount"
     )
+    group: Mapped["Group"] = relationship("Group", back_populates="student_discounts")

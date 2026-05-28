@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guruhlarim — O'quv Markazi</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap");
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f5f4f0;
+        --surface: #ffffff;
+        --surface2: #efede8;
+        --border: #e2e0da;
+        --text: #1a1917;
+        --muted: #7a786f;
+        --accent: #2d6a4f;
+        --accent-bg: #eaf4ee;
+        --accent2: #b7410e;
+        --accent2-bg: #fdf0eb;
+        --nav-h: 64px;
+        --font: "DM Sans", sans-serif;
+        --mono: "DM Mono", monospace;
+        --radius: 14px;
+        --radius-sm: 8px;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 4px 16px rgba(0, 0, 0, 0.05);
+        --panel-bg: #1e3d2f;
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        font-family: var(--font);
+        color: var(--text);
+        overflow: hidden;
+      }
+
+      /* ═══════════════ DESKTOP WRAPPER ═══════════════ */
+      @media (min-width: 900px) {
+        body {
+          background: var(--panel-bg);
+          display: flex;
+          align-items: stretch;
+          min-height: 100vh;
+          overflow: hidden;
+        }
+        .side-panel {
+          flex: 1;
+          background: var(--panel-bg);
+          position: relative;
+          overflow: hidden;
+        }
+        .side-panel::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(
+              ellipse 60% 50% at 50% 0%,
+              rgba(45, 106, 79, 0.35) 0%,
+              transparent 70%
+            ),
+            radial-gradient(
+              ellipse 40% 60% at 80% 100%,
+              rgba(45, 106, 79, 0.2) 0%,
+              transparent 60%
+            );
+          pointer-events: none;
+        }
+        .side-panel::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.04) 1px,
+              transparent 1px
+            );
+          background-size: 40px 40px;
+          pointer-events: none;
+        }
+        .phone-shell {
+          width: 840px;
+          flex-shrink: 0;
+          height: 100vh;
+          background: var(--bg);
+          position: relative;
+          overflow: hidden;
+          box-shadow:
+            0 0 0 1px rgba(0, 0, 0, 0.25),
+            0 32px 80px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+        .phone-shell::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+          );
+          z-index: 999;
+          pointer-events: none;
+        }
+      }
+
+      @media (max-width: 899px) {
+        .side-panel {
+          display: none;
+        }
+        .phone-shell {
+          width: 100%;
+          min-height: 100vh;
+          height: 100vh;
+          overflow: hidden;
+        }
+      }
+
+      /* ── TOP HEADER ── */
+      .top-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        height: 56px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+      }
+      .header-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .header-logo svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: #fff;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+      .header-name {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .header-sub {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: transparent;
+        cursor: pointer;
+        font-family: var(--font);
+        font-size: 13px;
+        color: var(--muted);
+        transition:
+          background 0.15s,
+          color 0.15s,
+          border-color 0.15s;
+      }
+      .logout-btn:hover {
+        background: var(--accent2-bg);
+        color: var(--accent2);
+        border-color: var(--accent2);
+      }
+      .logout-btn svg {
+        width: 15px;
+        height: 15px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+      }
+
+      /* ── SCROLLABLE INNER ── */
+      .phone-inner {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      /* ── MAIN ── */
+      .main {
+        height: 100%;
+        overflow-y: auto;
+        padding-top: calc(56px + 16px);
+        padding-bottom: calc(var(--nav-h) + 16px);
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      /* ── SUMMARY CARD ── */
+      .summary-card {
+        background: var(--accent);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 20px rgba(45, 106, 79, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .summary-label {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.65);
+        margin-bottom: 4px;
+      }
+      .summary-total {
+        font-size: 22px;
+        font-weight: 700;
+        color: #fff;
+        font-family: var(--mono);
+        letter-spacing: -0.02em;
+      }
+      .summary-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .summary-icon svg {
+        width: 22px;
+        height: 22px;
+        stroke: #fff;
+        stroke-width: 1.8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* ── SECTION HEADER ── */
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .section-badge {
+        font-size: 11px;
+        font-weight: 500;
+        font-family: var(--mono);
+        background: var(--accent-bg);
+        color: var(--accent);
+        padding: 3px 9px;
+        border-radius: 20px;
+      }
+
+      /* ── GROUP CARD ── */
+      .group-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        margin-bottom: 10px;
+        box-shadow: var(--shadow);
+        animation: slideUp 0.3s ease both;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .group-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 2px 12px rgba(45, 106, 79, 0.1);
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Card top row: nomi + vaqt */
+      .group-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .group-name {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.3;
+      }
+      .group-time-chip {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 11px;
+        border-radius: 20px;
+        background: var(--accent-bg);
+        border: 1px solid rgba(45, 106, 79, 0.2);
+        flex-shrink: 0;
+      }
+      .group-time-chip svg {
+        width: 13px;
+        height: 13px;
+        stroke: var(--accent);
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+      }
+      .group-time-chip span {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--accent);
+        font-family: var(--mono);
+      }
+
+      /* Info rows */
+      .group-info-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        background: var(--surface2);
+        border-radius: var(--radius-sm);
+        margin-bottom: 6px;
+      }
+      .group-info-row:last-child {
+        margin-bottom: 0;
+      }
+      .group-info-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .group-info-icon svg {
+        width: 14px;
+        height: 14px;
+        stroke: var(--muted);
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .group-info-label {
+        font-size: 11px;
+        color: var(--muted);
+        display: block;
+      }
+      .group-info-value {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+        display: block;
+        line-height: 1.3;
+      }
+      .group-info-value.mono {
+        font-family: var(--mono);
+      }
+
+      /* 2 ustunli pastki qator (narx + ulush) */
+      .group-bottom-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-top: 6px;
+      }
+      .group-stat {
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .group-stat-label {
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 2px;
+      }
+      .group-stat-value {
+        font-size: 15px;
+        font-weight: 700;
+        font-family: var(--mono);
+      }
+      .group-stat-value.price {
+        color: var(--accent);
+      }
+      .group-stat-value.percent {
+        color: var(--accent2);
+      }
+
+      /* ── PAGINATION ── */
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 20px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .page-btn {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+      }
+      .page-btn:hover:not(:disabled) {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-bg);
+      }
+      .page-btn.active {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      .page-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .page-btn.arrow {
+        font-size: 16px;
+      }
+      .page-info {
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+        font-family: var(--mono);
+      }
+
+      /* ── EMPTY STATE ── */
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        background: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: var(--radius);
+      }
+      .empty-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--surface2);
+        margin: 0 auto 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .empty-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: var(--muted);
+        stroke-width: 1.5;
+        fill: none;
+      }
+      .empty-title {
+        font-size: 15px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      .empty-sub {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* ── BOTTOM NAV ── */
+      .bottom-nav {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        height: var(--nav-h);
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        display: flex;
+      }
+      .nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--muted);
+        transition: color 0.15s;
+        padding: 8px 4px;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .nav-item.active {
+        color: var(--accent);
+      }
+      .nav-item svg {
+        width: 22px;
+        height: 22px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .nav-item.active svg {
+        stroke-width: 2.2;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 500;
+      }
+      .nav-item.active .nav-label {
+        font-weight: 600;
+      }
+
+      /* ── LOADING / ERROR ── */
+      .state-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        gap: 12px;
+        text-align: center;
+      }
+      .spinner {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .state-text {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .retry-btn {
+        margin-top: 8px;
+        padding: 9px 20px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .retry-btn:hover {
+        opacity: 0.85;
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="side-panel"></div>
+
+    <div class="phone-shell">
+      <div class="phone-inner">
+        <!-- TOP HEADER -->
+        <header class="top-header">
+          <div class="header-brand">
+            <div class="header-logo">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div>
+              <div class="header-name">O'quv Markazi</div>
+              <div class="header-sub">Guruhlarim</div>
+            </div>
+          </div>
+          <button class="logout-btn" onclick="logout()">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Chiqish
+          </button>
+        </header>
+
+        <!-- MAIN -->
+        <main class="main">
+          <!-- Loading -->
+          <div id="loading-state" class="state-screen">
+            <div class="spinner"></div>
+            <div class="state-text">Guruhlar yuklanmoqda…</div>
+          </div>
+
+          <!-- Error -->
+          <div id="error-state" class="state-screen hidden">
+            <div class="empty-icon" style="width: 56px; height: 56px">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <div class="empty-title">Xatolik yuz berdi</div>
+            <div class="state-text" id="error-msg">
+              Ma'lumot yuklab bo'lmadi
+            </div>
+            <button class="retry-btn" onclick="loadPage(currentPage)">
+              Qayta urinish
+            </button>
+          </div>
+
+          <!-- Content -->
+          <div id="content" class="hidden">
+            <!-- Summary -->
+            <div class="summary-card">
+              <div>
+                <div class="summary-label">Faol guruhlar soni</div>
+                <div class="summary-total" id="total-count">—</div>
+              </div>
+              <div class="summary-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Section header -->
+            <div class="section-header">
+              <div class="section-title">Guruhlar ro'yxati</div>
+              <div class="section-badge" id="page-badge">—</div>
+            </div>
+
+            <!-- Groups list -->
+            <div id="groups-list"></div>
+
+            <!-- Pagination -->
+            <div class="page-info" id="page-info"></div>
+            <div class="pagination" id="pagination"></div>
+          </div>
+        </main>
+
+        <!-- BOTTOM NAV -->
+        <nav class="bottom-nav">
+          <a class="nav-item" href="teacher_home.html">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <span class="nav-label">Bosh sahifa</span>
+          </a>
+          <a class="nav-item" href="payments.html">
+            <svg viewBox="0 0 24 24">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+              <line x1="1" y1="10" x2="23" y2="10" />
+            </svg>
+            <span class="nav-label">To'lovlar</span>
+          </a>
+          <a class="nav-item active" href="my_groups.html">
+            <svg viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span class="nav-label">Guruhlarim</span>
+          </a>
+          <a class="nav-item" href="my_students.html">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
+              />
+              <path d="M12 6v6l4 2" />
+            </svg>
+            <span class="nav-label">O'quvchilarim</span>
+          </a>
+          <a class="nav-item" href="discount.html">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
+              />
+              <line x1="7" y1="7" x2="7.01" y2="7" />
+            </svg>
+            <span class="nav-label">Chegirma</span>
+          </a>
+          <a class="nav-item" href="account.html">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+            <span class="nav-label">Account</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="side-panel"></div>
+
+    <script>
+      const API_BASE = "http://10.13.155.23:8000/api/v1";
+      const GROUPS_API = `${API_BASE}/teacher/teacher_groups`;
+      const REFRESH_API = `${API_BASE}/auth/refresh`;
+      const LOGIN_PAGE = "../index.html";
+
+      const LIMIT = 20;
+      let currentPage = 1;
+      let totalCount = 0;
+
+      /* ── Auth ── */
+      function goLogin() {
+        window.location.href = LOGIN_PAGE;
+      }
+      function getToken() {
+        return localStorage.getItem("access_token");
+      }
+      function setToken(t) {
+        localStorage.setItem("access_token", t);
+      }
+
+      async function refreshToken() {
+        const resp = await fetch(REFRESH_API, {
+          method: "POST",
+          credentials: "include",
+        });
+        if (!resp.ok) throw new Error("Refresh failed");
+        const data = await resp.json();
+        if (!data.access_token) throw new Error("No token");
+        setToken(data.access_token);
+        return data.access_token;
+      }
+
+      /* ── Formatters ── */
+
+      // "500000" → "500 000 so'm"
+      function formatPrice(num) {
+        return Math.round(num).toLocaleString("uz-UZ") + " so'm";
+      }
+
+      // "15:23:00" → "15:23"
+      function formatTime(timeStr) {
+        if (!timeStr) return "—";
+        const parts = timeStr.split(":");
+        if (parts.length < 2) return timeStr;
+        return `${parts[0]}:${parts[1]}`;
+      }
+
+      /* ── UI states ── */
+      function showLoading() {
+        document.getElementById("loading-state").classList.remove("hidden");
+        document.getElementById("error-state").classList.add("hidden");
+        document.getElementById("content").classList.add("hidden");
+      }
+      function showError(msg) {
+        document.getElementById("loading-state").classList.add("hidden");
+        document.getElementById("error-state").classList.remove("hidden");
+        document.getElementById("content").classList.add("hidden");
+        document.getElementById("error-msg").textContent =
+          msg || "Xatolik yuz berdi";
+      }
+      function showContent() {
+        document.getElementById("loading-state").classList.add("hidden");
+        document.getElementById("error-state").classList.add("hidden");
+        document.getElementById("content").classList.remove("hidden");
+      }
+
+      /* ── Render ── */
+      function renderGroups(data) {
+        totalCount = data.groups_num || 0;
+        const groups = data.groups || [];
+        const totalPages = Math.ceil(totalCount / LIMIT);
+
+        document.getElementById("total-count").textContent =
+          `${totalCount} ta guruh`;
+
+        document.getElementById("page-badge").textContent =
+          `${currentPage} / ${totalPages || 1} sahifa`;
+
+        const from = totalCount === 0 ? 0 : (currentPage - 1) * LIMIT + 1;
+        const to = Math.min(currentPage * LIMIT, totalCount);
+        document.getElementById("page-info").textContent =
+          totalCount > 0 ? `${from}–${to} / ${totalCount} ta` : "";
+
+        const list = document.getElementById("groups-list");
+        list.innerHTML = "";
+
+        if (groups.length === 0) {
+          list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="empty-title">Guruhlar yo'q</div>
+          <div class="empty-sub">Hozircha faol guruh mavjud emas</div>
+        </div>`;
+          renderPagination(0);
+          showContent();
+          return;
+        }
+
+        groups.forEach((g, i) => {
+          const card = document.createElement("div");
+          card.className = "group-card";
+          card.style.animationDelay = `${i * 60}ms`;
+
+          card.innerHTML = `
+        <!-- Nomi + Vaqt -->
+        <div class="group-top">
+          <div class="group-name">${escapeHtml(g.name)}</div>
+          <div class="group-time-chip">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>${formatTime(g.class_date)}</span>
+          </div>
+        </div>
+
+        <!-- Dars kunlari -->
+        <div class="group-info-row">
+          <div class="group-info-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div style="flex:1;min-width:0">
+            <span class="group-info-label">Dars kunlari</span>
+            <span class="group-info-value">${escapeHtml(g.class_day)}</span>
+          </div>
+        </div>
+
+        <!-- Narx + Ulush -->
+        <div class="group-bottom-row">
+          <div class="group-stat">
+            <div class="group-stat-label">Guruh narxi</div>
+            <div class="group-stat-value price">${formatPrice(g.price)}</div>
+          </div>
+          <div class="group-stat">
+            <div class="group-stat-label">O'qituvchi ulushi</div>
+            <div class="group-stat-value percent">${g.teacher_percent}%</div>
+          </div>
+        </div>`;
+
+          list.appendChild(card);
+        });
+
+        renderPagination(totalPages);
+        showContent();
+      }
+
+      /* ── Pagination ── */
+      function renderPagination(totalPages) {
+        const container = document.getElementById("pagination");
+        container.innerHTML = "";
+        if (totalPages <= 0) return;
+
+        const prevBtn = makePagBtn("‹", currentPage === 1, () =>
+          loadPage(currentPage - 1),
+        );
+        prevBtn.classList.add("arrow");
+        container.appendChild(prevBtn);
+
+        getPageNumbers(currentPage, totalPages).forEach((p) => {
+          if (p === "...") {
+            const dots = document.createElement("div");
+            dots.className = "page-btn";
+            dots.style.cursor = "default";
+            dots.textContent = "…";
+            container.appendChild(dots);
+          } else {
+            const btn = makePagBtn(p, false, () => loadPage(p));
+            if (p === currentPage) btn.classList.add("active");
+            container.appendChild(btn);
+          }
+        });
+
+        const nextBtn = makePagBtn("›", currentPage === totalPages, () =>
+          loadPage(currentPage + 1),
+        );
+        nextBtn.classList.add("arrow");
+        container.appendChild(nextBtn);
+      }
+
+      function makePagBtn(label, disabled, onClick) {
+        const btn = document.createElement("button");
+        btn.className = "page-btn";
+        btn.textContent = label;
+        btn.disabled = disabled;
+        if (!disabled) btn.addEventListener("click", onClick);
+        return btn;
+      }
+
+      function getPageNumbers(current, total) {
+        if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+        if (current <= 4) return [1, 2, 3, 4, 5, "...", total];
+        if (current >= total - 3)
+          return [1, "...", total - 4, total - 3, total - 2, total - 1, total];
+        return [1, "...", current - 1, current, current + 1, "...", total];
+      }
+
+      /* ── Fetch ── */
+      async function loadPage(page) {
+        currentPage = page;
+        showLoading();
+
+        let token = getToken();
+        if (!token) {
+          goLogin();
+          return;
+        }
+
+        const offset = (page - 1) * LIMIT;
+        const url = `${GROUPS_API}?limit=${LIMIT}&offset=${offset}`;
+
+        try {
+          let resp = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (resp.status === 401) {
+            try {
+              token = await refreshToken();
+            } catch {
+              goLogin();
+              return;
+            }
+            resp = await fetch(url, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!resp.ok) {
+              goLogin();
+              return;
+            }
+          }
+
+          if (!resp.ok) {
+            showError(`Server xatosi: ${resp.status}`);
+            return;
+          }
+
+          const data = await resp.json();
+          renderGroups(data);
+
+          document
+            .querySelector(".phone-inner")
+            .scrollTo({ top: 0, behavior: "smooth" });
+        } catch {
+          showError("Internet bilan bog'liq muammo. Qayta urinib ko'ring.");
+        }
+      }
+
+      /* ── Utils ── */
+      function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function logout() {
+        localStorage.removeItem("access_token");
+        goLogin();
+      }
+
+      loadPage(1);
+    </script>
+  </body>
+</html>

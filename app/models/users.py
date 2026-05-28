@@ -26,7 +26,7 @@ class User(Base, TimeMixin):
     teacher: Mapped["Teacher"] = relationship(
         "Teacher", back_populates="user", uselist=False
     )
-    admin: Mapped["Admin"] = relationship("Admin", back_populates="user", uselist=False)
+    admin: Mapped["Admin"] = relationship("Admin", back_populates="user")
     superadmin: Mapped["SuperAdmin"] = relationship(
         "SuperAdmin", back_populates="user", uselist=False
     )

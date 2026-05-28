@@ -1,4 +1,5 @@
 from datetime import datetime
+import asyncio
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response, Request, Query, Path
@@ -15,6 +16,7 @@ from ...services import (
     get_student_per_and_student,
     update_student_pending,
     count_student_per_and_student,
+    sum_student_transactions,
 )
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
@@ -22,8 +24,8 @@ router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 @router.get("/", response_model=DashboardResponse)
 async def dashboard_response_view(
-    offset: Annotated[int | None, Query(ge=0, le=100)] = 0,
-    limit: Annotated[int | None, Query(ge=1, le=100)] = 20,
+    offset: Annotated[int | None, Query(ge=0)] = 0,
+    limit: Annotated[int | None, Query(ge=1)] = 20,
     admin: dict = Depends(get_admin),
     session: AsyncSession = Depends(get_session),
 ):
@@ -34,6 +36,13 @@ async def dashboard_response_view(
 
     total_expire = await count_student_per_and_student(session)
     result = await get_student_per_and_student(session, offset, limit)
+    start = datetime(
+        datetime.now().year, datetime.now().month, datetime.now().day, 0, 0, 0
+    )
+    end = datetime(
+        datetime.now().year, datetime.now().month, datetime.now().day, 23, 59, 59
+    )
+    today_income = await sum_student_transactions(session, start, end)
     response = []
     today = datetime.now().date()
     for info in result:
@@ -53,7 +62,7 @@ async def dashboard_response_view(
         "sudent_num": students,
         "teacher_num": teachers,
         "group_num": groups,
-        "today_income": 120,
+        "today_income": today_income,
         "total_expire": total_expire,
         "expire_students": response,
     }
@@ -62,10 +71,11 @@ async def dashboard_response_view(
 @router.patch("/pending/")
 async def student_permission_pending(
     student_id: Annotated[int, Query()],
+    group_id: Annotated[int, Query()],
     days: Annotated[int, Query()],
     admin: dict = Depends(get_admin),
     session: AsyncSession = Depends(get_session),
 ):
-    result = await update_student_pending(session, student_id, days)
 
+    result = await update_student_pending(session, student_id, group_id, days)
     return {"student_id": result.student_id}

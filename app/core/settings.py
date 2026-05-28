@@ -20,6 +20,12 @@ class Settings(BaseSettings):
     jwt_access_token_expire_minutes: int
     jwt_refresh_token_expire_days: int
 
+    # sms service
+    email: str
+    password: str
+    from_name: str
+    callback_url: str
+
     # SuperAdmin configuration
     superadmin_password: str
     superadmin_first_name: str

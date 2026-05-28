@@ -1,0 +1,2201 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guruh ma'lumotlari</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0f1117;
+        --surface: #171b26;
+        --surface2: #1e2333;
+        --surface3: #242840;
+        --border: #ffffff0f;
+        --border2: #ffffff18;
+        --border3: #ffffff25;
+        --accent: #6c8ef5;
+        --accent2: #a78bfa;
+        --accent-glow: #6c8ef530;
+        --text: #e8eaf0;
+        --text-muted: #6b7280;
+        --text-dim: #9ca3af;
+        --success: #34d399;
+        --warning: #fbbf24;
+        --danger: #f87171;
+        --sidebar-w: 240px;
+        --topbar-h: 60px;
+        --radius: 10px;
+        --radius-sm: 6px;
+        --radius-xs: 4px;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Outfit", sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 14px;
+      }
+      .layout {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* SIDEBAR (student_info.html dan bir xil) */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        overflow-y: auto;
+        scrollbar-width: none;
+        position: relative;
+        z-index: 10;
+      }
+      .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+      .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+      }
+      .logo-area {
+        padding: 22px 20px 18px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logo-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 10px;
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+      .logo-name {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .logo-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+        letter-spacing: 0.3px;
+      }
+      .nav-section {
+        flex: 1;
+        padding: 10px 12px;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--text-muted);
+        padding: 14px 8px 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 13.5px;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        position: relative;
+      }
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--accent-glow);
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 25%;
+        bottom: 25%;
+        width: 3px;
+        border-radius: 2px;
+        background: var(--accent);
+      }
+      .nav-icon {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      .logout-area {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 13.5px;
+        font-family: var(--sans);
+        transition:
+          background 0.15s,
+          color 0.15s;
+      }
+      .logout-btn:hover {
+        background: #f8717118;
+        color: var(--danger);
+      }
+
+      /* MAIN */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .topbar {
+        height: var(--topbar-h);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        flex-shrink: 0;
+      }
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 13px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .back-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .page-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .delete-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: var(--radius-sm);
+        background: #f8717112;
+        border: 1px solid #f8717130;
+        color: var(--danger);
+        font-size: 13px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+        font-weight: 500;
+      }
+      .delete-btn:hover {
+        background: #f8717122;
+        border-color: var(--danger);
+      }
+      .admin-label {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      #content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border2) transparent;
+      }
+
+      /* LOADING & ERRORS */
+      .loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        min-height: 300px;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+      .spinner {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid var(--border2);
+        border-top-color: var(--accent);
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .spinner-sm {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-top-color: var(--accent);
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .error-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-height: 300px;
+        color: var(--text-muted);
+      }
+      .err-code {
+        font-size: 48px;
+        font-weight: 700;
+        color: var(--border2);
+      }
+      .err-msg {
+        font-size: 14px;
+      }
+
+      /* INFO CARDS (Group & Teacher) */
+      .info-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      @media (max-width: 900px) {
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .info-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .info-card-header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .info-card-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .edit-icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        padding: 4px 6px;
+        border-radius: var(--radius-xs);
+        transition: 0.15s;
+        display: flex;
+        align-items: center;
+      }
+      .edit-icon-btn:hover {
+        color: var(--accent);
+        background: var(--accent-glow);
+      }
+
+      .info-card-body {
+        padding: 20px;
+        flex: 1;
+      }
+      .detail-row {
+        margin-bottom: 12px;
+      }
+      .detail-row:last-child {
+        margin-bottom: 0;
+      }
+      .detail-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .detail-value {
+        font-size: 14.5px;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .detail-value.mono {
+        font-family: var(--mono);
+        font-size: 13.5px;
+      }
+      .teacher-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s;
+      }
+      .teacher-link:hover {
+        color: var(--accent2);
+        text-decoration: underline;
+      }
+
+      /* EDIT FORM */
+      .edit-static {
+        display: block;
+      }
+      .edit-static.hidden {
+        display: none;
+      }
+      .edit-form {
+        display: none;
+      }
+      .edit-form.active {
+        display: block;
+      }
+
+      .edit-input {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        background: var(--surface3);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 13.5px;
+        outline: none;
+        transition: border-color 0.15s;
+        margin-bottom: 12px;
+      }
+      .edit-input:focus {
+        border-color: var(--accent);
+      }
+      .edit-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .btn-save {
+        padding: 7px 16px;
+        border-radius: var(--radius-sm);
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .btn-save:hover:not(:disabled) {
+        background: #5a7de8;
+      }
+      .btn-save:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-cancel {
+        padding: 7px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text-dim);
+        font-size: 13px;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .btn-cancel:hover {
+        border-color: var(--border3);
+        color: var(--text);
+      }
+
+      /* STUDENTS TABLE */
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .section-title {
+        font-size: 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .badge-count {
+        background: var(--surface2);
+        color: var(--text-dim);
+        font-size: 11px;
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-weight: 600;
+      }
+
+      .table-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      thead th {
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 0.15s;
+      }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+      tbody tr:hover {
+        background: var(--surface2);
+      }
+
+      /* Ro'yxatdagi qizil/sariq fonlar */
+      tbody tr.row-danger {
+        background: #f8717110;
+      }
+      tbody tr.row-danger:hover {
+        background: #f8717118;
+      }
+      tbody tr.row-warn {
+        background: #fbbf2410;
+      }
+      tbody tr.row-warn:hover {
+        background: #fbbf2418;
+      }
+
+      td {
+        padding: 14px 16px;
+        vertical-align: middle;
+      }
+      .student-link {
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13.5px;
+        transition: color 0.15s;
+      }
+      .student-link:hover {
+        color: var(--accent);
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .status-danger {
+        background: #f8717118;
+        color: var(--danger);
+      }
+      .status-warn {
+        background: #fbbf2418;
+        color: var(--warning);
+      }
+      .status-ok {
+        background: #34d39918;
+        color: var(--success);
+      }
+
+      /* PENDING & ACTIONS IN TABLE */
+      .action-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .pending-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .pending-input {
+        width: 60px;
+        padding: 6px;
+        border-radius: var(--radius-sm);
+        background: var(--surface3);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 12px;
+        outline: none;
+      }
+      .pending-input:focus {
+        border-color: var(--accent);
+      }
+      .pending-btn {
+        padding: 6px 10px;
+        border-radius: var(--radius-sm);
+        background: var(--accent-glow);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.15s;
+        white-space: nowrap;
+      }
+      .pending-btn:hover:not(:disabled) {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .remove-btn {
+        padding: 6px;
+        border-radius: var(--radius-sm);
+        background: #f8717112;
+        border: 1px solid #f8717130;
+        color: var(--danger);
+        cursor: pointer;
+        transition: 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .remove-btn:hover {
+        background: #f8717122;
+        border-color: var(--danger);
+      }
+      .empty-row td {
+        text-align: center;
+        padding: 48px;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* MODALS */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: #000a;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        width: 420px;
+        max-width: 90vw;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        transform: scale(0.96);
+        transition: transform 0.2s;
+      }
+      .modal-overlay.active .modal {
+        transform: scale(1);
+      }
+      .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .modal-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 18px;
+        line-height: 1;
+        padding: 2px 6px;
+        border-radius: var(--radius-xs);
+        transition: 0.15s;
+      }
+      .modal-close:hover {
+        color: var(--text);
+        background: var(--surface2);
+      }
+
+      .modal-search {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .modal-search-input {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 13.5px;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .modal-search-input:focus {
+        border-color: var(--accent);
+      }
+
+      .modal-body {
+        overflow-y: auto;
+        flex: 1;
+        padding: 8px 0;
+      }
+      .modal-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        cursor: pointer;
+        transition: background 0.12s;
+        border-bottom: 1px solid var(--border);
+      }
+      .modal-item:last-child {
+        border-bottom: none;
+      }
+      .modal-item:hover {
+        background: var(--surface2);
+      }
+      .modal-item.selected {
+        background: var(--accent-glow);
+      }
+      .modal-item-name {
+        font-size: 13.5px;
+        font-weight: 500;
+      }
+      .modal-item-check {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: 0.15s;
+      }
+      .modal-item.selected .modal-item-check {
+        opacity: 1;
+      }
+
+      .modal-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-shrink: 0;
+      }
+      .modal-empty {
+        padding: 32px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* CONFIRM MODAL */
+      .confirm-modal {
+        width: 360px;
+      }
+      .confirm-body {
+        padding: 24px 20px 16px;
+        text-align: center;
+      }
+      .confirm-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+      }
+      .confirm-text {
+        font-size: 14px;
+        color: var(--text-dim);
+        line-height: 1.6;
+      }
+      .btn-confirm-ok {
+        padding: 7px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-weight: 600;
+        font-family: var(--sans);
+        cursor: pointer;
+        transition: 0.15s;
+        border: none;
+      }
+      .btn-confirm-ok.is-danger {
+        background: #f8717118;
+        border: 1px solid #f8717140;
+        color: var(--danger);
+      }
+      .btn-confirm-ok.is-danger:hover {
+        background: #f8717128;
+        border-color: var(--danger);
+      }
+      .btn-confirm-ok.is-primary {
+        background: var(--accent);
+        border: 1px solid var(--accent);
+        color: #fff;
+      }
+      .btn-confirm-ok.is-primary:hover {
+        background: #5a7de8;
+      }
+
+      /* TOAST */
+      #toast-container {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 100005;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+      .toast {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        font-size: 15px;
+        color: var(--text);
+        max-width: 400px;
+        animation: toastIn 0.3s ease;
+        pointer-events: all;
+        box-shadow: 0 8px 32px #0008;
+      }
+      .toast.error {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .toast.success {
+        border-color: var(--success);
+        color: var(--success);
+      }
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateY(-12px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* GLOBAL LOADER */
+      .global-loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 17, 23, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .global-loader-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .global-spinner {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid var(--border2);
+        border-top-color: var(--accent);
+        animation: spin 0.7s linear infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- GLOBAL LOADER -->
+    <div class="global-loader-overlay" id="global-loader">
+      <div class="global-spinner"></div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <!-- CONFIRM MODAL -->
+    <div class="modal-overlay" id="confirm-overlay">
+      <div class="modal confirm-modal">
+        <div class="confirm-body">
+          <div class="confirm-icon" id="confirm-icon">⚠️</div>
+          <div class="confirm-text" id="confirm-text">
+            Haqiqatan ham davom etmoqchimisiz?
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" id="confirm-cancel-btn">
+            Bekor qilish
+          </button>
+          <button class="btn-confirm-ok is-danger" id="confirm-ok-btn">
+            Tasdiqlash
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANGE TEACHER MODAL -->
+    <div class="modal-overlay" id="teacher-modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <span class="modal-title">O'qituvchini o'zgartirish</span>
+          <button class="modal-close" id="teacher-modal-close-btn">✕</button>
+        </div>
+        <div class="modal-search">
+          <input
+            class="modal-search-input"
+            id="teacher-search-input"
+            placeholder="O'qituvchini qidiring..."
+          />
+        </div>
+        <div class="modal-body" id="teacher-modal-list"></div>
+        <div class="modal-footer">
+          <button class="btn-cancel" id="teacher-modal-cancel-btn">
+            Yopish
+          </button>
+          <button class="btn-save" id="teacher-change-confirm-btn" disabled>
+            Saqlash
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- SIDEBAR (Aynan student_info.html bilan bir xil) -->
+      <aside class="sidebar">
+        <div class="logo-area">
+          <div class="logo-circle">OC</div>
+          <div class="logo-name">O'quv Markaz</div>
+          <div class="logo-sub">Admin Panel</div>
+        </div>
+        <nav class="nav-section">
+          <div class="nav-label">Asosiy</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="1"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.9"
+              />
+              <rect
+                x="9"
+                y="1"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+              <rect
+                x="1"
+                y="9"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+              <rect
+                x="9"
+                y="9"
+                width="6"
+                height="6"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+            </svg>
+            Dashboard
+          </a>
+          <div class="nav-label">O'quv jarayoni</div>
+          <a class="nav-item" href="students.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <circle cx="6" cy="5" r="3" fill="currentColor" opacity="0.85" />
+              <path
+                d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <circle cx="12" cy="5" r="2" fill="currentColor" opacity="0.5" />
+              <path
+                d="M12 10c1.5 0 3 1 3 3"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                opacity="0.5"
+              />
+            </svg>
+            O'quvchilar
+          </a>
+          <a class="nav-item" href="group.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="4"
+                width="14"
+                height="9"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.3"
+                opacity="0.85"
+              />
+              <path
+                d="M5 4V3a3 3 0 016 0v1"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M5 9h6M8 7v4"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+            </svg>
+            Guruhlar
+          </a>
+          <a class="nav-item" href="teacher.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <circle
+                cx="8"
+                cy="4.5"
+                r="3"
+                fill="currentColor"
+                opacity="0.85"
+              />
+              <path
+                d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            O'qituvchilar
+          </a>
+          <div class="nav-label">Moliya</div>
+          <a class="nav-item" href="payment.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="1"
+                y="3"
+                width="14"
+                height="10"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.3"
+              />
+              <path d="M1 6h14" stroke="currentColor" stroke-width="1.3" />
+              <rect
+                x="3"
+                y="9"
+                width="4"
+                height="1.5"
+                rx="0.5"
+                fill="currentColor"
+                opacity="0.6"
+              />
+            </svg>
+            To'lovlar
+          </a>
+          <a class="nav-item" href="student_transaction.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M2 5h12M2 5l3-3M2 5l3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M14 11H2M14 11l-3-3M14 11l-3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                opacity="0.6"
+              />
+            </svg>
+            O'quvchi transaksiya
+          </a>
+          <a class="nav-item" href="teacher_transaction.html">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M14 5H2M14 5l-3-3M14 5l-3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M2 11h12M2 11l3-3M2 11l3 3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                opacity="0.6"
+              />
+            </svg>
+            O'qituvchi transaksiya
+          </a>
+          </a>
+          <div class="nav-label">Sozlamalar</div>
+          <a class="nav-item" href="account.html">
+            Shaxsiy hisob
+          </a>
+        </nav>
+        <div class="logout-area">
+          <button class="logout-btn" id="logout-btn">
+            <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M11 11l3-3-3-3M14 8H6"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Chiqish
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="main-content">
+        <div class="topbar">
+          <div class="topbar-left">
+            <button class="back-btn" id="back-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M10 3L5 8l5 5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Orqaga
+            </button>
+            <span class="page-title" id="page-title">Guruh ma'lumotlari</span>
+          </div>
+          <div class="topbar-right">
+            <button
+              class="delete-btn"
+              id="delete-group-btn"
+              style="display: none"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M2 4h12M5 4V2.5a.5.5 0 01.5-.5h5a.5.5 0 01.5.5V4M6 7v5M10 7v5"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                />
+                <rect
+                  x="3"
+                  y="4"
+                  width="10"
+                  height="10"
+                  rx="1"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                />
+              </svg>
+              Guruhni o'chirish
+            </button>
+            <span class="admin-label" id="admin-name">Admin</span>
+            <div class="avatar" id="admin-avatar">AD</div>
+          </div>
+        </div>
+        <div id="content-area">
+          <div class="loading">
+            <div class="spinner"></div>
+            Yuklanmoqda...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const BASE = "http://10.13.155.23:8000/api/v1";
+      const urlParams = new URLSearchParams(window.location.search);
+      const GROUP_ID = parseInt(urlParams.get("id"));
+
+      let groupData = null;
+      let allTeachers = [];
+      let selectedTeacherId = null;
+      let confirmCallback = null;
+
+      // ── REFERRER SAQLASH ─────────────────────────────────────────────────────────
+      (function saveReferrer() {
+        const key = `prev_page_group_${GROUP_ID}`;
+        const stored = sessionStorage.getItem(key);
+        const ref = document.referrer;
+
+        if (!stored) {
+          if (ref && !ref.includes("group_info.html")) {
+            sessionStorage.setItem(key, ref);
+          } else if (!ref) {
+            sessionStorage.setItem(key, "group.html"); // Default sahifa
+          }
+        }
+      })();
+
+      function getBackUrl() {
+        const key = `prev_page_group_${GROUP_ID}`;
+        return sessionStorage.getItem(key) || "group.html";
+      }
+
+      function clearReferrer() {
+        sessionStorage.removeItem(`prev_page_group_${GROUP_ID}`);
+      }
+
+      function goBack() {
+        const backUrl = getBackUrl();
+        clearReferrer();
+        window.location.href = backUrl;
+      }
+
+      // ── SIDEBAR ACTIVE ───────────────────────────────────────────────────────────
+      (function setActiveSidebar() {
+        const backUrl = getBackUrl();
+        const navItems = document.querySelectorAll(".nav-item");
+        navItems.forEach((item) => {
+          item.classList.remove("active");
+        });
+      })();
+
+      if (!localStorage.getItem("access_token")) {
+        window.location.replace("../index.html");
+      }
+
+      window.addEventListener("pageshow", function (event) {
+        if (
+          event.persisted ||
+          (performance.getEntriesByType &&
+            performance.getEntriesByType("navigation").length &&
+            performance.getEntriesByType("navigation")[0].type ===
+              "back_forward")
+        ) {
+          if (!localStorage.getItem("access_token")) {
+            window.location.replace("../index.html");
+          }
+        }
+      });
+
+      // ── AUTH & API (student_info.html bilan bir xil) ────────────────────────────
+      const getToken = () => localStorage.getItem("access_token");
+      const saveToken = (t) => localStorage.setItem("access_token", t);
+
+      function authLogout() {
+        const token = getToken();
+        localStorage.clear();
+        sessionStorage.clear();
+        if (token) {
+          fetch(`${BASE}/auth/logout`, {
+            method: "POST",
+            credentials: "include",
+            keepalive: true,
+            headers: { Authorization: `Bearer ${token}` },
+          }).catch(() => {});
+        }
+        window.location.replace("../index.html");
+      }
+
+      async function tryRefresh() {
+        try {
+          const r = await fetch(`${BASE}/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+          });
+          if (!r.ok) throw 0;
+          const d = await r.json();
+          if (d.access_token) {
+            saveToken(d.access_token);
+            return d.access_token;
+          }
+          throw 0;
+        } catch {
+          authLogout();
+          return null;
+        }
+      }
+
+      async function apiFetch(url, opts = {}) {
+        const token = getToken();
+        const headers = {
+          "Content-Type": "application/json",
+          ...(opts.headers || {}),
+        };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const go = (tok) => {
+          const h = { ...headers };
+          if (tok) h["Authorization"] = `Bearer ${tok}`;
+          return fetch(url, { ...opts, credentials: "include", headers: h });
+        };
+
+        let res;
+        try {
+          res = await go(token);
+        } catch (e) {
+          toast(`Tarmoq xatoligi: ${e.message}`, "error");
+          return null;
+        }
+
+        if (res.status === 401 || res.status === 403) {
+          const nt = await tryRefresh();
+          if (!nt) return null;
+          try {
+            res = await go(nt);
+          } catch (e) {
+            toast(`Tarmoq xatoligi: ${e.message}`, "error");
+            return null;
+          }
+          if (res.status === 401 || res.status === 403) {
+            authLogout();
+            return null;
+          }
+        }
+        return res;
+      }
+
+      // ── GLOBAL LOADER ─────────────────────────────────────────────────────────────
+      function showLoader() {
+        document.getElementById("global-loader").classList.add("active");
+      }
+      function hideLoader() {
+        document.getElementById("global-loader").classList.remove("active");
+      }
+
+      // ── TOAST & HELPERS ──────────────────────────────────────────────────────────
+      function toast(msg, type = "error") {
+        const c = document.getElementById("toast-container");
+        const el = document.createElement("div");
+        el.className = `toast ${type}`;
+        el.textContent = msg;
+        c.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = "0";
+          el.style.transition = "opacity .3s";
+          setTimeout(() => el.remove(), 300);
+        }, 3800);
+      }
+
+      function esc(s) {
+        return s == null
+          ? ""
+          : String(s)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+      }
+
+      function fmtMoney(n) {
+        if (n == null) return "—";
+        return Number(n).toLocaleString("uz-UZ") + " so'm";
+      }
+
+      function fmtDate(str) {
+        if (!str) return "—";
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str;
+        const months = [
+          "yanvar",
+          "fevral",
+          "mart",
+          "aprel",
+          "may",
+          "iyun",
+          "iyul",
+          "avgust",
+          "sentabr",
+          "oktabr",
+          "noyabr",
+          "dekabr",
+        ];
+        return `${d.getDate()}-${months[d.getMonth()]} ${d.getFullYear()}`;
+      }
+
+      function fmtTime(t) {
+        if (!t) return "";
+        return String(t).substring(0, 5);
+      }
+
+      function pencilSvg() {
+        return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+    <path d="M11.5 2.5a1.5 1.5 0 012.12 2.12l-8.5 8.5-3 .88.88-3 8.5-8.5z"
+      stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+      }
+
+      async function handleApiError(r) {
+        if (!r) return;
+        try {
+          const err = await r.json();
+          if (Array.isArray(err.detail))
+            err.detail.forEach((e) => toast(e.msg || JSON.stringify(e)));
+          else toast(err.detail || `Xatolik: ${r.status}`);
+        } catch {
+          toast(`Server xatoligi: ${r.status}`);
+        }
+      }
+
+      // ── CONFIRM MODAL ─────────────────────────────────────────────────────────────
+      document
+        .getElementById("confirm-cancel-btn")
+        .addEventListener("click", closeConfirm);
+      document
+        .getElementById("confirm-ok-btn")
+        .addEventListener("click", runConfirm);
+      document
+        .getElementById("confirm-overlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeConfirm();
+        });
+
+      function showConfirm(text, icon, okLabel, variant, cb) {
+        document.getElementById("confirm-text").textContent = text;
+        document.getElementById("confirm-icon").textContent = icon;
+        const btn = document.getElementById("confirm-ok-btn");
+        btn.textContent = okLabel;
+        btn.className = `btn-confirm-ok ${variant === "primary" ? "is-primary" : "is-danger"}`;
+        confirmCallback = cb;
+        document.getElementById("confirm-overlay").classList.add("active");
+      }
+
+      function closeConfirm() {
+        document.getElementById("confirm-overlay").classList.remove("active");
+        confirmCallback = null;
+      }
+
+      function runConfirm() {
+        const cb = confirmCallback;
+        closeConfirm();
+        if (typeof cb === "function") cb();
+      }
+
+      // ── LOAD GROUP DATA ───────────────────────────────────────────────────────────
+      async function loadGroupInfo() {
+        if (!GROUP_ID || isNaN(GROUP_ID)) {
+          renderError(400, "Group ID ko'rsatilmagan");
+          return;
+        }
+        const r = await apiFetch(`${BASE}/group/info/${GROUP_ID}`);
+        if (!r) return;
+        if (r.status === 404) {
+          renderError(404, "Guruh topilmadi");
+          return;
+        }
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+        groupData = await r.json();
+        renderPage();
+      }
+
+      function renderError(code, msg) {
+        document.getElementById("content-area").innerHTML =
+          `<div class="error-state"><div class="err-code">${code}</div><div class="err-msg">${esc(msg)}</div></div>`;
+      }
+
+      function renderPage() {
+        document.getElementById("page-title").textContent =
+          groupData.group.name;
+        document.getElementById("delete-group-btn").style.display = "flex";
+
+        const html = `
+    <div class="info-grid">
+      ${buildGroupCard()}
+      ${buildTeacherCard()}
+    </div>
+    <div id="students-section">
+      ${buildStudentsTable()}
+    </div>
+  `;
+        document.getElementById("content-area").innerHTML = html;
+      }
+
+      // ── GROUP DETAILS CARD ────────────────────────────────────────────────────────
+      function buildGroupCard() {
+        const g = groupData.group;
+        return `
+  <div class="info-card">
+    <div class="info-card-header">
+      <div class="info-card-title">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 4V3a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 5h12v9a2 2 0 01-2 2H4a2 2 0 01-2-2V5z" stroke="currentColor" stroke-width="1.5"/></svg>
+        Guruh ma'lumotlari
+      </div>
+      <button class="edit-icon-btn" onclick="toggleGroupEdit()" title="Tahrirlash">${pencilSvg()}</button>
+    </div>
+    <div class="info-card-body">
+      
+      <div class="edit-static" id="group-static">
+        <div class="detail-row">
+          <div class="detail-label">Fani</div>
+          <div class="detail-value" id="disp-science">${esc(g.science_name)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Guruh nomi</div>
+          <div class="detail-value" id="disp-name">${esc(g.name)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Oylik narx</div>
+          <div class="detail-value mono" id="disp-price">${fmtMoney(g.price)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Dars kunlari</div>
+          <div class="detail-value" id="disp-days">${esc(g.class_day)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Dars vaqti</div>
+          <div class="detail-value mono" id="disp-time">${esc(fmtTime(g.class_date))}</div>
+        </div>
+      </div>
+
+      <form class="edit-form" id="group-form" onsubmit="event.preventDefault(); saveGroup();">
+        <div class="detail-label">Fani</div>
+        <input class="edit-input" id="inp-science" value="${esc(g.science_name)}" minlength="1" maxlength="100" required/>
+        
+        <div class="detail-label">Guruh nomi</div>
+        <input class="edit-input" id="inp-name" value="${esc(g.name)}" minlength="1" maxlength="100" required/>
+        
+        <div class="detail-label">Oylik narx (so'm)</div>
+        <input class="edit-input" id="inp-price" type="number" value="${g.price}" min="1" max="99999999" required/>
+        
+        <div class="detail-label">Dars kunlari</div>
+        <input class="edit-input" id="inp-days" value="${esc(g.class_day)}" minlength="4" maxlength="100" required/>
+        
+        <div class="detail-label">Dars vaqti (HH:MM)</div>
+        <input class="edit-input" id="inp-time" type="time" value="${esc(fmtTime(g.class_date))}" required/>
+
+        <div class="edit-actions">
+          <button type="submit" class="btn-save" id="group-save-btn">Saqlash</button>
+          <button type="button" class="btn-cancel" onclick="cancelGroupEdit()">Bekor qilish</button>
+        </div>
+      </form>
+
+    </div>
+  </div>`;
+      }
+
+      function toggleGroupEdit() {
+        document.getElementById("group-static").classList.add("hidden");
+        document.getElementById("group-form").classList.add("active");
+      }
+      function cancelGroupEdit() {
+        document.getElementById("group-static").classList.remove("hidden");
+        document.getElementById("group-form").classList.remove("active");
+        // Reset inputs
+        const g = groupData.group;
+        document.getElementById("inp-science").value = g.science_name;
+        document.getElementById("inp-name").value = g.name;
+        document.getElementById("inp-price").value = g.price;
+        document.getElementById("inp-days").value = g.class_day;
+        document.getElementById("inp-time").value = fmtTime(g.class_date);
+      }
+      async function saveGroup() {
+        const science = document.getElementById("inp-science").value.trim();
+        const name = document.getElementById("inp-name").value.trim();
+        const price = parseInt(document.getElementById("inp-price").value);
+        const days = document.getElementById("inp-days").value.trim();
+        const time = document.getElementById("inp-time").value.trim();
+
+        if (!science || !name || isNaN(price)) {
+          toast("Barcha majburiy maydonlarni to'ldiring");
+          return;
+        }
+
+        const btn = document.getElementById("group-save-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-sm"></span>';
+
+        const data = {
+          science_name: science,
+          name: name,
+          price: price,
+          class_day: days,
+          class_date: time,
+        };
+
+        showLoader();
+        const r = await apiFetch(`${BASE}/group/update/${GROUP_ID}`, {
+          method: "PATCH",
+          body: JSON.stringify(data),
+        });
+        hideLoader();
+
+        btn.disabled = false;
+        btn.textContent = "Saqlash";
+
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+
+        const updatedGroup = await r.json();
+        groupData.group = updatedGroup;
+
+        document.getElementById("disp-science").textContent =
+          updatedGroup.science_name;
+        document.getElementById("disp-name").textContent = updatedGroup.name;
+        document.getElementById("disp-price").textContent = fmtMoney(
+          updatedGroup.price,
+        );
+        document.getElementById("disp-days").textContent =
+          updatedGroup.class_day;
+        document.getElementById("disp-time").textContent = fmtTime(
+          updatedGroup.class_date,
+        );
+        document.getElementById("page-title").textContent = updatedGroup.name;
+
+        cancelGroupEdit();
+        toast("Guruh ma'lumotlari yangilandi ✓", "success");
+      }
+
+      // ── TEACHER CARD ──────────────────────────────────────────────────────────────
+      function buildTeacherCard() {
+        const t = groupData.teacher;
+        const tName = t ? `${t.first_name} ${t.last_name}` : "Biriktirilmagan";
+        const tLink = t
+          ? `<a href="teacher_info.html?id=${t.teacher_id}" class="teacher-link">${esc(tName)}</a>`
+          : `<span class="detail-value">${tName}</span>`;
+        const tPercent = groupData.group.teacher_percent || 0;
+
+        return `
+  <div class="info-card">
+    <div class="info-card-header">
+      <div class="info-card-title">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M2 14c0-3 2.5-5.5 6-5.5s6 2.5 6 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        O'qituvchi
+      </div>
+      <button class="edit-icon-btn" onclick="openTeacherModal()" title="O'zgartirish">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 5h12M2 5l3-3M2 5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11H2M14 11l-3-3M14 11l-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/></svg>
+      </button>
+    </div>
+    <div class="info-card-body">
+      <div class="detail-row">
+        <div class="detail-label">Ism Familiya</div>
+        <div id="disp-teacher-name">${tLink}</div>
+      </div>
+      <div class="detail-row" style="margin-top:16px;">
+        <div class="detail-label" style="display:flex; justify-content:space-between; align-items:center;">
+          O'qituvchi ulushi
+          <button class="edit-icon-btn" onclick="toggleTeacherPercentEdit()" title="Ulushni tahrirlash" style="padding:2px; margin:-2px;">
+            ${pencilSvg()}
+          </button>
+        </div>
+        <div class="edit-static" id="tpercent-static">
+          <div class="detail-value mono" id="disp-teacher-percent">${tPercent}%</div>
+        </div>
+        <form class="edit-form" id="tpercent-form" onsubmit="event.preventDefault(); saveTeacherPercent();" style="margin-top: 8px;">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input class="edit-input" id="inp-tpercent" type="number" value="${tPercent}" min="0" max="100" style="margin-bottom:0; width: 80px;" required/>
+            <span style="font-size: 14px; color: var(--text-muted); font-family: var(--mono);">%</span>
+            <button type="submit" class="btn-save" id="tpercent-save-btn" style="padding: 6px 12px; margin-left: auto;">Saqlash</button>
+            <button type="button" class="btn-cancel" onclick="cancelTeacherPercentEdit()" style="padding: 6px 12px;">Bekor</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>`;
+      }
+
+      function toggleTeacherPercentEdit() {
+        document.getElementById("tpercent-static").classList.add("hidden");
+        document.getElementById("tpercent-form").classList.add("active");
+      }
+
+      function cancelTeacherPercentEdit() {
+        document.getElementById("tpercent-static").classList.remove("hidden");
+        document.getElementById("tpercent-form").classList.remove("active");
+        document.getElementById("inp-tpercent").value =
+          groupData.group.teacher_percent || 0;
+      }
+
+      async function saveTeacherPercent() {
+        const percent = parseInt(document.getElementById("inp-tpercent").value);
+        if (isNaN(percent) || percent < 0 || percent > 100) {
+          toast("Ulush 0 dan 100 gacha bo'lishi kerak");
+          return;
+        }
+        const btn = document.getElementById("tpercent-save-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-sm"></span>';
+
+        showLoader();
+        const r = await apiFetch(`${BASE}/group/update/${GROUP_ID}`, {
+          method: "PATCH",
+          body: JSON.stringify({ teacher_percent: percent }),
+        });
+        hideLoader();
+
+        btn.disabled = false;
+        btn.textContent = "Saqlash";
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          return;
+        }
+
+        const updatedGroup = await r.json();
+        groupData.group = updatedGroup;
+        document.getElementById("disp-teacher-percent").textContent =
+          updatedGroup.teacher_percent + "%";
+        cancelTeacherPercentEdit();
+        toast("O'qituvchi ulushi yangilandi ✓", "success");
+      }
+
+      // ── TEACHER MODAL ─────────────────────────────────────────────────────────────
+      document
+        .getElementById("teacher-modal-close-btn")
+        .addEventListener("click", closeTeacherModal);
+      document
+        .getElementById("teacher-modal-cancel-btn")
+        .addEventListener("click", closeTeacherModal);
+      document
+        .getElementById("teacher-change-confirm-btn")
+        .addEventListener("click", confirmChangeTeacher);
+      document
+        .getElementById("teacher-search-input")
+        .addEventListener("input", filterTeachers);
+      document
+        .getElementById("teacher-modal-overlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeTeacherModal();
+        });
+
+      async function openTeacherModal() {
+        selectedTeacherId = null;
+        document.getElementById("teacher-change-confirm-btn").disabled = true;
+        document.getElementById("teacher-search-input").value = "";
+        document.getElementById("teacher-modal-list").innerHTML =
+          '<div class="modal-empty"><div class="spinner" style="margin:0 auto 8px"></div>Yuklanmoqda...</div>';
+        document
+          .getElementById("teacher-modal-overlay")
+          .classList.add("active");
+
+        const r = await apiFetch(`${BASE}/teacher/all`);
+        if (!r || !r.ok) {
+          document.getElementById("teacher-modal-list").innerHTML =
+            '<div class="modal-empty">O\'qituvchilarni yuklashda xatolik</div>';
+          return;
+        }
+        allTeachers = await r.json();
+        renderTeacherList();
+      }
+
+      function renderTeacherList() {
+        const query = document
+          .getElementById("teacher-search-input")
+          .value.toLowerCase();
+        const currentTeacherId = groupData.teacher
+          ? groupData.teacher.teacher_id
+          : null;
+
+        const filtered = allTeachers.filter(
+          (t) =>
+            t.teacher_id !== currentTeacherId &&
+            (t.first_name + " " + t.last_name).toLowerCase().includes(query),
+        );
+
+        const list = document.getElementById("teacher-modal-list");
+        if (!filtered.length) {
+          list.innerHTML =
+            '<div class="modal-empty">O\'qituvchi topilmadi</div>';
+          return;
+        }
+
+        list.innerHTML = filtered
+          .map(
+            (t) => `
+    <div class="modal-item ${selectedTeacherId === t.teacher_id ? "selected" : ""}"
+         onclick="selectModalTeacher(${t.teacher_id})" id="mti-${t.teacher_id}">
+      <span class="modal-item-name">${esc(t.first_name)} ${esc(t.last_name)}</span>
+      <div class="modal-item-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>`,
+          )
+          .join("");
+      }
+
+      function filterTeachers() {
+        renderTeacherList();
+      }
+
+      function selectModalTeacher(id) {
+        selectedTeacherId = id;
+        document.getElementById("teacher-change-confirm-btn").disabled = false;
+        document
+          .querySelectorAll(".modal-item")
+          .forEach((el) => el.classList.remove("selected"));
+        const el = document.getElementById(`mti-${id}`);
+        if (el) el.classList.add("selected");
+      }
+
+      function closeTeacherModal() {
+        document
+          .getElementById("teacher-modal-overlay")
+          .classList.remove("active");
+      }
+
+      async function confirmChangeTeacher() {
+        if (!selectedTeacherId) return;
+        const btn = document.getElementById("teacher-change-confirm-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-sm"></span>';
+
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/group/update_teacher/?group_id=${GROUP_ID}&teacher_id=${selectedTeacherId}`,
+          { method: "PATCH" },
+        );
+        hideLoader();
+
+        btn.disabled = false;
+        btn.textContent = "Saqlash";
+
+        if (!r) return;
+        if (!r.ok) {
+          await handleApiError(r);
+          closeTeacherModal();
+          return;
+        }
+
+        // Muvaffaqiyatli! Frontendni yangilaymiz.
+        const newGroupData = await r.json();
+        // Bizga API dan o'qituvchi ID si qaytdi, lekin to'liq obyekt kerak bo'lishi mumkin.
+        // Yaxshisi allTeachers orqali topib qo'yamiz.
+        const newTeacher = allTeachers.find(
+          (t) => t.teacher_id === selectedTeacherId,
+        );
+
+        if (newTeacher) {
+          groupData.teacher = newTeacher;
+          groupData.group.teacher_id = newTeacher.teacher_id;
+          const link = `<a href="teacher_info.html?id=${newTeacher.teacher_id}" class="teacher-link">${esc(newTeacher.first_name)} ${esc(newTeacher.last_name)}</a>`;
+          document.getElementById("disp-teacher-name").innerHTML = link;
+        }
+
+        closeTeacherModal();
+        toast("O'qituvchi almashtirildi ✓", "success");
+      }
+
+      // ── STUDENTS TABLE ────────────────────────────────────────────────────────────
+      function processAndSortStudents() {
+        const students = groupData.student || [];
+        const perms = groupData.permission_dates || [];
+
+        // Bugungi sana - soat/minutlarsiz solishtirish uchun
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let processed = students.map((s) => {
+          const p = perms.find((x) => x.student_id === s.student_id);
+
+          // Default status: OK (Yashil)
+          let priority = 3;
+          let sClass = "status-ok";
+          let sName = "To'langan";
+          let rClass = ""; // Qator rangi
+          let isExpired = false;
+
+          if (p) {
+            const permDate = new Date(p.permission_date);
+            permDate.setHours(0, 0, 0, 0);
+
+            const pendingDate = p.pending_deadline
+              ? new Date(p.pending_deadline)
+              : permDate;
+            pendingDate.setHours(0, 0, 0, 0);
+
+            if (permDate < today) {
+              isExpired = true;
+              if (pendingDate < today) {
+                // QIZIL: To'lov ham, pending ham o'tgan
+                priority = 1;
+                sClass = "status-danger";
+                sName = "Qarzdor";
+                rClass = "row-danger";
+              } else {
+                // SARIQ: To'lov o'tgan, lekin pending bor
+                priority = 2;
+                sClass = "status-warn";
+                sName = "Kutish";
+                rClass = "row-warn";
+              }
+            }
+          }
+
+          return {
+            student: s,
+            permission: p,
+            priority,
+            sClass,
+            sName,
+            rClass,
+            isExpired,
+          };
+        });
+
+        // Sortirovka: Oldin qizil, keyin sariq, keyin yashil. Bir xil bo'lsa ID bo'yicha.
+        processed.sort((a, b) => {
+          if (a.priority !== b.priority) return a.priority - b.priority;
+          if (a.priority === 1) {
+            const tA = a.permission
+              ? new Date(a.permission.permission_date).getTime()
+              : 0;
+            const tB = b.permission
+              ? new Date(b.permission.permission_date).getTime()
+              : 0;
+            if (tA !== tB) return tA - tB;
+          }
+          return a.student.student_id - b.student.student_id;
+        });
+
+        return processed;
+      }
+
+      function buildStudentsTable() {
+        const processed = processAndSortStudents();
+
+        let rows = "";
+        if (processed.length === 0) {
+          rows = `<tr class="empty-row"><td colspan="5">Guruhda o'quvchilar yo'q</td></tr>`;
+        } else {
+          rows = processed
+            .map((item) => {
+              const s = item.student;
+              const pDate = item.permission
+                ? fmtDate(item.permission.permission_date)
+                : "—";
+
+              let pendingAction = "";
+              if (item.isExpired) {
+                pendingAction = `
+          <div class="pending-wrap" id="pend-${s.student_id}">
+            <input type="number" min="1" max="365" class="pending-input" id="inp-pend-${s.student_id}" placeholder="kun" onkeydown="if(event.key === 'Enter') submitPending(${s.student_id})"/>
+            <button class="pending-btn" onclick="submitPending(${s.student_id})">Kutish</button>
+          </div>`;
+              }
+
+              return `
+      <tr class="${item.rClass}" id="st-row-${s.student_id}">
+        <td>
+          <a href="student_info.html?id=${s.student_id}" class="student-link">
+            ${esc(s.first_name)} ${esc(s.last_name)}
+          </a>
+        </td>
+        <td class="mono">${pDate}</td>
+        <td><span class="status-badge ${item.sClass}">${item.sName}</span></td>
+        <td>
+          <div class="action-cell">
+            ${pendingAction}
+          </div>
+        </td>
+        <td style="text-align:right;">
+           <button class="remove-btn" title="Guruhdan chiqarish" onclick="askExcludeStudent(${s.student_id}, '${esc(s.first_name)} ${esc(s.last_name)}')">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+           </button>
+        </td>
+      </tr>`;
+            })
+            .join("");
+        }
+
+        return `
+  <div class="section-header">
+    <div class="section-title">O'quvchilar <span class="badge-count">${processed.length} ta</span></div>
+  </div>
+  <div class="table-wrap" id="students-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>To'liq ism</th>
+          <th>To'lov sanasi</th>
+          <th>Holat</th>
+          <th>Kutish</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+      }
+
+      function refreshTableUI() {
+        const container = document.getElementById("students-section");
+        if (container) {
+          container.innerHTML = buildStudentsTable();
+        }
+      }
+
+      // ── PENDING STUDENT ───────────────────────────────────────────────────────────
+      async function submitPending(studentId) {
+        const inp = document.getElementById(`inp-pend-${studentId}`);
+        const days = parseInt(inp.value);
+        if (!days || days < 1) {
+          toast("Kamida 1 kun kiriting");
+          return;
+        }
+
+        const wrap = document.getElementById(`pend-${studentId}`);
+        const btn = wrap.querySelector(".pending-btn");
+        btn.disabled = true;
+        btn.textContent = "...";
+
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/dashboard/pending/?student_id=${studentId}&group_id=${GROUP_ID}&days=${days}`,
+          { method: "PATCH" },
+        );
+        hideLoader();
+
+        if (!r) {
+          btn.disabled = false;
+          btn.textContent = "Kutish";
+          return;
+        }
+        if (!r.ok && r.status !== 204) {
+          await handleApiError(r);
+          btn.disabled = false;
+          btn.textContent = "Kutish";
+          return;
+        }
+
+        try {
+          const d = await r.json();
+          const perm = groupData.permission_dates.find(
+            (p) => p.student_id === studentId,
+          );
+          if (perm) {
+            if (d && d.permission_date) {
+              Object.assign(perm, d);
+            } else {
+              const dt = new Date();
+              dt.setDate(dt.getDate() + days);
+              perm.pending_deadline = dt.toISOString();
+            }
+          }
+        } catch (e) {
+          const perm = groupData.permission_dates.find(
+            (p) => p.student_id === studentId,
+          );
+          if (perm) {
+            const dt = new Date();
+            dt.setDate(dt.getDate() + days);
+            perm.pending_deadline = dt.toISOString();
+          }
+        }
+
+        toast("Kutish muddati o'rnatildi ✓", "success");
+        refreshTableUI(); // Jadvalni qayta render va sort qiladi
+      }
+
+      // ── EXCLUDE STUDENT ───────────────────────────────────────────────────────────
+      function askExcludeStudent(studentId, studentName) {
+        showConfirm(
+          `"${studentName}" ni "${esc(groupData.group.name)}" guruhidan chiqarmoqchimisiz?`,
+          "⚠️",
+          "Chiqarish",
+          "danger",
+          () => excludeStudent(studentId),
+        );
+      }
+
+      async function excludeStudent(studentId) {
+        showLoader();
+        const r = await apiFetch(
+          `${BASE}/student/exclusion_group/?student_id=${studentId}&group_id=${GROUP_ID}`,
+          { method: "DELETE" },
+        );
+        hideLoader();
+        if (!r) return;
+        if (!r.ok && r.status !== 204) {
+          await handleApiError(r);
+          return;
+        }
+
+        // Mahalliy ma'lumotlardan olib tashlaymiz
+        groupData.student = groupData.student.filter(
+          (s) => s.student_id !== studentId,
+        );
+        groupData.permission_dates = groupData.permission_dates.filter(
+          (p) => p.student_id !== studentId,
+        );
+
+        toast("O'quvchi guruhdan chiqarildi ✓", "success");
+        refreshTableUI();
+      }
+
+      // ── DELETE GROUP ──────────────────────────────────────────────────────────────
+      document
+        .getElementById("delete-group-btn")
+        .addEventListener("click", () => {
+          showConfirm(
+            `"${esc(groupData.group.name)}" guruhini butunlay o'chirmoqchimisiz?`,
+            "🗑️",
+            "Guruhni o'chirish",
+            "danger",
+            deleteGroup,
+          );
+        });
+
+      async function deleteGroup() {
+        showLoader();
+        const r = await apiFetch(`${BASE}/group/delete/${GROUP_ID}`, {
+          method: "DELETE",
+        });
+        hideLoader();
+        if (!r) return;
+        if (r.status === 204 || r.ok) {
+          toast("Guruh o'chirildi ✓", "success");
+          setTimeout(() => goBack(), 800);
+        } else {
+          await handleApiError(r);
+        }
+      }
+
+      // ── EVENT LISTENERS & INIT ────────────────────────────────────────────────────
+      document.getElementById("back-btn").addEventListener("click", goBack);
+      document
+        .getElementById("logout-btn")
+        .addEventListener("click", authLogout);
+
+      (async () => {
+        await loadGroupInfo();
+      })();
+    </script>
+  </body>
+</html>

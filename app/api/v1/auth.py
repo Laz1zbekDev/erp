@@ -1,4 +1,5 @@
 from typing import Annotated
+import asyncio
 
 from fastapi import APIRouter, Depends, HTTPException, Response, Request
 from fastapi.security import OAuth2PasswordRequestForm
@@ -31,8 +32,8 @@ async def login_view(
     response: Response,
     session: AsyncSession = Depends(get_session),
 ):
-    user_id = form_data.username
-    password = form_data.password
+    user_id = form_data.username.strip()
+    password = form_data.password.strip()
 
     if not user_id.isdigit():
         raise HTTPException(status_code=404, detail="bunday user  mavjud emas")
@@ -49,6 +50,7 @@ async def login_view(
     refresh_token = create_refresh_token(
         data={"user_id": user.user_id, "role": user.role.value}
     )
+    print(access_token)
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,  # ← sizning refresh token o'zgaruvchingiz nomi
@@ -110,30 +112,6 @@ async def refresh_token_view(
     }
 
 
-@router.get("/user_me")
-async def get_user_view(current_user: dict = Depends(get_current_user)):
-    print("me endpoint ishladi")
-    return current_user
-
-
-@router.get("/admin_me")
-async def get_admin_view(admin: dict = Depends(get_admin)):
-    print("admin endpoint ishladi")
-    return admin
-
-
-@router.get("/teacher_me")
-async def get_teacher_view(admin: dict = Depends(get_teacher)):
-    print("teacher endpoint ishladi")
-    return admin
-
-
-@router.get("/superadmin_me")
-async def get_superadmin_view(admin: dict = Depends(get_superadmin)):
-    print("superadmin endpoint ishladi")
-    return admin
-
-
 @router.post("/logout")
 async def logout_view(response: Response):
     # Logout endpointingizda cookie o'chirilishini tekshiring:
@@ -142,4 +120,5 @@ async def logout_view(response: Response):
         samesite="lax",  # Bu ham mos bo'lishi kerak
         httponly=True,
     )
-    return {"detail": "Successfully logged out"}
+    # await asyncio.sleep()
+    response.headers["Clear-Site-Data"] = '"cache", "cookies", "storage"'

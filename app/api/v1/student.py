@@ -1,3 +1,4 @@
+import asyncio
 from typing import Annotated, Optional
 from datetime import datetime, date, timedelta
 
@@ -25,6 +26,8 @@ from ...schemas import (
     ResponseStudentPermission,
     ResponseAddGroup,
     ResponseStudentDiscount,
+    StudentsResponse,
+    ResponseAllStudent,
 )
 from ...services import (
     create_student,
@@ -51,18 +54,83 @@ from ...services import (
     upsert_student_discount,
     student_exclusion_group,
     delete_student,
+    all_student_number,
+    count_student_per_and_student,
+    get_student_and_group_by_per_date,
+    get_teacher_by_id,
+    search_student,
+    get_all_students,
 )
 
 
 router = APIRouter(prefix="/student", tags=["student"])
 
 
-# @router.get("/", response_model=None)
-# async def student_main_view(
-#     admin: dict = Depends(get_admin),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     pass
+@router.get("/", response_model=StudentsResponse)
+async def students_response_view(
+    offset: Annotated[int | None, Query(ge=0)] = 0,
+    limit: Annotated[int | None, Query(ge=1, le=100)] = 20,
+    admin: dict = Depends(get_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    student_num = await all_student_number(session)
+
+    result = await get_student_and_group_by_per_date(session, offset, limit)
+    response = []
+    for student in result:
+        response.append(
+            {
+                "student": student,
+                "groups": student.groups,
+            }
+        )
+
+    return {"student_num": student_num, "response": response}
+
+
+@router.get("/all/", response_model=list[ResponseAllStudent])
+async def get_all_students_view(
+    admin: dict = Depends(get_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    students = await get_all_students(session)
+    return students
+
+
+@router.get("/search/", response_model=StudentsResponse)
+async def search_student_view(
+    student_name: Annotated[str | None, Query(max_length=150)] = None,
+    group_id: Annotated[int | None, Query(ge=1)] = None,
+    teacher_id: Annotated[int | None, Query(ge=1)] = None,
+    discount: Annotated[DiscountType | bool | None, Query()] = None,
+    offset: Annotated[int | None, Query(ge=0, le=100)] = 0,
+    limit: Annotated[int | None, Query(ge=1, le=100)] = 20,
+    admin: dict = Depends(get_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    if group_id:
+        group = await get_group_by_id(session, group_id)
+        if group is None:
+            raise HTTPException(status_code=404, detail="guruh topilmadi")
+    if teacher_id:
+        teacher = await get_teacher_by_id(session, teacher_id)
+        if teacher is None:
+            raise HTTPException(status_code=404, detail="o'qituvchi topilmadi")
+    students = await search_student(
+        session, student_name, group_id, teacher_id, discount
+    )
+    student_num = len(students)
+    paginated_students = students[offset : offset + limit]
+    response = []
+    for student in paginated_students:
+        response.append(
+            {
+                "student": student,
+                "groups": student.groups,
+            }
+        )
+
+    return {"student_num": student_num, "response": response}
 
 
 @router.get("/info/{student_id}", response_model=StudentFullResponse)
@@ -77,6 +145,7 @@ async def get_student_full_info_view(
 
     student = await get_student_full_info(session, student_id)
     print(student)
+
     return {
         "student": student,
         "groups": student.groups,
@@ -86,34 +155,7 @@ async def get_student_full_info_view(
     }
 
 
-# @router.get("/expired/", response_model=list[ExpiredStudentsResponse])
-# async def dashboard_response_view(
-#     offset: Annotated[int | None, Query(ge=0, le=100)] = 0,
-#     limit: Annotated[int | None, Query(ge=1, le=100)] = 20,
-#     admin: dict = Depends(get_admin),
-#     session: AsyncSession = Depends(get_session),
-# ):
-
-#     result = await get_student_per_and_student(session, offset, limit)
-#     response = []
-#     today = datetime.now().date()
-#     for info in result:
-#         expire_date = info.permission_date
-#         response.append(
-#             {
-#                 "student": info.student,
-#                 "group_name": info.group.name,
-#                 "group_id": info.group.group_id,
-#                 "student_contact": info.student.contact.student_number,
-#                 "student_parent_contact": info.student.contact.student_parent_number,
-#                 "expired_days": (today - expire_date).days,
-#             }
-#         )
-
-#     return  result
-
-
-@router.post("/register", response_model=StudentFullResponse, status_code=201)
+@router.post("/register", status_code=201)
 async def register_view(
     data: Annotated[RegisterStudent, Body()],
     admin: dict = Depends(get_admin),
@@ -123,21 +165,13 @@ async def register_view(
     if not group:
         raise HTTPException(status_code=404, detail="guruh topilmadi")
     student = await create_student(session, data)
-    student_contact = await create_student_contact(session, student.student_id, data)
-    student_per = await create_student_permission(
-        session, student.student_id, group.group_id
-    )
-    student_group = await create_student_group(
-        session, student.student_id, data.group_id
-    )
+    await create_student_contact(session, student.student_id, data)
+    await create_student_permission(session, student.student_id, group.group_id)
+    await create_student_group(session, student.student_id, data.group_id)
     await session.commit()
 
     return {
-        "student": student,
-        "groups": [group],
-        "contact": student_contact,
-        "discounts": None,
-        "permissions": [student_per],
+        "student_id": student.student_id,
     }
 
 
@@ -155,8 +189,9 @@ async def student_add_group(
     if not group:
         raise HTTPException(status_code=404, detail="guruh topilmadi")
 
-    student_gr = await create_student_group(session, student_id, group_id)
+    await create_student_group(session, student_id, group_id)
     permission = await create_student_permission(session, student_id, group_id)
+
     await session.commit()
     return {
         "group": group,
@@ -202,6 +237,7 @@ async def update_student_name_view(
     admin: dict = Depends(get_admin),
     session: AsyncSession = Depends(get_session),
 ):
+
     print(student_id)
     print(type(student_id))
 
@@ -257,9 +293,10 @@ async def update_student_permission_date_view(
             status_code=404, detail="bu student bu guruhga tegishli emas"
         )
 
+    print(is_admin.get("user_id"))
     admin = await get_admin_by_user_id(session, is_admin.get("user_id"))
     print(admin)
-    if not admin:
+    if admin is None:
         raise HTTPException(status_code=404, detail="admin topilmadi")
 
     student_discount = 0
@@ -350,4 +387,5 @@ async def delate_student_view(
     session: AsyncSession = Depends(get_session),
 ):
     await delete_student(session, student_id)
+
     await session.commit()

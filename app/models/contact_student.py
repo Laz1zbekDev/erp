@@ -5,6 +5,8 @@ from ..db.base import Base, TimeMixin
 
 
 class StudentContact(Base, TimeMixin):
+    """bu sinfdan studentning contact malumotlari saqlanadi, student va parentning nomer va telegrami saqlanadi"""
+
     __tablename__ = "student_contacts"
 
     contact_id: Mapped[int] = mapped_column(Integer, primary_key=True)

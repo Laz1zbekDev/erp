@@ -40,4 +40,4 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
         except Exception as e:
             print("rollback qilindi")
             await session.rollback()
-            raise e
+            raise

@@ -14,7 +14,6 @@ from sqlalchemy import (
 )
 
 from ..db.base import Base, TimeMixin
-from ..utils.enums import GroupStatus
 
 
 class Group(Base, TimeMixin):
@@ -25,8 +24,8 @@ class Group(Base, TimeMixin):
     teacher_id: Mapped[int] = mapped_column(
         SmallInteger, ForeignKey("teachers.teacher_id"), nullable=False, index=True
     )
-    science_name: Mapped[int] = mapped_column(String(100))
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    science_name: Mapped[int] = mapped_column(String(100))
     price: Mapped[int] = mapped_column(Integer, nullable=False)
     teacher_percent: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     class_day: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -36,7 +35,7 @@ class Group(Base, TimeMixin):
         default=True,
         nullable=False,
     )
-
+    teacher: Mapped["Teacher"] = relationship("Teacher", back_populates="groups")
     students: Mapped[list["Student"]] = relationship(
         "Student",
         secondary="student_groups",
@@ -46,4 +45,10 @@ class Group(Base, TimeMixin):
     )
     student_per_dates: Mapped[list["StudentPermissionDate"]] = relationship(
         "StudentPermissionDate", back_populates="group"
+    )
+    student_transactions: Mapped[list["StudentTransaction"]] = relationship(
+        "StudentTransaction", back_populates="group"
+    )
+    student_discounts: Mapped[list["StudentDiscount"]] = relationship(
+        "StudentDiscount", back_populates="group"
     )

@@ -32,3 +32,6 @@ class Student(Base, TimeMixin):
     student_per_dates: Mapped[list["StudentPermissionDate"]] = relationship(
         "StudentPermissionDate", back_populates="student"
     )
+    student_transactions: Mapped[list["StudentTransaction"]] = relationship(
+        "StudentTransaction", back_populates="student"
+    )
